@@ -1,0 +1,11 @@
+to-do:
+Ensure that usernames are unique.
+
+To safely delete a migration file:
+- node ace migration:status     (make sure it is pending, i.e. not completed)
+- delete the file
+- node ace migration:refresh
+- node ace migration:status     (ensure that it is gone)
+
+Get routes:
+node ace list:routes

@@ -17,4 +17,7 @@ router.get('/', async () => {
   }
 })
 
-router.resource('/users', UsersController).apiOnly().use(['destroy', 'update', 'index'], middleware.auth())
+//router.resource('/users', UsersController).apiOnly().use(['destroy', 'update', 'index'], middleware.auth())
+//router.resource('/users', UsersController).apiOnly().use(['destroy', 'update'], middleware.auth())
+
+router.resource('/users', UsersController)
