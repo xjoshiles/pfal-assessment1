@@ -1,5 +1,10 @@
 to-do:
-Ensure that usernames are unique.
+- user sign up with username and password
+- give admins their own dashboard from within which they can
+  select a user, modify their admin status and flashcard limits.
+- give users their own account dashboard where they can change
+  their passwords (and maybe usernames?)
+
 
 To safely delete a migration file:
 - node ace migration:status     (make sure it is pending, i.e. not completed)
@@ -9,3 +14,13 @@ To safely delete a migration file:
 
 Get routes:
 node ace list:routes
+
+
+auto-indent code:
+shift + alt + f
+
+
+"If you are using the @adonisjs/auth module, hashing passwords within your
+model is unnecessary. The AuthFinder automatically handles password hashing,
+ensuring your user credentials are securely processed. Learn more about
+this process here".
