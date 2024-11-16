@@ -1,4 +1,6 @@
 to-do:
+- get api version (top of OpenAPI spec)
+- implement limit of 20 flashcard sets per day (modifiable)
 - user sign up with username and password
 - give admins their own dashboard from within which they can
   select a user, modify their admin status and flashcard limits.
@@ -24,3 +26,20 @@ shift + alt + f
 model is unnecessary. The AuthFinder automatically handles password hashing,
 ensuring your user credentials are securely processed. Learn more about
 this process here".
+
+
+Can collections have comments?
+
+A FlashcardSet can have many Collections, and a Collection can have many
+FlashcardSets.
+
+
+
+
+
+
+
+
+
+
+
