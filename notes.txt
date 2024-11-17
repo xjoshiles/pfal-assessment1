@@ -1,4 +1,26 @@
 to-do:
+- Could my routes be written better?
+- random method in collections_controller
+- comment users_controller
+- should the validation happen within the try block in my controllers?
+- do I need any other methods in my comments controller, e.g. delete?
+- try block on store method on comments controller?
+
+- /sets/{setId} - Update flashcard set by ID
+- /sets/{setId}/cards - Get all flashcards in a set <- new controller
+
+
+- vvvv new controller
+- /users/{userId}/collections
+- /users/{userId}/collections/{collectionId}
+- /users/{userId}/collections/{collectionId}
+- /users/{userId}/collections/{collectionId}
+- /collections/random
+
+
+- Should we delete previous access tokens in auth_controller?
+- Should we return a message on success in some controllers too?
+- Return flashcards in a set in flashcards_controller store method
 - get api version (top of OpenAPI spec)
 - implement limit of 20 flashcard sets per day (modifiable)
 - user sign up with username and password
@@ -6,6 +28,7 @@ to-do:
   select a user, modify their admin status and flashcard limits.
 - give users their own account dashboard where they can change
   their passwords (and maybe usernames?)
+
 
 
 To safely delete a migration file:

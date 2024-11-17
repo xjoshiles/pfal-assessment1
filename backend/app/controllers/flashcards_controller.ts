@@ -1,14 +1,19 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import FlashcardSet from '#models/flashcard_set'
+import Flashcard from '#models/flashcard'
+import User from '#models/user'
 import { CreateFlashcardSetValidator } from '#validators/create_flashcard_set'
+import db from '@adonisjs/lucid/services/db'
 
-export default class TestsController {
+export default class FlashcardsController {
   /**
    * Get all flashcard sets
    */
   async index({ response }: HttpContext) {
     try {
-      const sets = await FlashcardSet.all()
+      const sets = await FlashcardSet.query()
+        .preload('flashcards')
+        .preload('comments')
       return response.json(sets)
     } catch (error) {
       return response.internalServerError({ message: 'Error fetching sets' })
@@ -16,14 +21,47 @@ export default class TestsController {
   }
 
   /**
-   * Handle form submission for the create action
+   * Create a new flashcard set
    */
   async store({ request, response, auth }: HttpContext) {
     const payload = await request.validateUsing(CreateFlashcardSetValidator)
 
+    // Start a database transaction for atomic operations
+    const trx = await db.transaction()
 
+    try {
+      // Create the flashcard set
+      const set = await FlashcardSet.create({
+        name: payload.name,
+        userId: auth.user!.id}
+        , { client: trx })
 
+        // Prepare the flashcards with the flashcard set ID
+        const flashcardsData = payload.flashcards.map((flashcard) => ({
+          ...flashcard,
+          flashcardSetId: set.id,
+        }))
+  
+        // Create flashcards in the flashcard table
+        await Flashcard.createMany(flashcardsData, { client: trx })
 
+        // Commit the transaction
+        await trx.commit()
+        
+        // Load the flashcards to ensure they are included in the response
+        await set.load('flashcards')
+
+        return response.created(set)
+
+    } catch (error) {
+      // Roll back the transaction in case of errors
+      await trx.rollback()
+
+      return response.badRequest({
+        message: 'Failed to create flashcard set',
+        errors: error.messages || error.message,
+      })
+    }
   }
 
   /**
@@ -33,7 +71,9 @@ export default class TestsController {
     const id = params.id
 
     // try {
-    const set = await FlashcardSet.find(id)
+    const set = await FlashcardSet.query()
+      .where('id', id)
+      .preload('flashcards')
 
     if (!set) {
       return response.notFound({ message: `Set ${id} not found` })
@@ -48,12 +88,61 @@ export default class TestsController {
   }
 
   /**
-   * Handle form submission for the edit action
+   * Update a flashcard set by ID
    */
-  async update({ params, request }: HttpContext) { }
+  // async update({ params, request }: HttpContext) { }
 
   /**
-   * Delete record
+   * Delete a flashcard set by ID
    */
-  async destroy({ params }: HttpContext) { }
+  async destroy({ params, response, auth }: HttpContext) {
+    const id = params.id
+
+    try {
+      const set = await FlashcardSet.findOrFail(id)
+
+      // If the current user is the creator of the set or an admin
+      if (auth.user!.id == set.userId || auth.user?.admin) {
+        // Delete set (flashcards are also deleted due to cascade rule)
+        await set.delete()
+        return response.noContent()
+      }
+      // Else
+      return response.unauthorized({
+        message: "You are not authorised to perform this action",
+        error: "Unauthorised"
+      })
+
+    } catch (error) {
+      return response.notFound(
+        { message: 'Unable to delete flashcard set', errors: error.messages })
+    }
+  }
+
+  /**
+   * Get all flashcard sets created by a user
+   */
+  async byUser({ params, response }: HttpContext) {
+    const id = params.id
+
+    try {
+      const user = await User.find(id);
+
+      if (!user) {
+        return response.notFound({ message: `User ${id} not found` });
+      }
+
+      const sets = await FlashcardSet.query()
+        .where('user_id', id)
+        .preload('flashcards')
+      
+      return response.json(sets)
+
+    } catch(error) {
+      return response.internalServerError({
+        message: 'Error fetching flashcard sets',
+        errors: error.messages || error.message,
+      });
+    }
+  }
 }

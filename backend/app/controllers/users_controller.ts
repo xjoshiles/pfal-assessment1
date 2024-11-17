@@ -70,13 +70,12 @@ export default class UsersController {
       if (!user) {
         return response.notFound({ message: `User ${id} not found` })
       }
-
       // Else
       await user.delete()
       return response.noContent()
 
     } catch (error) {
-      return response.badRequest(
+      return response.notFound(
         { message: 'Unable to delete user', errors: error.messages })
     }
   }
