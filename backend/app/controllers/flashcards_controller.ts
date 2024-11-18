@@ -33,25 +33,25 @@ export default class FlashcardsController {
       // Create the flashcard set
       const set = await FlashcardSet.create({
         name: payload.name,
-        userId: auth.user!.id}
-        , { client: trx })
+        userId: auth.user!.id
+      }, { client: trx })
 
-        // Prepare the flashcards with the flashcard set ID
-        const flashcardsData = payload.flashcards.map((flashcard) => ({
-          ...flashcard,
-          flashcardSetId: set.id,
-        }))
-  
-        // Create flashcards in the flashcard table
-        await Flashcard.createMany(flashcardsData, { client: trx })
+      // Prepare the flashcards with the flashcard set ID
+      const flashcardsData = payload.flashcards.map((flashcard) => ({
+        ...flashcard,
+        flashcardSetId: set.id,
+      }))
 
-        // Commit the transaction
-        await trx.commit()
-        
-        // Load the flashcards to ensure they are included in the response
-        await set.load('flashcards')
+      // Create flashcards in the flashcard table
+      await Flashcard.createMany(flashcardsData, { client: trx })
 
-        return response.created(set)
+      // Commit the transaction
+      await trx.commit()
+
+      // Load the flashcards to ensure they are included in the response
+      await set.load('flashcards')
+
+      return response.created(set)
 
     } catch (error) {
       // Roll back the transaction in case of errors
@@ -113,11 +113,57 @@ export default class FlashcardsController {
       set.name = payload.name
       await set.useTransaction(trx).save()
 
-      // Check for new flashcards to create...
-      // Check for existing flashcards to update...
-      // Check for removed flashcards to delete...
+      // Process flashcards
+      const { flashcards } = payload;
 
-      
+      // Separate flashcards with IDs (existing) and without IDs (new)
+      const existingFlashcards = flashcards.filter((fc) => fc.id != null)
+      const newFlashcards = flashcards.filter((fc) => !fc.id)
+
+      // Update existing flashcards
+      for (const flashcard of existingFlashcards) {
+        const existingCard = await Flashcard.find(flashcard.id, { client: trx })
+
+        if (!existingCard || existingCard.flashcardSetId !== set.id) {
+          await trx.rollback();
+          return response.badRequest(
+            { message: `Flashcard with ID ${flashcard.id} is invalid` })
+        }
+
+        existingCard.merge({
+          question: flashcard.question,
+          answer: flashcard.answer,
+          difficulty: flashcard.difficulty,
+        })
+        await existingCard.useTransaction(trx).save()
+      }
+
+      // Create new flashcards
+      const newFlashcardData = newFlashcards.map((flashcard) => ({
+        question: flashcard.question,
+        answer: flashcard.answer,
+        difficulty: flashcard.difficulty,
+        flashcardSetId: set.id,
+      }));
+      await Flashcard.createMany(newFlashcardData, { client: trx })
+
+      // Delete associated flashcards that are not in the payload 
+      const payloadIds = flashcards.map(
+        (flashcard) => flashcard.id).filter((id) => id != null)
+
+      await Flashcard.query({ client: trx })
+        .where('flashcard_set_id', set.id)
+        .whereNotIn('id', payloadIds)
+        .delete()
+
+      // Commit the transaction
+      await trx.commit()
+
+      // Load the flashcards to ensure they are included in the response
+      await set.load('flashcards')
+
+      return response.ok(set)
+
     } catch (error) {
       // Roll back the transaction in case of errors
       await trx.rollback()
@@ -138,17 +184,16 @@ export default class FlashcardsController {
     try {
       const set = await FlashcardSet.findOrFail(id)
 
-      // If the current user is the creator of the set or an admin
-      if (auth.user!.id == set.userId || auth.user?.admin) {
-        // Delete set (flashcards are also deleted due to cascade rule)
-        await set.delete()
-        return response.noContent()
+      // If the current user is not the creator of the set nor an admin
+      if (auth.user!.id != set.userId && !auth.user?.admin) {
+        return response.unauthorized({
+          message: "You are not authorised to perform this action",
+          error: "Unauthorised"
+        })
       }
-      // Else
-      return response.unauthorized({
-        message: "You are not authorised to perform this action",
-        error: "Unauthorised"
-      })
+      // Else delete set (flashcards are also deleted due to cascade rule)
+      await set.delete()
+      return response.noContent()
 
     } catch (error) {
       return response.notFound(
@@ -172,10 +217,10 @@ export default class FlashcardsController {
       const sets = await FlashcardSet.query()
         .where('user_id', id)
         .preload('flashcards')
-      
+
       return response.json(sets)
 
-    } catch(error) {
+    } catch (error) {
       return response.internalServerError({
         message: 'Error fetching flashcard sets',
         errors: error.messages || error.message,

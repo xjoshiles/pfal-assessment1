@@ -61,7 +61,7 @@ export default class UsersController {
   /**
    * Delete user via ID
    */
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, response, auth }: HttpContext) {
     const id = params.id
 
     try {
@@ -69,6 +69,14 @@ export default class UsersController {
 
       if (!user) {
         return response.notFound({ message: `User ${id} not found` })
+      }
+
+      // If current user is not the given user nor an admin
+      if (auth.user!.id != user.id && !auth.user?.admin) {
+        return response.unauthorized({
+          message: "You are not authorised to perform this action",
+          error: "Unauthorised"
+        })
       }
       // Else
       await user.delete()

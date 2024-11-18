@@ -126,14 +126,13 @@ export default class UserCollectionsController {
   /**
    * Delete a flashcard set collection by ID
    */
-  async destroy({ params, response }: HttpContext) {
+  async destroy({ params, response, auth }: HttpContext) {
     const { userId, collectionId } = params
 
     try {
       // Find the collection and ensure it belongs to the specified user
       const collection = await Collection.query()
         .where('id', collectionId)
-        .andWhere('userId', userId)
         .preload('flashcardSets', (query) => query.preload('flashcards'))
         .first()
 
@@ -142,9 +141,15 @@ export default class UserCollectionsController {
           { message: `Collection ${collectionId} not found for user ${userId}` });
       }
 
-      // Delete the collection
+      // If the current user is not the creator of the collection nor an admin
+      if (auth.user!.id != collection.userId && !auth.user?.admin) {
+        return response.unauthorized({
+          message: "You are not authorised to perform this action",
+          error: "Unauthorised"
+        })
+      }
+      //Else 
       await collection.delete()
-
       return response.ok(collection)
 
     } catch (error) {

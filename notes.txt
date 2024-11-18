@@ -7,6 +7,8 @@ to-do:
 - do I need any other methods in my comments controller, e.g. delete?
 - try block on store method on comments controller?
 
+- remove timestamps from flashcard model and migration
+
 What do Jack and Joel's requests/payloads look like?
 
 Questions for Zoltan:
@@ -20,12 +22,14 @@ Questions for Zoltan:
   for updating a set doesn't specify a user id, but the collection one
   does. Should this have any influence on my implementation?
   The userId parameter isn't even being used...
+- do we return a redirect or a random collection?
+
+- For frontend, use intertia (adocasts playlist), don't need 
 
 - groups for routes
 
 - vvvv Not done
 - /users/{userId}     - Update a user by ID
-- /sets/{setId}       - Update flashcard set by ID
 - /sets/{setId}/cards - Get all flashcards in a set <- new controller?
 - /collections/random - Redirect to a random flashcard set collection
 
@@ -34,7 +38,7 @@ Questions for Zoltan:
 - /users/{userId}/collections/{collectionId}
 - /users/{userId}/collections/{collectionId}
 - /users/{userId}/collections/{collectionId}
-
+- /sets/{setId}       - Update flashcard set by ID
 
 
 - Should we delete previous access tokens in auth_controller?
@@ -77,6 +81,11 @@ FlashcardSets.
 
 
 
+Practical issues with REST
+tight coupling, needs update to OpenAPI file, and then update to at least
+two code bases (nackend and frontend)
+
+GraphQL. Frontend decides which field it queries
 
 
 
@@ -85,3 +94,17 @@ FlashcardSets.
 
 
 
+Old code:
+
+      // // Delete previous flashcards associated with the set
+      // await Flashcard.query({ client: trx })
+      //   .where('flashcardSetId', set.id).delete();
+
+      // // Prepare the flashcards with the flashcard set ID
+      // const flashcardsData = payload.flashcards.map((flashcard) => ({
+      //   ...flashcard,
+      //   flashcardSetId: set.id,
+      // }))
+
+      // // Create flashcards in the flashcard table
+      // await Flashcard.createMany(flashcardsData, { client: trx })
