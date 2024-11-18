@@ -1,4 +1,5 @@
 to-do:
+- Check user ownership or admin status in user_collections_controller destroy
 - Could my routes be written better?
 - random method in collections_controller
 - comment users_controller
@@ -6,16 +7,34 @@ to-do:
 - do I need any other methods in my comments controller, e.g. delete?
 - try block on store method on comments controller?
 
-- /sets/{setId} - Update flashcard set by ID
-- /sets/{setId}/cards - Get all flashcards in a set <- new controller
+What do Jack and Joel's requests/payloads look like?
 
+Questions for Zoltan:
+- when do we get access to the tests?
+- request body of create new / update collection
+- Is my implementation of the update and destroy methods ideal?
+  I'm finding the desired sets/collections and then matching user
+  IDs or admin status before performing the operations.
+  This is because I also want admins to be able to perform these operations,
+  regardless of whether or not they are the creator. The request url
+  for updating a set doesn't specify a user id, but the collection one
+  does. Should this have any influence on my implementation?
+  The userId parameter isn't even being used...
 
-- vvvv new controller
+- groups for routes
+
+- vvvv Not done
+- /users/{userId}     - Update a user by ID
+- /sets/{setId}       - Update flashcard set by ID
+- /sets/{setId}/cards - Get all flashcards in a set <- new controller?
+- /collections/random - Redirect to a random flashcard set collection
+
+- vvvv Test these:
 - /users/{userId}/collections
 - /users/{userId}/collections/{collectionId}
 - /users/{userId}/collections/{collectionId}
 - /users/{userId}/collections/{collectionId}
-- /collections/random
+
 
 
 - Should we delete previous access tokens in auth_controller?

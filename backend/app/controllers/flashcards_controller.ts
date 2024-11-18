@@ -70,7 +70,6 @@ export default class FlashcardsController {
   async show({ params, response }: HttpContext) {
     const id = params.id
 
-    // try {
     const set = await FlashcardSet.query()
       .where('id', id)
       .preload('flashcards')
@@ -80,17 +79,55 @@ export default class FlashcardsController {
     }
 
     return response.json(set)
-
-    // } catch (error) {
-    //     return response.badRequest(
-    //         {message: 'Unable to delete user', errors: error.messages})
-    // }
   }
 
   /**
    * Update a flashcard set by ID
    */
-  // async update({ params, request }: HttpContext) { }
+  async update({ params, request, response, auth }: HttpContext) {
+    const { id } = params
+
+    const payload = await request.validateUsing(CreateFlashcardSetValidator)
+
+    // Start a database transaction for atomic operations
+    const trx = await db.transaction()
+
+    try {
+      // Find the flashcard set
+      // Note that despite being a read operation, we use { client: trx }
+      // here as it is part of a larger transaction, ensuring consistency 
+      const set = await FlashcardSet.find(id, { client: trx })
+
+      if (!set) {
+        return response.notFound({ message: `Set ${id} not found` })
+      }
+
+      // If the current user is not the creator of the set nor an admin
+      if (auth.user!.id != set.userId && !auth.user?.admin) {
+        return response.unauthorized({
+          message: "You are not authorised to perform this action",
+          error: "Unauthorised"
+        })
+      }
+      // Else
+      set.name = payload.name
+      await set.useTransaction(trx).save()
+
+      // Check for new flashcards to create...
+      // Check for existing flashcards to update...
+      // Check for removed flashcards to delete...
+
+      
+    } catch (error) {
+      // Roll back the transaction in case of errors
+      await trx.rollback()
+
+      return response.badRequest({
+        message: 'Failed to update flashcard set',
+        errors: error.messages || error.message,
+      })
+    }
+  }
 
   /**
    * Delete a flashcard set by ID
@@ -129,7 +166,7 @@ export default class FlashcardsController {
       const user = await User.find(id);
 
       if (!user) {
-        return response.notFound({ message: `User ${id} not found` });
+        return response.notFound({ message: `User ${id} not found` })
       }
 
       const sets = await FlashcardSet.query()
@@ -142,7 +179,7 @@ export default class FlashcardsController {
       return response.internalServerError({
         message: 'Error fetching flashcard sets',
         errors: error.messages || error.message,
-      });
+      })
     }
   }
 }
