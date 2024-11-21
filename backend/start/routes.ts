@@ -45,4 +45,8 @@ router.resource('/collections', CollectionsController)
 router.get('/users/:id/sets', [FlashcardsController, 'byUser'])
   .use(middleware.auth())
 
-router.resource('/users/:id/collections', UserCollectionsController).use('*', middleware.auth())
+
+router.get('/sets/:id/cards', [FlashcardsController, 'inSet'])
+
+
+//router.resource('/users/:id/collections', UserCollectionsController).use('*', middleware.auth())

@@ -4,6 +4,7 @@ import Flashcard from '#models/flashcard'
 import User from '#models/user'
 import { CreateFlashcardSetValidator } from '#validators/create_flashcard_set'
 import db from '@adonisjs/lucid/services/db'
+import { shuffle } from 'lodash-es'
 
 export default class FlashcardsController {
   /**
@@ -73,6 +74,7 @@ export default class FlashcardsController {
     const set = await FlashcardSet.query()
       .where('id', id)
       .preload('flashcards')
+      .first()
 
     if (!set) {
       return response.notFound({ message: `Set ${id} not found` })
@@ -97,7 +99,6 @@ export default class FlashcardsController {
       // Note that despite being a read operation, we use { client: trx }
       // here as it is part of a larger transaction, ensuring consistency 
       const set = await FlashcardSet.find(id, { client: trx })
-
       if (!set) {
         return response.notFound({ message: `Set ${id} not found` })
       }
@@ -216,9 +217,39 @@ export default class FlashcardsController {
 
       const sets = await FlashcardSet.query()
         .where('user_id', id)
-        .preload('flashcards')
+        .preload('flashcards')  // No .first() call here as we want all sets
 
       return response.json(sets)
+
+    } catch (error) {
+      return response.internalServerError({
+        message: 'Error fetching flashcard sets',
+        errors: error.messages || error.message,
+      })
+    }
+  }
+
+  /**
+   * Get all flashcards in a set
+   */
+  async inSet({ params, request, response }: HttpContext) {
+    const id = params.id
+    const shuffleCards = request.qs().shuffle === 'true'
+
+    try {
+      const set = await FlashcardSet.query()
+        .where('id', id)
+        .preload('flashcards')
+        .first()
+      
+      if (!set) {
+        return response.notFound({ message: `Set ${id} not found` })
+      }
+
+      if (shuffleCards) {
+        return response.json(shuffle(set.flashcards))
+      }
+      return response.json(set.flashcards)
 
     } catch (error) {
       return response.internalServerError({

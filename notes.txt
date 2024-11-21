@@ -1,15 +1,10 @@
 to-do:
-- Check user ownership or admin status in user_collections_controller destroy
 - Could my routes be written better?
 - random method in collections_controller
 - comment users_controller
 - should the validation happen within the try block in my controllers?
 - do I need any other methods in my comments controller, e.g. delete?
 - try block on store method on comments controller?
-
-- remove timestamps from flashcard model and migration
-
-What do Jack and Joel's requests/payloads look like?
 
 Questions for Zoltan:
 - when do we get access to the tests?
@@ -29,8 +24,6 @@ Questions for Zoltan:
 - groups for routes
 
 - vvvv Not done
-- /users/{userId}     - Update a user by ID
-- /sets/{setId}/cards - Get all flashcards in a set <- new controller?
 - /collections/random - Redirect to a random flashcard set collection
 
 - vvvv Test these:
@@ -39,6 +32,7 @@ Questions for Zoltan:
 - /users/{userId}/collections/{collectionId}
 - /users/{userId}/collections/{collectionId}
 - /sets/{setId}       - Update flashcard set by ID
+- /users/{userId}     - Update a user by ID
 
 
 - Should we delete previous access tokens in auth_controller?

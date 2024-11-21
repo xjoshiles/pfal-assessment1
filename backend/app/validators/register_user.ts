@@ -1,6 +1,6 @@
 import vine from '@vinejs/vine'
 
-export const RegisterValidator = vine.compile(
+export const RegisterUserValidator = vine.compile(
   vine.object({
     // Despite the column constraint in the table, we check for uniqueness
     // here in the validator (at the application level) to catch potential

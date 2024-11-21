@@ -65,7 +65,7 @@ export default class UserCollectionsController {
    * Update a flashcard set collection by ID
    */
   async update({ params, request, response, auth }: HttpContext) {
-    const { userId, collectionId } = params
+    const { id } = params
 
     // Start a database transaction for atomic operations
     const trx = await db.transaction()
@@ -76,11 +76,11 @@ export default class UserCollectionsController {
       // Find the collection
       // Note that despite being a read operation, we use { client: trx }
       // here as it is part of a larger transaction, ensuring consistency 
-      const collection = await Collection.find(collectionId, { client: trx })
+      const collection = await Collection.find(id, { client: trx })
 
       if (!collection) {
         return response.notFound(
-          { message: `Collection ${collectionId} not found` })
+          { message: `Collection ${id} not found` })
       }
 
       // If the current user is not the creator of the collection nor an admin
