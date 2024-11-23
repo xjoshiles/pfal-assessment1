@@ -27,7 +27,7 @@ export default class UsersController {
       return response.created(user)
     } catch (error) {
       return response.badRequest(
-        { message: 'Unable to create user', errors: error.messages })
+        { message: error.messages[0].message })
     }
   }
 

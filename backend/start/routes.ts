@@ -27,10 +27,16 @@ router.get('/', async () => {
 //router.resource('/users', UsersController).apiOnly().use(['destroy', 'update'], middleware.auth())
 
 
+//query gives me { oh: '2', adonis: [ 'sets', '3' ] }
+
+
+
 
 router.resource('/users', UsersController).use(['index'], middleware.auth())
-router.resource('/sets', FlashcardsController).use('*', middleware.auth())
-router.post('/login', [AuthController])
+router.resource('/sets', FlashcardsController).use(['store', 'update', 'destroy'], middleware.auth())
+router.post('/login', [AuthController, 'login'])
+router.post('/logout', [AuthController, 'logout']).use(middleware.auth())
+router.post('/auth/me', [AuthController, 'authorised'])
 
 router.post('/sets/:id/comment', [CommentsController, 'store'])
   .use(middleware.auth())

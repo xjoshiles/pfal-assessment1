@@ -1,4 +1,22 @@
 to-do:
+
+How do I create a session in adonisjs?
+
+
+
+
+
+auth_access_token has an 'expires_at' column. Can we set this to 1 month
+after the creation date and have it auto delete when it expires?
+
+Need a check in delete user method in backend that if they are admin,
+and are the only admin, not to delete.
+
+So, how do we limit what the user sees based on their authentication?
+
+Should we return all error messages from the API (auth_controller no longer does)
+and only display the first one on the frontend?
+
 - Could my routes be written better?
 - random method in collections_controller
 - comment users_controller
@@ -33,6 +51,9 @@ Questions for Zoltan:
 - /users/{userId}/collections/{collectionId}
 - /sets/{setId}       - Update flashcard set by ID
 - /users/{userId}     - Update a user by ID
+
+
+- ENSURE WE ARE NOT USING A RELEASE CANDIDATE VERSION OF REACT
 
 
 - Should we delete previous access tokens in auth_controller?
