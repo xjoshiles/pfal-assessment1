@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import { useSession } from '@/app/lib/session-context'
+import { useSession } from '@/lib/session-context'
 import { redirect } from 'next/navigation'
 
 // Define the AdonisJS backend API endpoint for session validation

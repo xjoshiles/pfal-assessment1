@@ -5,7 +5,7 @@ import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
-import Comment from '#models/comment'
+import Review from '#models/review'
 import FlashcardSet from '#models/flashcard_set'
 import Collection from '#models/collection'
 
@@ -27,8 +27,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column()
   declare admin: boolean
 
-  @hasMany(() => Comment)
-  declare comments: HasMany<typeof Comment>
+  @hasMany(() => Review)
+  declare reviews: HasMany<typeof Review>
 
   @hasMany(() => FlashcardSet)
   declare flashcardSets: HasMany<typeof FlashcardSet>

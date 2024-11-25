@@ -1,37 +1,39 @@
-// app/sets/[setId]/page.tsx
-
-import { Flashcard } from './Flashcard'; // Separate component for cycling and flip logic
+import { FlashcardPanel } from '@/components/FlashcardPanel'
+import ReviewsSection from '@/components/ReviewsSection'
 
 interface FlashcardSetProps {
   params: {
-    id: string;
-  };
+    id: string
+  }
 }
 
 const FlashcardSet = async ({ params }: FlashcardSetProps) => {
   const { id } = await params;
 
-  // Fetch flashcards data from the server based on setId
-  const flashcards = await getFlashcardsBySetId(id);
-
-  if (!flashcards || flashcards.length === 0) {
-    return <div>No flashcards found for this set.</div>;
-  }
+  // Fetch flashcards data from the server based on id
+  const set = await getFlashcardSetById(id)
 
   return (
-    <div className="min-h-screen-nonav bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800">Flashcards for Set {id}</h1>
-      <Flashcard cards={flashcards} />
+    <div className='bg-gray-100'>
+      <div className="section_container min-h-screen-nonav bg-gray-100 p-8">
+        <h1 className="text-3xl font-bold text-center text-gray-800">{set.name}</h1>
+        {!set.flashcards || set.flashcards.length === 0 ? (
+          <div className='no-results'>No flashcards found for this set</div>
+        ) : (
+          <>
+            <FlashcardPanel cards={set.flashcards} />
+            <ReviewsSection setId={id} initialReviews={set.reviews} />
+          </>
+        )}
+      </div>
     </div>
-  );
-};
-
-// Simulating a fetch function for flashcards (you can replace this with a real API call or database query)
-async function getFlashcardsBySetId(id: string) {
-  // Example fetch (you can replace it with a real database or API request)
-  const response = await fetch(`http://localhost:3333/sets/${id}`);
-  const data = await response.json();
-  return data.flashcards; // Assuming the API response has a `flashcards` field
+  )
 }
 
-export default FlashcardSet;
+async function getFlashcardSetById(id: string) {
+  const response = await fetch(`http://localhost:3333/sets/${id}`)
+  const data = await response.json()
+  return data
+}
+
+export default FlashcardSet

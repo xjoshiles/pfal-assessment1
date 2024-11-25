@@ -37,10 +37,14 @@ export default class AuthController {
   }
 
   async authorised({ auth, response }: HttpContext) {
-    const user = await auth.authenticate()
-    if (user) {
-      console.log('hehe')
+    try {
+      const user = await auth.authenticate()
+      return response.ok(user)
+
+    } catch (error) {
+      return response.unauthorized({
+        message: error.message,
+      })
     }
-    return response.ok(user)
   }
 }

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { useLogout } from '@/app/lib/logout'
+import { useLogout } from '@/lib/logout'
 
 export default function NavbarTest({
   isAuth,

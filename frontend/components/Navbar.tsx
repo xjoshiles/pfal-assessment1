@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import React from 'react'
-import { parseSession } from '@/app/lib/session'
+import { parseSession } from '@/lib/session'
 
 export default async function Navbar() {
   const { isAuth, userId, username } = await parseSession()

@@ -1,7 +1,16 @@
 to-do:
 
-How do I create a session in adonisjs?
+create-set/page.tsx
+Custom error message for index? e.g. question field on flashcard 2
+Put buttons next to each other
+Put error message below buttons.
+Move to /sets/create/page.tsx?
 
+
+
+Error messages in create-set (store on controller)
+edit set page
+create and browse collections page
 
 
 
@@ -74,6 +83,12 @@ To safely delete a migration file:
 - delete the file
 - node ace migration:refresh
 - node ace migration:status     (ensure that it is gone)
+
+node ace migration:rollback --all
+node ace migration:run
+node ace migration:reset
+node ace db:seed --files "database/seeders/admin_user_seeder.ts"
+
 
 Get routes:
 node ace list:routes

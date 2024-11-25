@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { parseSession } from '@/app/lib/session'
+import { parseSession } from '@/lib/session'
 
 // 1. Specify protected and public routes
 const protectedRoutes = ['/dashboard', '/logout', '/sets/:path*']

@@ -1,9 +1,14 @@
 import Navbar from '@/components/NavbarTest'
-import { parseSession } from '@/app/lib/session'
+import { parseSession } from '@/lib/session'
 
 export default async function NavbarWrapper() {
   const session = await parseSession()
-
+  // const session = {
+  //   isAuth: false,
+  //   userId: null,
+  //   username: null,
+  //   isAdmin: null
+  // }
   return (
       <Navbar
         isAuth={session.isAuth}

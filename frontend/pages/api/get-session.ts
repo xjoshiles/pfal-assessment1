@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { parse } from 'cookie'
 
-export default async function POST(req: NextApiRequest, res: NextApiResponse) {
+export default async function GET(req: NextApiRequest, res: NextApiResponse) {
   const nullSession = {
     isAuth: false, userId: null, username: null, isAdmin: null
   }
@@ -15,7 +15,7 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
     }
 
     const response = await fetch('http://localhost:3333/auth/me', {
-      method: 'POST',
+      method: 'GET',
       headers: { Authorization: `Bearer ${token}` }
     })
 

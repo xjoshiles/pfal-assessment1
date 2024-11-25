@@ -2,9 +2,10 @@ import type { HttpContext } from '@adonisjs/core/http'
 import FlashcardSet from '#models/flashcard_set'
 import Flashcard from '#models/flashcard'
 import User from '#models/user'
-import { CreateFlashcardSetValidator } from '#validators/create_flashcard_set'
+import { FlashcardSetValidator } from '#validators/flashcard_set'
 import db from '@adonisjs/lucid/services/db'
 import { shuffle } from 'lodash-es'
+import { errors } from '@vinejs/vine'
 
 export default class FlashcardsController {
   /**
@@ -14,7 +15,7 @@ export default class FlashcardsController {
     try {
       const sets = await FlashcardSet.query()
         .preload('flashcards')
-        .preload('comments')
+        .preload('reviews')
       return response.json(sets)
     } catch (error) {
       return response.internalServerError({ message: 'Error fetching sets' })
@@ -25,16 +26,18 @@ export default class FlashcardsController {
    * Create a new flashcard set
    */
   async store({ request, response, auth }: HttpContext) {
-    const payload = await request.validateUsing(CreateFlashcardSetValidator)
-
     // Start a database transaction for atomic operations
     const trx = await db.transaction()
-
+    console.log(request.body())
     try {
+      const payload = await request.validateUsing(FlashcardSetValidator)
+
       // Create the flashcard set
       const set = await FlashcardSet.create({
         name: payload.name,
-        userId: auth.user!.id
+        description: payload.description,
+        userId: auth.user!.id,
+        username: auth.user!.username
       }, { client: trx })
 
       // Prepare the flashcards with the flashcard set ID
@@ -58,9 +61,17 @@ export default class FlashcardsController {
       // Roll back the transaction in case of errors
       await trx.rollback()
 
+      console.log(error)
+
+      // Return first error message if it's a validation error
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return response.unprocessableEntity({
+          message: error.messages[0].message  // (VineJS SimpleErrorReporter)
+        })
+      }
+      // Else...
       return response.badRequest({
-        message: 'Failed to create flashcard set',
-        errors: error.messages || error.message,
+        message: error.message || 'Error creating set'
       })
     }
   }
@@ -73,7 +84,7 @@ export default class FlashcardsController {
 
     const set = await FlashcardSet.query()
       .where('id', id)
-      .preload('flashcards')
+      .preload('flashcards').preload('reviews')
       .first()
 
     if (!set) {
@@ -89,7 +100,7 @@ export default class FlashcardsController {
   async update({ params, request, response, auth }: HttpContext) {
     const { id } = params
 
-    const payload = await request.validateUsing(CreateFlashcardSetValidator)
+    const payload = await request.validateUsing(FlashcardSetValidator)
 
     // Start a database transaction for atomic operations
     const trx = await db.transaction()
@@ -241,7 +252,7 @@ export default class FlashcardsController {
         .where('id', id)
         .preload('flashcards')
         .first()
-      
+
       if (!set) {
         return response.notFound({ message: `Set ${id} not found` })
       }

@@ -21,7 +21,7 @@ export const verifySession = cache(async () => {
   try {
     // Make a POST request to the backend to validate the session
     const response = await fetch(AUTH_ME_ENDPOINT, {
-      method: 'POST',
+      method: 'GET',
       headers: { Authorization: `Bearer ${sessionToken}` }
     })
 
@@ -61,9 +61,9 @@ export const parseSession = cache(async () => {
   try {
     // Make a POST request to the backend to validate the session
     const response = await fetch(AUTH_ME_ENDPOINT, {
-      method: 'POST',
+      method: 'GET',
       headers: { Authorization: `Bearer ${sessionToken}` },
-      cache: 'no-store', // Ensures fresh data on every request
+      cache: 'no-store' // Ensures fresh data on every request
     })
 
     // If backend responds with an error, treat as unauthorised

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
+  --background: #f3f4f6;
   --foreground: #171717;
 }
 
@@ -11,6 +11,7 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --testing: #6824c0;
   }
 }
 
@@ -21,12 +22,68 @@ body {
 }
 
 @layer utilities {
+  .flex-between {
+    @apply flex justify-between items-center
+  }
+
+  .text-30-extrabold {
+    @apply text-[30px] font-extrabold text-white
+  }
+
+  .text-30-bold {
+    @apply text-[30px] font-bold text-black
+  }
+
+  .text-30-semibold {
+    @apply font-semibold text-[30px] text-black
+  }
+
+  .text-26-semibold {
+    @apply font-semibold text-[26px] text-black
+  }
+
+  .text-24-black {
+    @apply text-[24px] font-black text-black
+  }
+
+  .text-20-medium {
+    @apply font-medium text-[20px] text-black
+  }
+
+  .text-16-medium {
+    @apply font-medium text-[16px] text-black
+  }
+
+  .text-14-normal {
+    @apply font-normal text-sm text-white-100/80
+  }
+
+  .no-results {
+    @apply text-30-semibold text-black-100
+  }
+
+  .section_container {
+    @apply px-6 py-10 max-w-7xl mx-auto
+  }
+
+  .card_grid {
+    @apply grid md:grid-cols-3 sm:grid-cols-2 gap-5
+  }
+
+  .card_grid-sm {
+    @apply grid sm:grid-cols-2 gap-5
+  }
+
   .form-textbox {
     @apply block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500
   }
 
+  .gradient-element {
+    @apply p-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg
+  }
+
   .form-button {
-    @apply w-full px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none
+    @apply w-full px-4 py-2 text-white bg-primary rounded-md hover:bg-primary-700 focus:ring-2 focus:ring-blue-500 focus:outline-none
   }
 
   .form-button-disabled {
@@ -42,11 +99,11 @@ body {
   }
 
   .flashcard {
-    @apply p-4 bg-white shadow-md rounded-lg text-center cursor-pointer
+    @apply p-4 bg-white rounded-lg text-center cursor-pointer
   }
 
   .flashcard-flipped {
-    @apply bg-gray-200
+    @apply flashcard opacity-90
   }
 
   .collection-card {
@@ -58,6 +115,23 @@ body {
   }
 
   .min-h-screen-nonav {
-    @apply h-[calc(100vh-64px)]
+    @apply h-[calc(100vh-60px)]
+  }
+
+  /* set_preview */
+  .set_preview {
+    @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-300 hover:bg-primary-100
+  }
+
+  .set_preview_date {
+    @apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-full group-hover:bg-gray-100 transition-all duration-500
+  }
+
+  .set_preview_desc {
+    @apply font-normal text-[16px] line-clamp-2 my-3 text-black-100 break-all
+  }
+
+  .set_preview_btn {
+    @apply w-full rounded-full bg-black-200 font-medium text-[16px] text-white px-5 py-3 !important
   }
 }

@@ -1,4 +1,4 @@
-import { verifySession } from '@/app/lib/session'
+import { verifySession } from '@/lib/session'
 
 export default async function Dashboard() {
   const session = await verifySession()
