@@ -17,17 +17,16 @@ export default function Register() {
     const username = formData.get('username')
     const password = formData.get('password')
 
-    const response = await fetch("http://localhost:3333/users", {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    })
+    const response = await fetch(`${process.env.NEXT_PUBLIC_ADONIS_API}/users`,
+      { method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }) })
 
     if (response.ok) {
       setSuccess(`User created successfully!`)
 
-      // Redirect to login page after 2 seconds
-      setTimeout(() => { redirect("/login") }, 2000)
+      // Redirect to login page after 1 second
+      setTimeout(() => { redirect("/login") }, 1000)
 
     } else {
       const errorData = await response.json();

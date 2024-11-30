@@ -30,6 +30,7 @@ export default function LoginPage() {
 
       // Redirect to homepage after 1 second
       setTimeout(() => { router.push("/dashboard") }, 1000)
+
     } else {
       const errorData = await response.json();
       setError(errorData.message || "An error occurred")

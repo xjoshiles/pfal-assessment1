@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
 const CreateSet = () => {
@@ -8,8 +8,9 @@ const CreateSet = () => {
   const [description, setDescription] = useState('')
   const [flashcards, setFlashcards] = useState([
     { question: '', answer: '', difficulty: 'easy', isOpen: true },
-  ]);
+  ])
   const [error, setError] = useState<string | null>(null)
+  const errorRef = useRef<HTMLDivElement | null>(null) // Ref for the error message
   const router = useRouter()
 
   const handleAddFlashcard = () => {
@@ -41,6 +42,7 @@ const CreateSet = () => {
     // Return false if there are no flashcards in the set
     if (flashcards.length === 0) {
       setError('The set must contain at least one flashcard.')
+      errorRef.current?.scrollIntoView({ behavior: 'smooth' }) // Scroll to error
       return false
     }
 
@@ -49,17 +51,19 @@ const CreateSet = () => {
       const { question, answer } = flashcards[i]
       if (!question.trim()) {
         setError(`The question field for Flashcard ${i + 1} must be filled.`)
+        errorRef.current?.scrollIntoView({ behavior: 'smooth' }) // Scroll to error
         return false
       }
       if (!answer.trim()) {
         setError(`The answer field for Flashcard ${i + 1} must be filled.`)
+        errorRef.current?.scrollIntoView({ behavior: 'smooth' }) // Scroll to error
         return false
       }
     }
 
     // Else...
     return true
-  };
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -84,6 +88,7 @@ const CreateSet = () => {
     } else {
       const errorData = await res.json()
       setError(errorData.message || 'Failed to create flashcard set')
+      errorRef.current?.scrollIntoView({ behavior: 'smooth' }) // Scroll to error
     }
   }
 
@@ -108,10 +113,8 @@ const CreateSet = () => {
             required
           />
           {flashcards.map((flashcard, index) => (
-            <div key={index} className='gradient-element'>
-              <div
-                className="space-y-4 p-4 bg-white rounded-md shadow-md"
-              >
+            <div key={index} className="gradient-element">
+              <div className="space-y-4 p-4 bg-white rounded-md shadow-md">
                 <div
                   className="flex justify-between items-center cursor-pointer"
                   onClick={() => toggleFlashcard(index)}
@@ -183,7 +186,11 @@ const CreateSet = () => {
             </button>
           </div>
         </form>
-        {error && <div className="form-error-text mt-6">{error}</div>}
+        {error && (
+          <div ref={errorRef} className="form-error-text mt-6">
+            {error}
+          </div>
+        )}
       </div>
     </section>
   )

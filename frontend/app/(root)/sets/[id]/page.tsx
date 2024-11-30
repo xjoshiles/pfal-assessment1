@@ -1,5 +1,6 @@
 import { FlashcardPanel } from '@/components/FlashcardPanel'
 import ReviewsSection from '@/components/ReviewsSection'
+import { cookies } from 'next/headers'
 
 interface FlashcardSetProps {
   params: {
@@ -31,7 +32,17 @@ const FlashcardSet = async ({ params }: FlashcardSetProps) => {
 }
 
 async function getFlashcardSetById(id: string) {
-  const response = await fetch(`http://localhost:3333/sets/${id}`)
+  const sessionToken = (await cookies()).get('sessionToken')?.value
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_ADONIS_API}/sets/${id}`, {
+      // no method
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${sessionToken}`
+      },
+    }
+  )
   const data = await response.json()
   return data
 }

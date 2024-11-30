@@ -13,7 +13,8 @@ export default class AuthController {
       // Generate a token for the user
       const token = await User.accessTokens.create(user)
 
-      return response.ok(token)
+      // Return session token and user data
+      return response.ok({ token, user })
 
     } catch (error) {
       return response.unauthorized({

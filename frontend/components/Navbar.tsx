@@ -1,31 +1,57 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
-import React from 'react'
-import { parseSession } from '@/lib/session'
+import React, { useEffect, useState } from 'react'
+import { usePathname } from 'next/navigation'
+import { useLogout } from '@/lib/logout'
+import { UserType } from '@/lib/types'
 
-export default async function Navbar() {
-  const { isAuth, userId, username } = await parseSession()
+export default function Navbar({ user }: { user: UserType }) {
+  const [session, setSession] = useState(user)
+  const pathname = usePathname()
+  const { handleLogout } = useLogout()
+
+  // Fetch session data when the pathname changes
+  // (whenever the user navigates to a new route)
+  useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const response = await fetch('/api/get-session', {
+          method: 'GET',
+          headers: {
+            accept: 'application/json'
+          }
+        })
+        const user = await response.json()
+        // console.log(data)
+        setSession(user as UserType)  // Update session with fetched data
+
+      } catch (error) {
+        console.error('Error fetching session:', error)
+      }
+    }
+    fetchSession()        // Fetch session data on route change
+  }, [pathname])          // Ensure fetch whenever the user navigates
 
   return (
-    <header className='px-5 py-3 bg-white shadow-sm font-work-sans'>
+    <header className='h-15 px-5 py-3 bg-white shadow-sm font-work-sans'>
       <nav className='flex justify-between items-center'>
         <Link href='/'>
-          <Image src="/logo.png" alt='logo' width={144} height={30} />
+          <Image src='/logo.svg' alt='logo' width={144} height={30} />
         </Link>
 
         <div className='flex items-center gap-5 text-black'>
-          {isAuth ? (
+          {session.id ? (
             <>
-              <Link href="/dashboard">
+              <Link href='/dashboard'>
                 <span>Dashboard</span>
               </Link>
 
-              <Link href='/logout'>
-                <button>Logout</button>
-              </Link>
+              <button onClick={handleLogout}>Logout</button>
 
-              <Link href={`/user/${userId}`}>
-                <span>{username}</span>
+              <Link href={`/user/${session.id}`}>
+                <span>{session.username}</span>
               </Link>
             </>
           ) : (
@@ -44,5 +70,3 @@ export default async function Navbar() {
     </header>
   )
 }
-
-export const revalidate = 0; // Fetch new data on every request

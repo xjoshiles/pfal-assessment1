@@ -29,7 +29,7 @@ const ReviewsSection = ({
   // Fetch the current user's ID and admin status
   useEffect(() => {
     async function fetchCurrentUser() {
-      const res = await fetch('/api/auth/me', { method: 'GET' })
+      const res = await fetch('/api/get-session', { method: 'GET' })
       if (res.ok) {
         const data = await res.json()
         setCurrentUserId(data.id) // Set user id from fetched data

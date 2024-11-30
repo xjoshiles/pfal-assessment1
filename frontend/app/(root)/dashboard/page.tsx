@@ -1,14 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import SetPreview from '@/components/SetPreview'
+import { FlashcardSetType } from '@/lib/types'
 
 const Dashboard = () => {
-  const [sets, setSets] = useState([])
+  const [sets, setSets] = useState<FlashcardSetType[]>([])
   const [error, setError] = useState(null)
   const [sortBy, setSortBy] = useState('latest') // Default sorting
-  // const router = useRouter()
 
   useEffect(() => {
     async function fetchSets() {

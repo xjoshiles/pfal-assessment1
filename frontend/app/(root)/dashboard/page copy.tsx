@@ -1,10 +1,9 @@
-import { verifySession } from '@/lib/session'
+import { getCurrentUser } from '@/lib/session'
 
 export default async function Dashboard() {
-  const session = await verifySession()
-  const isAdmin = session?.isAdmin
+  const user = await getCurrentUser()
 
-  if (isAdmin) {
+  if (user.admin) {
     return <p>admin</p>
   }
   return <p>user</p>

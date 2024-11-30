@@ -36,7 +36,7 @@ router.get('/', async () => {
 
 
 router.resource('/users', UsersController).use(['index'], middleware.auth())
-router.resource('/sets', FlashcardsController).use(['store', 'update', 'destroy'], middleware.auth())
+router.resource('/sets', FlashcardsController).use(['index', 'show', 'store', 'update', 'destroy'], middleware.auth())
 router.post('/login', [AuthController, 'login'])
 router.post('/logout', [AuthController, 'logout']).use(middleware.auth())
 router.get('/auth/me', [AuthController, 'authorised'])

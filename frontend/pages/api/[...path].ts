@@ -1,19 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { parse } from 'cookie'
 
 // Base URL of the AdonisJS backend API
-const ADONIS_API_URL = 'http://localhost:3333'
+const ADONIS_API_URL = `${process.env.NEXT_PUBLIC_ADONIS_API}`
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const { method, body, query } = req
+  const token = req.cookies.sessionToken
 
   try {
-    const cookies = parse(req.headers.cookie || "")
-    const token = cookies.sessionToken
-
     // Extract the path after '/api/adonis' from the request as a string
     const { path, ...queryParams } = query as {
       path: string[],
