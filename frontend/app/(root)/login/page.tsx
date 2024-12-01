@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const [error, setError] = useState(null)
@@ -48,10 +49,10 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <input type="username" name="username" placeholder="Username" required className="form-textbox" />
+            <input type="username" name="username" placeholder="Username" required className="form-textbox-minimal" />
           </div>
           <div>
-            <input type="password" name="password" placeholder="Password" required className="form-textbox" />
+            <input type="password" name="password" placeholder="Password" required className="form-textbox-minimal" />
           </div>
           <button
             type="submit"
@@ -59,6 +60,12 @@ export default function LoginPage() {
             disabled={isDisabled}>
             Login
           </button>
+          <Link
+            href="/register"
+            className="flex justify-center text-primary hover:underline"
+          >
+            Click here to register
+          </Link>
         </form>
       </div>
     </div>

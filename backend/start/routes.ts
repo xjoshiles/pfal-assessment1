@@ -33,9 +33,7 @@ router.get('/', async () => {
 //query gives me { oh: '2', adonis: [ 'sets', '3' ] }
 
 
-
-
-router.resource('/users', UsersController).use(['index'], middleware.auth())
+router.resource('/users', UsersController).use('*', middleware.auth())
 router.resource('/sets', FlashcardsController).use(['index', 'show', 'store', 'update', 'destroy'], middleware.auth())
 router.post('/login', [AuthController, 'login'])
 router.post('/logout', [AuthController, 'logout']).use(middleware.auth())

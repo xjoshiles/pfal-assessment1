@@ -11,6 +11,7 @@ export default async function handler(
   const token = req.cookies.sessionToken
 
   try {
+    console.log(query)
     // Extract the path after '/api/adonis' from the request as a string
     const { path, ...queryParams } = query as {
       path: string[],
@@ -19,24 +20,26 @@ export default async function handler(
     const pathname = '/' + path.join('/')
 
     // Extract the query parameters as a string
-    const queryString = new URLSearchParams(queryParams as Record<string, string>).toString()
+    const queryString = Object.keys(queryParams).length
+      ? `?${new URLSearchParams(queryParams as Record<string, string>)}` : ''
 
     // Make the final URL for the request
-    const url = `${ADONIS_API_URL}${pathname}${queryString ? `?${queryString}` : ''}`
-    console.log(`Aonis.js api request: ${url}`)
+    const url = `${ADONIS_API_URL}${pathname}${queryString}`
 
     // Forward the request to the AdonisJS backend
+    console.log(`Aonis.js api request: ${url}`)
     const response = await fetch(url, {
       method: method,    // Forward the same HTTP method (GET, POST, PUT, etc.)
       headers: {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
-      body: method === 'POST' || method === 'PUT' ? JSON.stringify(body) : undefined
+      body: method !== 'GET' ? JSON.stringify(body) : undefined
     })
 
-    // Parse the JSON response from AdonisJS backend
-    const data = await response.json()
+    // Parse the JSON response from AdonisJS backend (if it exists)
+    const text = await response.text()
+    const data = text ? JSON.parse(text) : {}
 
     // Return the response to the client
     return res.status(response.status).json(data)

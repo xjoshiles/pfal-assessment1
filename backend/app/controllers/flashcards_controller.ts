@@ -61,8 +61,6 @@ export default class FlashcardsController {
       // Roll back the transaction in case of errors
       await trx.rollback()
 
-      console.log(error)
-
       // Return first error message if it's a validation error
       if (error instanceof errors.E_VALIDATION_ERROR) {
         return response.unprocessableEntity({
@@ -131,7 +129,6 @@ export default class FlashcardsController {
       // Separate flashcards with IDs (existing) and without IDs (new)
       const existingFlashcards = flashcards.filter((fc) => fc.id != null)
       const newFlashcards = flashcards.filter((fc) => !fc.id)
-      console.log(newFlashcards)
 
       // Update existing flashcards
       for (const flashcard of existingFlashcards) {
@@ -182,12 +179,17 @@ export default class FlashcardsController {
 
     } catch (error) {
       // Roll back the transaction in case of errors
-      console.log(error)
       await trx.rollback()
 
+      // Return first error message if it's a validation error
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return response.unprocessableEntity({
+          message: error.messages[0].message  // (VineJS SimpleErrorReporter)
+        })
+      }
+      // Else...
       return response.badRequest({
-        message: 'Failed to update flashcard set',
-        errors: error.messages || error.message,
+        message: error.message || 'Error creating set'
       })
     }
   }

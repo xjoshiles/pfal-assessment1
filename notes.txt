@@ -10,6 +10,9 @@ admin panel - change rate limits, make other users admin
 difficulty when doing a flashcard
 
 
+Perhaps we should provide a message and an error throughout our controllers?
+create / update user isn't checking for validation error on catch block
+update user isn't verifying that the username isn't already taken
 
 
 
@@ -385,6 +388,12 @@ node ace migration:rollback --all
 node ace migration:run
 node ace migration:reset
 node ace db:seed --files "database/seeders/admin_user_seeder.ts"
+
+node ace repl
+const { default: User } = await import("#models/user")
+const user = await User.find(1) // Replace 1 with the actual user ID
+await user.delete()
+
 
 
 Get routes:

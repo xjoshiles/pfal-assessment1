@@ -45,10 +45,10 @@ export default function Register() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <input type="username" name="username" placeholder="Username" required className="form-textbox" />
+            <input type="username" name="username" placeholder="Username" required className="form-textbox-minimal" />
           </div>
           <div>
-            <input type="password" name="password" placeholder="Password" required className="form-textbox" />
+            <input type="password" name="password" placeholder="Password" required className="form-textbox-minimal" />
           </div>
 
           <button

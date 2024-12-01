@@ -38,17 +38,33 @@ export default function Navbar({ user }: { user: UserType }) {
     <header className='h-15 px-5 py-3 bg-white shadow-sm font-work-sans'>
       <nav className='flex justify-between items-center'>
         <Link href='/'>
-          <Image src='/logo.svg' alt='logo' width={144} height={30} />
+          <Image src='/logo.svg' alt='logo' width={144} height={36} />
         </Link>
 
         <div className='flex items-center gap-5 text-black'>
           {session.id ? (
             <>
-              <Link href='/dashboard'>
-                <span>Dashboard</span>
+              <Link href='/library'>
+                <span>My Library</span>
               </Link>
 
+              {/* Divider */}
+              <span className="w-0.5 h-9 bg-gray-400"></span>
+
+              <Link href='/dashboard'>
+                <span>Sets</span>
+              </Link>
+              <Link href='/collections'>
+                <span>Collections</span>
+              </Link>
+
+              {/* Divider */}
+              <span className="w-0.5 h-9 bg-gray-400"></span>
               <button onClick={handleLogout}>Logout</button>
+
+              <Link href='/account'>
+                <span>Account</span>
+              </Link>
 
               <Link href={`/user/${session.id}`}>
                 <span>{session.username}</span>

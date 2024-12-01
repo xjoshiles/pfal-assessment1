@@ -78,16 +78,24 @@ body {
     @apply block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500
   }
 
+  .form-textbox-minimal {
+    @apply block w-full px-4 py-2 mt-1 border-b-2 border-gray-300 outline-none focus:ring-primary focus:border-primary
+  }
+
   .gradient-element {
     @apply p-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg
   }
 
   .form-button {
-    @apply w-full px-4 py-2 text-white bg-primary rounded-md hover:bg-primary-700 focus:ring-2 focus:ring-blue-500 focus:outline-none
+    @apply w-full px-4 py-2 text-white bg-primary rounded-md transition duration-100 hover:bg-primary-700 focus:ring-2 focus:ring-blue-500 focus:outline-none
   }
 
   .form-button-disabled {
     @apply form-button opacity-50 cursor-not-allowed
+  }
+
+  .form-button-danger {
+    @apply w-full px-4 py-2 text-white bg-red-600 rounded-md transition duration-100 hover:bg-red-700
   }
 
   .form-error-text {
