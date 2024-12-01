@@ -1,5 +1,26 @@
 to-do:
 
+Navigation ideas
+library: sets and collections, with tabs? This will give user create/edit options
+sets in navbar
+collections in navbar
+library in navbar
+admin panel - change rate limits, make other users admin
+
+difficulty when doing a flashcard
+
+
+
+
+
+My Library   Sets   Collections   Logout   josh
+
+Account, Admin
+
+???
+
+
+
 benefit of a user context is that I don't need to make a request
 for rendering user settings pages, or knowing who the current user
 is for reviews etc. Also no prop drilling...

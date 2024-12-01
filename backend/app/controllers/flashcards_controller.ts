@@ -28,7 +28,7 @@ export default class FlashcardsController {
   async store({ request, response, auth }: HttpContext) {
     // Start a database transaction for atomic operations
     const trx = await db.transaction()
-    console.log(request.body())
+
     try {
       const payload = await request.validateUsing(FlashcardSetValidator)
 
@@ -131,6 +131,7 @@ export default class FlashcardsController {
       // Separate flashcards with IDs (existing) and without IDs (new)
       const existingFlashcards = flashcards.filter((fc) => fc.id != null)
       const newFlashcards = flashcards.filter((fc) => !fc.id)
+      console.log(newFlashcards)
 
       // Update existing flashcards
       for (const flashcard of existingFlashcards) {
@@ -157,12 +158,15 @@ export default class FlashcardsController {
         difficulty: flashcard.difficulty,
         flashcardSetId: set.id,
       }));
-      await Flashcard.createMany(newFlashcardData, { client: trx })
+      const createdFlashcards = await Flashcard.createMany(
+        newFlashcardData, { client: trx })
+      const createdFlashcardIds = createdFlashcards.map((fc) => fc.id)
 
       // Delete associated flashcards that are not in the payload 
-      const payloadIds = flashcards.map(
-        (flashcard) => flashcard.id).filter((id) => id != null)
-
+      const payloadIds = [
+        ...flashcards.map((fc) => fc.id).filter((id) => id != null),
+        ...createdFlashcardIds,
+      ]
       await Flashcard.query({ client: trx })
         .where('flashcard_set_id', set.id)
         .whereNotIn('id', payloadIds)
@@ -178,6 +182,7 @@ export default class FlashcardsController {
 
     } catch (error) {
       // Roll back the transaction in case of errors
+      console.log(error)
       await trx.rollback()
 
       return response.badRequest({
