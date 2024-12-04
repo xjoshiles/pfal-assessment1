@@ -142,54 +142,56 @@ export function UserSection({ users: initialUsers }: { users: UserType[] }) {
   }
 
   return (
-    <div className="overflow-x-auto text-sm md:text-base">
+    <div className="text-sm md:text-base">
       <h2 className="text-xl font-semibold text-gray-700 mb-4">Users</h2>
-      <table className="min-w-full table-auto border-collapse">
-        <thead>
-          <tr className="border-b">
-            <th
-              className="px-4 py-2 text-left cursor-pointer"
-              onClick={() => sortUsers('id')}
-            >
-              ID {sortConfig.key === 'id' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-            </th>
-            <th
-              className="px-4 py-2 text-left cursor-pointer"
-              onClick={() => sortUsers('username')}
-            >
-              Username {sortConfig.key === 'username' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-            </th>
-            <th
-              className="px-4 py-2 text-left cursor-pointer"
-              onClick={() => sortUsers('admin')}
-            >
-              Admin {sortConfig.key === 'admin' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
-            </th>
-            <th className="px-4 py-2 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td className="px-4 py-2">{user.id}</td>
-              <td className="px-4 py-2">
-                <a href={`/users/${user.id}`} className="text-primary">
-                  {user.username}
-                </a>
-              </td>
-              <td className="px-4 py-2">{user.admin ? 'Yes' : 'No'}</td>
-              <td className="px-4 py-2">
-                <button
-                  onClick={() => toggleAdmin(user.id, user.admin)}
-                  className={`w-full ${user.admin ? 'form-button-disable' : 'form-button-enable'}`}
-                >
-                  {user.admin ? 'Remove Admin' : 'Make Admin'}
-                </button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="min-w-full table-auto border-collapse overflow-x-auto">
+          <thead>
+            <tr className="border-b">
+              <th
+                className="px-4 py-2 text-left cursor-pointer"
+                onClick={() => sortUsers('id')}
+              >
+                ID {sortConfig.key === 'id' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              </th>
+              <th
+                className="px-4 py-2 text-left cursor-pointer"
+                onClick={() => sortUsers('username')}
+              >
+                Username {sortConfig.key === 'username' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              </th>
+              <th
+                className="px-4 py-2 text-left cursor-pointer"
+                onClick={() => sortUsers('admin')}
+              >
+                Admin {sortConfig.key === 'admin' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+              </th>
+              <th className="px-4 py-2 text-left">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td className="px-4 py-2">{user.id}</td>
+                <td className="px-4 py-2">
+                  <a href={`/users/${user.id}`} className="text-primary">
+                    {user.username}
+                  </a>
+                </td>
+                <td className="px-4 py-2">{user.admin ? 'Yes' : 'No'}</td>
+                <td className="px-4 py-2">
+                  <button
+                    onClick={() => toggleAdmin(user.id, user.admin)}
+                    className={`w-full ${user.admin ? 'form-button-disable' : 'form-button-enable'}`}
+                  >
+                    {user.admin ? 'Remove Admin' : 'Make Admin'}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {/* Render toast notification if there is one */}
       {toast && (
         <div className='text-center mt-2'>

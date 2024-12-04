@@ -86,6 +86,10 @@ body {
     @apply p-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg
   }
 
+  .gradient-divider {
+    @apply p-[1.5px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg
+  }
+
   .form-button {
     @apply px-4 py-2 text-white bg-primary rounded-md transition duration-100 hover:bg-primary-700 focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none
   }

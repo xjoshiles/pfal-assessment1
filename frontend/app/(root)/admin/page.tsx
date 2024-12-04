@@ -22,7 +22,7 @@ export default async function AdminPage() {
   })
   const limits = await limitsRes.json()
 
-  // Fetch the current USERS
+  // Fetch the current users
   const usersRes = await fetch(
     `${process.env.NEXT_PUBLIC_ADONIS_API}/users`, {
     headers: {
@@ -33,14 +33,14 @@ export default async function AdminPage() {
   const users = await usersRes.json()
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-2 bg-gray-100">
+    <div className="max-w-4xl mx-auto py-8 px-1 md:px-6 bg-gray-100">
       <div className="gap-4 gradient-element shadow-md w-full mx-auto">
         <div className='bg-white rounded-lg p-6 space-y-6'>
           <h1 className="text-3xl font-bold text-center text-gray-800">Admin Control Panel</h1>
           {/* Limit Management Section */}
           <LimitSection limits={limits} />
           {/* Horizontal divider */}
-          <hr className="border-t-2 border-gray-300" />
+          <hr className="gradient-divider" />
           {/* User Management Section */}
           <UserSection users={users} />
         </div>
