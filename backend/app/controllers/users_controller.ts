@@ -5,6 +5,7 @@ import { UpdateUserValidator } from '#validators/update_user'
 import { errors } from '@vinejs/vine'
 import hash from '@adonisjs/core/services/hash'
 import { DeleteUserValidator } from '#validators/delete_user'
+import { ToggleAdminValidator } from '#validators/toggle_admin'
 
 export default class UsersController {
   /**
@@ -28,9 +29,19 @@ export default class UsersController {
       const payload = await request.validateUsing(RegisterUserValidator)
       const user = await User.create(payload)
       return response.created(user)
+
     } catch (error) {
-      return response.badRequest(
-        { message: error.messages[0].message })
+      // Return first error message if it's a validation error
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return response.unprocessableEntity({
+          message: error.messages[0].message  // (VineJS SimpleErrorReporter)
+        })
+      }
+
+      return response.internalServerError({
+        message: 'Unable to create user',
+        errors: error.messages || error.message,
+      })
     }
   }
 
@@ -49,67 +60,48 @@ export default class UsersController {
   }
 
   /**
-   * Update a user by ID
+   * Update a user's password by ID
    */
   async update({ params, request, response, auth }: HttpContext) {
     const id = params.id
 
-    const user = await User.find(id)
-    if (!user) {
-      return response.notFound({ message: `User ${id} not found` })
-    }
-
-    // Authorisation: Check if the current user can perform the update
-    const isAdmin = auth.user?.admin || false
-    const isSelf = auth.user?.id == id
-
-    // If current user is not the given user nor an admin
-    if (!isSelf && !isAdmin) {
+    // Only allow users to change their own passwords
+    if (auth.user?.id != id) {
       return response.unauthorized({
-        message: "You are not authorised to perform this action",
-        error: "Unauthorised"
+        message: "You are not authorised to perform this action"
       })
     }
+
+    // Use the authenticated user since the ID matches
+    const user = auth.user as User
 
     try {
       const payload = await request.validateUsing(UpdateUserValidator)
 
-      // Update fields based on the type of user
-      if (isSelf) {
-        // A user can update their password
-        if (payload.password && payload.newPassword) {
-          const isValid = await hash.verify(user.password, payload.password)
-          if (isValid) {
-            user.password = payload.newPassword
-
-          } else {
-            return response.unauthorized({
-              message: "The current password was incorrect",
-              error: "Unauthorised"
-            })
-          }
-        }
+      // Ensure the given password is correct before continuing
+      const isValid = await hash.verify(user.password, payload.password)
+      if (!isValid) {
+        return response.unauthorized({
+          message: "The current password was incorrect"
+        })
       }
 
-      if (isAdmin && payload.admin !== undefined) {
-        // An admin can update the admin status of the user
-        user.admin = payload.admin;
-      }
+      // Set the new password
+      user.password = payload.newPassword
 
       await user.save()
-      return response.ok({ message: 'User updated successfully', user })
+      return response.ok({ message: 'Password updated successfully' })
 
     } catch (error) {
       // Return first error message if it's a validation error
       if (error instanceof errors.E_VALIDATION_ERROR) {
-        console.log(error.messages[0].message)
         return response.unprocessableEntity({
           message: error.messages[0].message  // (VineJS SimpleErrorReporter)
         })
       }
 
       return response.internalServerError({
-        message: 'Unable to update user',
+        message: 'Unable to update user password',
         errors: error.messages || error.message,
       })
     }
@@ -120,7 +112,6 @@ export default class UsersController {
    */
   async destroy({ params, request, response, auth }: HttpContext) {
     const id = params.id
-    console.log(id)
     const user = await User.find(id)
     if (!user) {
       return response.notFound({ message: `User ${id} not found` })
@@ -135,9 +126,9 @@ export default class UsersController {
     }
 
     try {
-      console.log(request.toJSON())
       const payload = await request.validateUsing(DeleteUserValidator)
 
+      // Ensure the given password is correct before continuing
       const isValid = await hash.verify(user.password, payload.password)
       if (!isValid) {
         return response.unauthorized({
@@ -145,20 +136,69 @@ export default class UsersController {
           error: "Unauthorised"
         })
       }
+
       await user.delete()
       return response.noContent()
 
     } catch (error) {
       // Return first error message if it's a validation error
       if (error instanceof errors.E_VALIDATION_ERROR) {
-        console.log(error.messages[0].message)
         return response.unprocessableEntity({
           message: error.messages[0].message  // (VineJS SimpleErrorReporter)
         })
       }
 
       return response.internalServerError({
-        message: 'Unable to update user',
+        message: 'Unable to delete user',
+        errors: error.messages || error.message,
+      })
+    }
+  }
+
+  /**
+   * Update the admin status of the user by ID
+   */
+  async updateAdmin({ params, request, response, auth }: HttpContext) {
+    const id = params.id
+
+    // Only admins can update the admin status of a user
+    if (!auth.user?.admin) {
+      return response.unauthorized({
+        message: "You are not authorised to perform this action"
+      })
+    }
+
+    // Admins cannot remove their own admin status
+    if (auth.user.id == id) {
+      return response.unauthorized({
+        message: "Only another admin can remove your admin status"
+      })
+    }
+
+    const user = await User.find(id)
+    if (!user) {
+      return response.notFound({ message: `User ${id} not found` })
+    }
+
+    try {
+      const payload = await request.validateUsing(ToggleAdminValidator)
+
+      // Update the admin status of the given user
+      user.admin = payload.admin
+
+      await user.save()
+      return response.ok({ message: 'Admin status updated successfully' })
+
+    } catch (error) {
+      // Return first error message if it's a validation error
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return response.unprocessableEntity({
+          message: error.messages[0].message  // (VineJS SimpleErrorReporter)
+        })
+      }
+
+      return response.internalServerError({
+        message: 'Unable to update admin status of user',
         errors: error.messages || error.message,
       })
     }

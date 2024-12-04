@@ -1,6 +1,5 @@
-// app/sets/[id]/edit/page.tsx (Server Component)
 import FlashcardSetForm from "@/components/FlashcardSetForm"
-import { FlashcardSetType } from "@/lib/types" // Define this type to match your data structure
+import { FlashcardSetType } from "@/lib/types"
 import { cookies } from "next/headers"
 
 interface EditSetProps {

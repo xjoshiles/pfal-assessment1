@@ -11,7 +11,6 @@ export default async function handler(
   const token = req.cookies.sessionToken
 
   try {
-    console.log(query)
     // Extract the path after '/api/adonis' from the request as a string
     const { path, ...queryParams } = query as {
       path: string[],

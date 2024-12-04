@@ -57,13 +57,13 @@ const ReviewsSection = ({
     e.preventDefault()
 
     if (!newReview || rating === 0) {
-      setError('Please provide a review and a rating.')
+      setError('Please provide a review and a rating')
       return
     }
 
     // Prevent users from submitting more than one review for a set
     if (userReview) {
-      setError('You have already posted a review, please delete it before posting another.')
+      setError('You have already posted a review, please delete it before posting another')
       return
     }
 
@@ -90,7 +90,7 @@ const ReviewsSection = ({
   const handleDeleteReview = async (reviewId: number, userId: number) => {
     // Only allow deletion if the current user is the review author or admin
     if (userId !== currentUserId && !isAdmin) {
-      setError('You do not have permission to delete this review.')
+      setError('You do not have permission to delete this review')
       return
     }
 
@@ -144,7 +144,7 @@ const ReviewsSection = ({
 
             {/* Error message when failing to submit review */}
             {error && <p className="form-error-text">{error}</p>}
-            <button type="submit" className="form-button">
+            <button type="submit" className="w-full form-button">
               Submit Review
             </button>
           </form>

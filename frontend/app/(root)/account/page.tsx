@@ -143,7 +143,7 @@ export default function UpdateAccountPage() {
           </div>
           <button
             type="submit"
-            className={`${isDisabled ? "form-button-disabled" : "form-button"}`}
+            className={`w-full ${isDisabled ? "form-button-disabled" : "form-button"}`}
             disabled={isDisabled}
           >
             Update Password
@@ -185,7 +185,7 @@ export default function UpdateAccountPage() {
                   setShowDeleteModal(false)
                   document.removeEventListener('mousedown', handleOutsideClick)
                 }}
-                className="form-button"
+                className="w-full form-button"
               >
                 Cancel
               </button>
@@ -195,7 +195,7 @@ export default function UpdateAccountPage() {
                   setShowDeleteModal(false)
                   document.removeEventListener('mousedown', handleOutsideClick)
                 }}
-                className="form-button-danger"
+                className="w-full form-button-danger"
                 disabled={isDisabled}
               >
                 Delete

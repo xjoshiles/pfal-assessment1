@@ -1,5 +1,21 @@
 to-do:
 
+
+// Jack got icons from import { TrashIcon } from '@heroicons/react/24/outline'
+// Joel got icons from "ion icons"
+// Both are installable
+
+
+frontend tests?
+
+Admin panel:
+Conditinally render in navbar if current user is an admin
+
+
+Use Toast component throughout application
+
+
+
 Navigation ideas
 library: sets and collections, with tabs? This will give user create/edit options
 sets in navbar
@@ -9,11 +25,16 @@ admin panel - change rate limits, make other users admin
 
 difficulty when doing a flashcard
 
+return 404 page on frontend if flashcard set not found
+
+
+
+
+
+
+
 
 Perhaps we should provide a message and an error throughout our controllers?
-create / update user isn't checking for validation error on catch block
-update user isn't verifying that the username isn't already taken
-
 
 
 My Library   Sets   Collections   Logout   josh
@@ -27,6 +48,10 @@ Account, Admin
 benefit of a user context is that I don't need to make a request
 for rendering user settings pages, or knowing who the current user
 is for reviews etc. Also no prop drilling...
+
+- Easier to reload navbar?
+- Easier to get current user for reviews?
+- Eaiser to detect on frontend if admin is trying to remove their admin status?
 
 Where would I be prop drilling in my application with the user info?
 I can fetch user info from cookies on user settings server component

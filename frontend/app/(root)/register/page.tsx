@@ -53,7 +53,7 @@ export default function Register() {
 
           <button
             type="submit"
-            className={`${isDisabled ? "form-button-disabled" : "form-button"}`}
+            className={`w-full ${isDisabled ? "form-button-disabled" : "form-button"}`}
             disabled={isDisabled}>
             Register
           </button>

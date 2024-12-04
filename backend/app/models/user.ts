@@ -24,7 +24,9 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ serializeAs: null }) // Won't show show up in JSON output
   declare password: string
 
-  @column()
+  @column({ serialize: (value: number) => {
+    return Boolean(value)        // true/false in JSON output instead of 1/0
+  }})
   declare admin: boolean
 
   @hasMany(() => Review)
@@ -43,5 +45,6 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare updatedAt: DateTime | null
 
   static accessTokens = DbAccessTokensProvider.forModel(User, {
-    expiresIn: '30 days' })
+    expiresIn: '30 days'
+  })
 }

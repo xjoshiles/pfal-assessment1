@@ -46,7 +46,7 @@ const Dashboard = () => {
       <h1 className="text-3xl font-bold text-center text-gray-800">Flashcard Sets</h1>
       {error && <div className="form-error-text">{error}</div>}
 
-      <div className="flex items-center justify-center items-center mt-6 gap-4">
+      <div className="flex items-center justify-center items-center mt-8 gap-4">
         <Link href='/sets/create'>
           <button className='set_preview_btn'>Create Set</button>
         </Link>

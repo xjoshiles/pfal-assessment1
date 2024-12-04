@@ -2,21 +2,8 @@ import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 
 const UpdateUserValidator = vine.compile(
   vine.object({
-    password: vine
-      .string()
-      .trim()
-      .optional()
-      .requiredIfExists('newPassword'),
-    newPassword: vine
-      .string()
-      .trim()
-      .minLength(6)
-      .optional()
-      .requiredIfExists('password'),
-    admin: vine
-      .boolean()
-      .optional()
-      .requiredIfMissing('password')
+    password: vine.string().trim(),
+    newPassword: vine.string().trim().minLength(6)
   })
 )
 

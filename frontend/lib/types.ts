@@ -43,3 +43,8 @@ export type ReviewType = {
   updatedAt: Date,
   id: number
 }
+
+export type LimitsInfoType = {
+  limit: number,
+  today: number
+}

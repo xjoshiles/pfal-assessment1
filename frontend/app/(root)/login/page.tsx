@@ -56,7 +56,7 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            className={`${isDisabled ? "form-button-disabled" : "form-button"}`}
+            className={`w-full ${isDisabled ? "form-button-disabled" : "form-button"}`}
             disabled={isDisabled}>
             Login
           </button>

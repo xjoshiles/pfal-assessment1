@@ -6,6 +6,7 @@ import { FlashcardSetValidator } from '#validators/flashcard_set'
 import db from '@adonisjs/lucid/services/db'
 import { shuffle } from 'lodash-es'
 import { errors } from '@vinejs/vine'
+import RateLimiter from '#services/rate_limiter'
 
 export default class FlashcardsController {
   /**
@@ -30,6 +31,16 @@ export default class FlashcardsController {
     const trx = await db.transaction()
 
     try {
+      // Check if the user can create a new set
+      const canCreate = await RateLimiter.canCreateSet(trx)
+
+      if (!canCreate) {
+        await trx.rollback()
+        return response.status(429).json({
+          message: 'Daily set creation limit reached, please try again tomorrow',
+        })
+      }
+
       const payload = await request.validateUsing(FlashcardSetValidator)
 
       // Create the flashcard set
@@ -48,6 +59,9 @@ export default class FlashcardsController {
 
       // Create flashcards in the flashcard table
       await Flashcard.createMany(flashcardsData, { client: trx })
+
+      // Increment the daily set creation count
+      await RateLimiter.incrementSetCount(trx)
 
       // Commit the transaction
       await trx.commit()

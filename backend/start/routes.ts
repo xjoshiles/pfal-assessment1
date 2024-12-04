@@ -13,6 +13,8 @@ const AuthController = () => import('#controllers/auth_controller')
 const ReviewsController = () => import('#controllers/reviews_controller')
 const CollectionsController = () => import('#controllers/collections_controller')
 const UserCollectionsController = () => import('#controllers/user_collections_controller')
+const LimitsController = () => import('#controllers/limits_controller')
+
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
@@ -39,12 +41,15 @@ router.post('/login', [AuthController, 'login'])
 router.post('/logout', [AuthController, 'logout']).use(middleware.auth())
 router.get('/auth/me', [AuthController, 'authorised'])
 
-// router.post('/sets/:id/review', [ReviewsController, 'store'])
-//   .use(middleware.auth())
+router.put('/users/:id/admin', [UsersController, 'updateAdmin']).use(middleware.auth())
 
 router.post('/sets/:id/review', [ReviewsController, 'store']).use(middleware.auth())
 router.get('/sets/:id/review', [ReviewsController, 'show']).use(middleware.auth())
 router.delete('/sets/:id/review/:reviewId', [ReviewsController, 'destroy']).use(middleware.auth())
+
+router.post('/limits/sets', [LimitsController, 'updateDailyLimit']).use(middleware.auth())
+router.get('/limits/sets', [LimitsController, 'getDailyLimitInfo']).use(middleware.auth())
+
 
 
 router.resource('/collections', CollectionsController)

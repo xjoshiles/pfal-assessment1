@@ -63,7 +63,7 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
   const validateFlashcards = () => {
     // Return false if there are no flashcards in the set
     if (flashcards.length === 0) {
-      setError('The set must contain at least one flashcard.')
+      setError('The set must contain at least one flashcard')
       errorRef.current?.scrollIntoView({ behavior: 'smooth' })
       return false
     }
