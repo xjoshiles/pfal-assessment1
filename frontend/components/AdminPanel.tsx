@@ -32,7 +32,7 @@ export function LimitSection({ limits }: { limits: LimitsInfoType }) {
   }
 
   return (
-    <div className="mb-6">
+    <div>
       <h2 className="text-xl font-semibold text-gray-700 mb-4">Daily Set Creation Limit</h2>
       <form onSubmit={handleSubmit} className="flex flex-col md:flex-row md:space-x-4">
         <div className="flex flex-col">
@@ -62,7 +62,7 @@ export function LimitSection({ limits }: { limits: LimitsInfoType }) {
         </div>
         {/* Render toast notification if there is one */}
         {toast && (
-          <div className='flex-grow text-center mt-2 md:mt-0'>
+          <div className='flex-grow text-center mt-2 md:mt-0 text-sm md:text-base'>
             <Toast
               key={toast.id} // Ensures new instance
               message={toast.message}
@@ -142,7 +142,7 @@ export function UserSection({ users: initialUsers }: { users: UserType[] }) {
   }
 
   return (
-    <div>
+    <div className="overflow-x-auto text-sm md:text-base">
       <h2 className="text-xl font-semibold text-gray-700 mb-4">Users</h2>
       <table className="min-w-full table-auto border-collapse">
         <thead>

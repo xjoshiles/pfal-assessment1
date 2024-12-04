@@ -32,26 +32,19 @@ export default async function AdminPage() {
   })
   const users = await usersRes.json()
 
-  // console.log(limits)
-  // console.log(users)
-
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4 bg-gray-100 space-y-6">
-      <h1 className="text-3xl font-bold text-center text-gray-800">Admin Panel</h1>
-
-      {/* <div className="section_container min-h-screen-nonav bg-gray-100 p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800">
-          Admin Panel
-        </h1> */}
-
-      {/* Limit Management Section */}
-      <LimitSection limits={limits} />
-
-      <hr className="border-t-2 border-gray-300"/>
-
-      {/* User Management Section */}
-      <UserSection users={users} />
-
+    <div className="max-w-4xl mx-auto py-8 px-2 bg-gray-100">
+      <div className="gap-4 gradient-element shadow-md w-full mx-auto">
+        <div className='bg-white rounded-lg p-6 space-y-6'>
+          <h1 className="text-3xl font-bold text-center text-gray-800">Admin Control Panel</h1>
+          {/* Limit Management Section */}
+          <LimitSection limits={limits} />
+          {/* Horizontal divider */}
+          <hr className="border-t-2 border-gray-300" />
+          {/* User Management Section */}
+          <UserSection users={users} />
+        </div>
+      </div>
     </div>
   )
 }
