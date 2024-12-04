@@ -12,6 +12,9 @@ export default class Collection extends BaseModel {
   declare name: string
 
   @column()
+  declare description: string
+
+  @column()
   declare userId: number
 
   @belongsTo(() => User)

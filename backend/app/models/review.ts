@@ -17,17 +17,14 @@ export default class Review extends BaseModel {
   @column()
   declare userId: number
 
-  @column()
-  declare username: string
+  @belongsTo(() => User)
+  declare author: BelongsTo<typeof User>
 
   @column()
   declare flashcardSetId: number
 
   @belongsTo(() => FlashcardSet)
   declare flashcardSet: BelongsTo<typeof FlashcardSet>
-
-  @belongsTo(() => User)
-  declare author: BelongsTo<typeof User>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

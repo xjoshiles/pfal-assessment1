@@ -3,6 +3,7 @@ import Collection from '#models/collection'
 import FlashcardSet from '#models/flashcard_set'
 import { CollectionValidator } from '#validators/collection'
 import db from '@adonisjs/lucid/services/db'
+import { errors } from '@vinejs/vine'
 
 export default class CollectionsController {
   /**
@@ -16,9 +17,9 @@ export default class CollectionsController {
           query.preload('flashcards').preload('creator')
         })
         .preload('creator')
-      
+
       return response.json(collections)
-    
+
     } catch (error) {
       return response.internalServerError({
         message: 'Error fetching collections',
@@ -31,18 +32,36 @@ export default class CollectionsController {
    * Create a new flashcard set collection
    */
   async store({ request, response, auth }: HttpContext) {
-    const payload = await request.validateUsing(CollectionValidator)
-
     // Start a database transaction for atomic operations
     const trx = await db.transaction()
 
     try {
+      const payload = await request.validateUsing(CollectionValidator)
+
+      const existingSetIds = (await FlashcardSet.query({ client: trx })
+        .whereIn('id', payload.flashcardSetIds))
+        .map(set => set.id)
+
+      // Find any missing IDs
+      const missingSetIds = payload.flashcardSetIds.filter(
+        (id) => !existingSetIds.includes(id)
+      )
+
+      if (missingSetIds.length > 0) {
+        await trx.rollback()
+        return response.notFound({
+          message: 'One or more flashcard sets do not exist',
+          missingIds: missingSetIds,
+        })
+      }
+
       // Create the collection
       const collection = await Collection.create({
         name: payload.name,
-        userId: auth.user!.id}
-        , { client: trx })
-  
+        description: payload.description,
+        userId: auth.user!.id
+      }, { client: trx })
+
       // Assign the many-to-many relationships in the pivot table
       if (payload.flashcardSetIds) {
         await collection.related('flashcardSets')
@@ -63,9 +82,20 @@ export default class CollectionsController {
       // Roll back the transaction in case of errors
       await trx.rollback()
 
+      // Return first error message if it's a validation error
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return response.unprocessableEntity({
+          message: error.messages[0].message  // (VineJS SimpleErrorReporter)
+        })
+      }
+      if (error.code === 'SQLITE_CONSTRAINT_FOREIGNKEY') {
+        return response.notFound({
+          message: 'A flashcard set was not found'
+        })
+      }
+      // Else...
       return response.badRequest({
-        message: 'Failed to create collection',
-        errors: error.messages || error.message,
+        message: error.message || 'Error creating collection'
       })
     }
   }
@@ -73,6 +103,6 @@ export default class CollectionsController {
   /**
    * Redirect to a random flashcard set collection
    */
-  async random({ params }: HttpContext) {}
+  async random({ params }: HttpContext) { }
 
 }

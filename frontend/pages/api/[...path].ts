@@ -33,7 +33,7 @@ export default async function handler(
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`
       },
-      body: method !== 'GET' ? JSON.stringify(body) : undefined
+      body: method !== 'GET' ? JSON.stringify(body ? body : {}) : undefined
     })
 
     // Parse the JSON response from AdonisJS backend (if it exists)
@@ -44,7 +44,7 @@ export default async function handler(
     return res.status(response.status).json(data)
 
   } catch (error) {
-    console.error('Error proxying request:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error proxying request:', error)
+    return res.status(500).json({ error: 'Internal Server Error' })
   }
 }

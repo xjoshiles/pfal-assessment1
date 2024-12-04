@@ -24,7 +24,6 @@ export default class UsersController {
    * Create a new user
    */
   async store({ request, response }: HttpContext) {
-
     try {
       const payload = await request.validateUsing(RegisterUserValidator)
       const user = await User.create(payload)
@@ -37,10 +36,9 @@ export default class UsersController {
           message: error.messages[0].message  // (VineJS SimpleErrorReporter)
         })
       }
-
+      // Else...
       return response.internalServerError({
-        message: 'Unable to create user',
-        errors: error.messages || error.message,
+        message: error.message || 'Unable to create user'
       })
     }
   }
@@ -99,7 +97,7 @@ export default class UsersController {
           message: error.messages[0].message  // (VineJS SimpleErrorReporter)
         })
       }
-
+      // Else...
       return response.internalServerError({
         message: 'Unable to update user password',
         errors: error.messages || error.message,
@@ -147,7 +145,7 @@ export default class UsersController {
           message: error.messages[0].message  // (VineJS SimpleErrorReporter)
         })
       }
-
+      // Else...
       return response.internalServerError({
         message: 'Unable to delete user',
         errors: error.messages || error.message,
@@ -196,7 +194,7 @@ export default class UsersController {
           message: error.messages[0].message  // (VineJS SimpleErrorReporter)
         })
       }
-
+      // Else...
       return response.internalServerError({
         message: 'Unable to update admin status of user',
         errors: error.messages || error.message,

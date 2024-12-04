@@ -5,7 +5,7 @@ import { FlashcardSetType } from '@/lib/types'
 import { StarRating } from '@/components/StarRating'
 
 const SetPreview = ({ set }: { set: FlashcardSetType }) => {
-  const { id, name, description, averageRating, userId, username, updatedAt } = set
+  const { id, name, description, averageRating, creator, updatedAt } = set
 
   return (
     <li className='set_preview group'>
@@ -14,8 +14,8 @@ const SetPreview = ({ set }: { set: FlashcardSetType }) => {
           {formatDate(updatedAt)}
         </p>
         <div className='flex gap-1.5'>
-          <Link href={`/users/${userId}`}>
-            <p className='text-16-medium line-clamp-1'>{username}</p>
+          <Link href={`/users/${creator.id}`}>
+            <p className='text-16-medium line-clamp-1'>{creator.username}</p>
           </Link>
         </div>
       </div>

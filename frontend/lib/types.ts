@@ -25,10 +25,10 @@ export type FlashcardSetType = {
   id: number,
   name: string,
   description: string,
-  averageRating: number,
   flashcards: FlashcardType[],
-  userId: number,
-  username: string,
+  averageRating: number,
+  userId: number
+  creator: UserType,
   createdAt: Date,
   updatedAt: Date
 }
@@ -37,7 +37,7 @@ export type ReviewType = {
   rating: number,
   review: string,
   userId: number,
-  username: string,
+  author: UserType,
   flashcardSetId: number,
   createdAt: Date,
   updatedAt: Date,

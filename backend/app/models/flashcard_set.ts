@@ -27,9 +27,6 @@ export default class FlashcardSet extends BaseModel {
   @column()
   declare userId: number
 
-  @column()
-  declare username: string
-
   @belongsTo(() => User)
   declare creator: BelongsTo<typeof User>
 

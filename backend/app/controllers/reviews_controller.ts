@@ -36,7 +36,6 @@ export default class ReviewsController {
         rating: payload.rating,
         review: payload.review,
         userId: auth.user!.id,
-        username: auth.user!.username,
         flashcardSetId: set.id
       })
 
@@ -49,6 +48,7 @@ export default class ReviewsController {
       set.averageRating = averageRating
       await set.save()
 
+      await review.load('author')
       return response.created(review)
 
     } catch (error) {
@@ -69,8 +69,10 @@ export default class ReviewsController {
         { message: `Flashcard set ${params.id} not found` })
     }
     // Else
-    await set.load('reviews')
-
+    await set.load('reviews', (query) => {
+      query.preload('author')
+    })
+    console.log(set.toJSON())
     return response.json(set.reviews)
   }
 
@@ -78,26 +80,30 @@ export default class ReviewsController {
    * Delete review of a flashcard set by id
    */
   async destroy({ params, response, auth }: HttpContext) {
+    try {
 
-    const review = await Review.findOrFail(params.reviewId)
-    const set = await FlashcardSet.findOrFail(review.flashcardSetId)
+      const review = await Review.findOrFail(params.reviewId)
+      const set = await FlashcardSet.findOrFail(review.flashcardSetId)
 
-    // If the current user is neither the author of the review nor an admin
-    if (auth.user?.id !== review.userId && !auth.user?.admin) {
-      return response.forbidden('You are not authorised to delete this review')
+      // If the current user is neither the author of the review nor an admin
+      if (auth.user?.id !== review.userId && !auth.user?.admin) {
+        return response.forbidden('You are not authorised to delete this review')
+      }
+      // Else...
+      await review.delete()
+
+      // Recalculate the average rating
+      const reviews = await set.related('reviews').query()
+      const averageRating = reviews.reduce(
+        (sum, review) => sum + review.rating, 0) / reviews.length
+
+      // Update the set with the new average rating
+      set.averageRating = reviews.length ? averageRating : 0
+      await set.save()
+
+      return response.ok({ message: 'Successfully deleted comment' })
+    } catch (error) {
+      console.log(error)
     }
-    // Else...
-    await review.delete()
-
-    // Recalculate the average rating
-    const reviews = await set.related('reviews').query()
-    const averageRating = reviews.reduce(
-      (sum, review) => sum + review.rating, 0) / reviews.length
-
-    // Update the set with the new average rating
-    set.averageRating = reviews.length ? averageRating : 0
-    await set.save()
-
-    return response.ok({ message: 'Successfully deleted comment' })
   }
 }

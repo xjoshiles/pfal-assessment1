@@ -1,35 +1,37 @@
 to-do:
 
 
+
+frontend tests?
+Use Toast component throughout application
+
+
+New nav bar with icons?:
 // Jack got icons from import { TrashIcon } from '@heroicons/react/24/outline'
 // Joel got icons from "ion icons"
 // Both are installable
 
+Create collections
+View collections (is there anything in openapi that implies collections
+should be visible to other users? YES, GET ALL FLASHCARD SET COLLECTIONS)
 
-frontend tests?
-
-Admin panel:
-Conditinally render in navbar if current user is an admin
-
-
-Use Toast component throughout application
-
-
-
-Navigation ideas
 library: sets and collections, with tabs? This will give user create/edit options
-sets in navbar
-collections in navbar
-library in navbar
-admin panel - change rate limits, make other users admin
+
+
+admin panel in navbar (if user is admin)
 
 difficulty when doing a flashcard
 
 return 404 page on frontend if flashcard set not found
 
 
+Consider removing userId and Username from flashcard/collection models/migrations,
+as I can preload the creator attribute which contains those details.
 
 
+    // If we are sending a body with application/json, it must be a valid
+    // json object or undefined. To get past this, we can use text/html
+    // which allows plain text such as empty strings.
 
 
 

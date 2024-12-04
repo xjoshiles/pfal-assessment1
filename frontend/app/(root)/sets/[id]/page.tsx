@@ -1,6 +1,7 @@
 import { FlashcardPanel } from '@/components/FlashcardPanel'
 import ReviewsSection from '@/components/ReviewsSection'
 import { cookies } from 'next/headers'
+import { getCurrentUser } from '@/lib/session'
 
 interface FlashcardSetProps {
   params: {
@@ -13,6 +14,7 @@ const FlashcardSet = async ({ params }: FlashcardSetProps) => {
 
   // Fetch flashcards data from the server based on id
   const set = await getFlashcardSetById(id)
+  const user = await getCurrentUser()
 
   return (
     <div className='bg-gray-100'>
@@ -23,7 +25,7 @@ const FlashcardSet = async ({ params }: FlashcardSetProps) => {
         ) : (
           <>
             <FlashcardPanel cards={set.flashcards} />
-            <ReviewsSection setId={id} initialReviews={set.reviews} />
+            <ReviewsSection setId={id} initialReviews={set.reviews} currentUser={user} />
           </>
         )}
       </div>

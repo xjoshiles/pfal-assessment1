@@ -14,8 +14,7 @@ export default class extends BaseSchema {
         .notNullable()
         .references('id')
         .inTable('users')
-        .onDelete('CASCADE')   // Delete sets if user is deleted
-      table.string('username').notNullable()
+        .onDelete('CASCADE')   // Delete sets if creation user is deleted
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()
     })

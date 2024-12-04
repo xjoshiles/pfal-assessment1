@@ -17,6 +17,7 @@ export default class FlashcardsController {
       const sets = await FlashcardSet.query()
         .preload('flashcards')
         .preload('reviews')
+        .preload('creator')
       return response.json(sets)
     } catch (error) {
       return response.internalServerError({ message: 'Error fetching sets' })
@@ -47,8 +48,7 @@ export default class FlashcardsController {
       const set = await FlashcardSet.create({
         name: payload.name,
         description: payload.description,
-        userId: auth.user!.id,
-        username: auth.user!.username
+        userId: auth.user!.id
       }, { client: trx })
 
       // Prepare the flashcards with the flashcard set ID
@@ -96,7 +96,10 @@ export default class FlashcardsController {
 
     const set = await FlashcardSet.query()
       .where('id', id)
-      .preload('flashcards').preload('reviews')
+      .preload('flashcards')
+      .preload('reviews', (query) => {
+        query.preload('author')
+      })
       .first()
 
     if (!set) {

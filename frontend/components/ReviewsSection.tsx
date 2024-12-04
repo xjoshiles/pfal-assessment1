@@ -1,15 +1,17 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ReviewType } from '@/lib/types'
+import { ReviewType, UserType } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
 
 const ReviewsSection = ({
   setId,
-  initialReviews
+  initialReviews,
+  currentUser
 }: {
   setId: string
-  initialReviews: ReviewType[]
+  initialReviews: ReviewType[],
+  currentUser: UserType
 }) => {
   // Sort reviews by latest (createdAt in descending order) on first render
   // Note that it could be worth using [...initialReviews] in the future if
@@ -23,31 +25,14 @@ const ReviewsSection = ({
   const [rating, setRating] = useState(0)
   const [error, setError] = useState('')
   const [userReview, setUserReview] = useState<ReviewType | null>(null)
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null)
-  const [isAdmin, setIsAdmin] = useState(false)
-
-  // Fetch the current user's ID and admin status
-  useEffect(() => {
-    async function fetchCurrentUser() {
-      const res = await fetch('/api/get-session', { method: 'GET' })
-      if (res.ok) {
-        const data = await res.json()
-        setCurrentUserId(data.id) // Set user id from fetched data
-        setIsAdmin(data.admin)    // Set admin status from fetched data
-      } else {
-        console.error('Failed to fetch current user')
-      }
-    }
-    fetchCurrentUser()
-  }, [])
 
   // Check if the current user has a review
   useEffect(() => {
-    if (currentUserId) {
-      const userReview = reviews.find((review) => review.userId === currentUserId)
+    if (currentUser.id) {
+      const userReview = reviews.find((review) => review.userId === currentUser.id)
       setUserReview(userReview || null)
     }
-  }, [reviews, currentUserId])
+  }, [reviews, currentUser.id])
 
   const handleToggleReviews = () => {
     setShowReviews((prev) => !prev)
@@ -89,7 +74,7 @@ const ReviewsSection = ({
 
   const handleDeleteReview = async (reviewId: number, userId: number) => {
     // Only allow deletion if the current user is the review author or admin
-    if (userId !== currentUserId && !isAdmin) {
+    if (userId !== currentUser.id && !currentUser.admin) {
       setError('You do not have permission to delete this review')
       return
     }
@@ -149,12 +134,12 @@ const ReviewsSection = ({
             </button>
           </form>
 
-          {/* Reviews */}
+          {/* Reviews section */}
           <div className="space-y-4 mt-6">
             {reviews.map((review) => (
               <div key={review.id} className="p-4 border rounded-md bg-gray-50">
                 <p className="text-gray-700">
-                  <strong>{review.username}</strong> - {formatDate(review.createdAt)}
+                  <strong>{review.author.username}</strong> - {formatDate(review.createdAt)}
                 </p>
                 <div className="flex items-center space-x-1">
                   {[...Array(5)].map((_, i) => (
@@ -166,7 +151,7 @@ const ReviewsSection = ({
                 <p>{review.review}</p>
 
                 {/* Show a delete button on review for author or admin */}
-                {review.userId === currentUserId || isAdmin ? (
+                {review.userId === currentUser.id || currentUser.admin ? (
                   <button
                     onClick={() => handleDeleteReview(review.id, review.userId)}
                     className="text-red-600 mt-2"

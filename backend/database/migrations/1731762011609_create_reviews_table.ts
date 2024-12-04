@@ -13,7 +13,6 @@ export default class extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE')            // Delete comments if user is deleted
-      table.string('username').notNullable()
       table.integer('flashcard_set_id') // Foreign key to flashcard_sets
         .unsigned()
         .references('id')

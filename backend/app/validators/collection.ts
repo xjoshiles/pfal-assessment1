@@ -1,8 +1,19 @@
-import vine from '@vinejs/vine'
+import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 
-export const CollectionValidator = vine.compile(
+const CollectionValidator = vine.compile(
   vine.object({
     name: vine.string().trim().minLength(1).maxLength(255),
-    flashcardSetIds: vine.array(vine.number()).optional()
+    description: vine.string().trim().minLength(1).maxLength(255),
+    flashcardSetIds: vine.array(
+      vine.number()
+        .withoutDecimals()
+        .min(1)
+    ).notEmpty()
   })
 )
+
+CollectionValidator.messagesProvider = new SimpleMessagesProvider({
+  'flashcardSetIds.notEmpty': 'The collection must contain at least one set'
+})
+
+export { CollectionValidator }
