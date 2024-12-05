@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.string('name').notNullable()
       table.string('description').notNullable()
+      table.decimal('average_rating', 3, 2).defaultTo(0)
       table.integer('user_id') // Foreign key to user who created collection
         .unsigned()
         .notNullable()

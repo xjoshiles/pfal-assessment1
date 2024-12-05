@@ -1,6 +1,16 @@
 to-do:
 
 
+ItemsPanel component?... What does it need?:
+- needs to be able to sort items based on updatedAt attribute
+  could pass custom handleSortChange function (could sort collections by # sets)?
+- needs to be able to accept either a setPreview or collectionPreview component
+
+
+SetsPanel
+CollectionsPanel
+
+
 
 frontend tests?
 Use Toast component throughout application
@@ -471,3 +481,36 @@ Old code:
 
       // // Create flashcards in the flashcard table
       // await Flashcard.createMany(flashcardsData, { client: trx })
+
+
+
+    // const collections = await Collection.query()
+    //   .whereExists((builder) => {
+    //     builder.select('*')
+    //       .from('collection_flashcard_sets') // the pivot table
+    //       .where('collection_flashcard_sets.flashcard_set_id', flashcardSet.id)
+    //   })
+
+
+  public static async UpdateCollectionAverages(flashcardSet: FlashcardSet) {
+    // Get the collections this FlashcardSet belongs to
+    const collections = await flashcardSet.related('collections').query()
+
+    // Update the average rating for each collection
+    for (const collection of collections) {
+      const sets = await collection.related('flashcardSets').query()
+
+      // Calculate the new average for this collection
+      const collectionAvgResult = await FlashcardSet.query()
+        .whereIn('id', sets.map((set) => set.id))
+        .avg('average_rating as averageRating')
+        .first()
+
+      const averageRating = collectionAvgResult?.$extras.averageRating || 0
+      console.log(averageRating)
+      // Update the collection's average rating
+      await Collection.query()
+        .where('id', collection.id)
+        .update({ averageRating: averageRating })
+    }
+  }

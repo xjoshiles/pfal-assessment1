@@ -27,21 +27,33 @@ export type FlashcardSetType = {
   description: string,
   flashcards: FlashcardType[],
   averageRating: number,
-  userId: number
+  userId: number,
   creator: UserType,
   createdAt: Date,
   updatedAt: Date
 }
 
 export type ReviewType = {
+  id: number,
   rating: number,
   review: string,
   userId: number,
   author: UserType,
   flashcardSetId: number,
   createdAt: Date,
-  updatedAt: Date,
-  id: number
+  updatedAt: Date
+}
+
+export type CollectionType = {
+  id: number,
+  name: string,
+  description: string,
+  averageRating: number,
+  userId: number,
+  creator: UserType,
+  flashCardSets: FlashcardSetType[],
+  createdAt: Date,
+  updatedAt: Date
 }
 
 export type LimitsInfoType = {

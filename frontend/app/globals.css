@@ -62,32 +62,12 @@ body {
     @apply text-30-semibold text-black-100
   }
 
-  .section_container {
-    @apply px-6 max-w-7xl mx-auto
-  }
-
-  .card_grid {
-    @apply grid md:grid-cols-3 sm:grid-cols-2 gap-5
-  }
-
-  .card_grid-sm {
-    @apply grid sm:grid-cols-2 gap-5
-  }
-
   .form-textbox {
     @apply block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500
   }
 
   .form-textbox-minimal {
     @apply block w-full px-4 py-2 mt-1 border-b-2 border-gray-300 outline-none focus:ring-primary focus:border-primary
-  }
-
-  .gradient-element {
-    @apply p-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg
-  }
-
-  .gradient-divider {
-    @apply p-[1.5px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg
   }
 
   .form-button {
@@ -110,12 +90,24 @@ body {
     @apply px-4 py-2 text-white bg-red-500 rounded-md transition duration-100 hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-red-400 focus:outline-none
   }
 
+  .form-button-disable-round {
+    @apply px-4 py-2 text-white bg-red-500 rounded-full transition duration-100 hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-red-400 focus:outline-none
+  }
+
   .form-error-text {
     @apply p-4 text-red-700 bg-red-100 border border-red-400 rounded
   }
 
   .form-success-text {
     @apply p-4 text-green-700 bg-green-100 border border-green-400 rounded
+  }
+
+  .gradient-element {
+    @apply p-[3px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg
+  }
+
+  .gradient-divider {
+    @apply p-[1.5px] bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-lg
   }
 
   .flashcard {
@@ -138,20 +130,40 @@ body {
     @apply h-[calc(100vh-60px)]
   }
 
-  /* set_preview */
-  .set_preview {
-    @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-300 hover:bg-primary-100
+  .section_container {
+    @apply px-6 max-w-7xl mx-auto
   }
 
-  .set_preview_date {
+  .card_grid {
+    @apply grid md:grid-cols-3 sm:grid-cols-2 gap-5
+  }
+
+  .card_grid-sm {
+    @apply grid sm:grid-cols-2 gap-5
+  }
+
+  /* item_preview */
+  .item_preview {
+    @apply bg-white border-[3px] border-black py-6 px-5 rounded-[22px] shadow-200 hover:border-primary transition-all duration-500 hover:shadow-300 hover:bg-primary-100
+  }
+
+  .item_preview_select {
+    @apply bg-white border-[3px] border-black py-6 px-5 rounded-[22px] shadow-200
+  }
+
+  .item_preview_selected {
+    @apply bg-white border-[3px] border-primary shadow-300 bg-primary-100 py-6 px-5 rounded-[22px]
+  }
+
+  .item_preview_date {
     @apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-full group-hover:bg-gray-100 transition-all duration-500
   }
 
-  .set_preview_desc {
+  .item_preview_desc {
     @apply font-normal text-[16px] line-clamp-2 my-3 text-black-100 break-all
   }
 
-  .set_preview_btn {
-    @apply w-full rounded-full bg-black-200 font-medium text-[16px] text-white px-5 py-3 !important
+  .item_preview_btn {
+    @apply rounded-full bg-black-200 font-medium text-[16px] text-white px-5 py-3 !important
   }
 }

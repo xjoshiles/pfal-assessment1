@@ -5,11 +5,10 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.date('date').primary()  // Date as the primary key
+      // Use date as the primary key. This is automatically indexed
+      // https://www.sqlite.org/lang_createtable.html
+      table.date('date').primary()
       table.integer('total_created').unsigned().defaultTo(0)
-
-      // Add an index on the 'date' column for faster lookups
-      table.index('date', 'set_creation_counts_date_index')
     })
   }
 

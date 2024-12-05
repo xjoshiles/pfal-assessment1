@@ -7,11 +7,13 @@ import { formatDate } from '@/lib/utils'
 const ReviewsSection = ({
   setId,
   initialReviews,
-  currentUser
+  currentUser,
+  resourceType
 }: {
   setId: string
   initialReviews: ReviewType[],
-  currentUser: UserType
+  currentUser: UserType,
+  resourceType: 'sets' | 'collections' // Determines fetch endpoints
 }) => {
   // Sort reviews by latest (createdAt in descending order) on first render
   // Note that it could be worth using [...initialReviews] in the future if
@@ -53,7 +55,7 @@ const ReviewsSection = ({
     }
 
     const reviewData = { rating: rating, review: newReview }
-    const res = await fetch(`/api/sets/${setId}/review`, {
+    const res = await fetch(`/api/${resourceType}/${setId}/review`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reviewData)
@@ -79,7 +81,8 @@ const ReviewsSection = ({
       return
     }
 
-    const res = await fetch(`/api/sets/${setId}/review/${reviewId}`, {
+    const res = await fetch(
+      `/api/${resourceType}/${setId}/review/${reviewId}`, {
       method: 'DELETE'
     })
 

@@ -25,7 +25,7 @@ async function getFlashcardSetById(id: string) { // : Promise<FlashcardSetType> 
 }
 
 export default async function EditSet({ params }: EditSetProps) {
-  const { id } = params
+  const { id } = await params
   const set = await getFlashcardSetById(id)
 
   return (

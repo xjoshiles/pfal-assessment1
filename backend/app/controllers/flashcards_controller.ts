@@ -8,6 +8,20 @@ import { shuffle } from 'lodash-es'
 import { errors } from '@vinejs/vine'
 import RateLimiter from '#services/rate_limiter'
 
+async function getFlashcardSetAverageRating(flashcardSetId: number) {
+  // Consider caching this result using a caching library when the application
+  // grows, as constantly calculating this for large datasets can be expensive
+  // https://adonisjs.com/blog/future-plans-for-adonisjs-6#adonisjscache
+  // https://bentocache.dev/docs/introduction
+  const result = await db
+    .from('set_reviews')
+    .where('flashcard_set_id', flashcardSetId)
+    .avg('rating as averageRating')
+    .first()
+
+  return result?.averageRating || 0
+}
+
 export default class FlashcardsController {
   /**
    * Get all flashcard sets
@@ -100,6 +114,7 @@ export default class FlashcardsController {
       .preload('reviews', (query) => {
         query.preload('author')
       })
+      .preload('creator')
       .first()
 
     if (!set) {
@@ -107,8 +122,16 @@ export default class FlashcardsController {
     }
 
     return response.json(set)
+
+    // const averageRating = await getFlashcardSetAverageRating(set.id)
+
+    // return response.json({
+    //   ...set.serialize(),
+    //   averageRating
+    // })
   }
 
+  
   /**
    * Update a flashcard set by ID
    */
@@ -141,7 +164,7 @@ export default class FlashcardsController {
       await set.useTransaction(trx).save()
 
       // Process flashcards
-      const { flashcards } = payload;
+      const { flashcards } = payload
 
       // Separate flashcards with IDs (existing) and without IDs (new)
       const existingFlashcards = flashcards.filter((fc) => fc.id != null)
@@ -152,7 +175,7 @@ export default class FlashcardsController {
         const existingCard = await Flashcard.find(flashcard.id, { client: trx })
 
         if (!existingCard || existingCard.flashcardSetId !== set.id) {
-          await trx.rollback();
+          await trx.rollback()
           return response.badRequest(
             { message: `Flashcard with ID ${flashcard.id} is invalid` })
         }
@@ -171,7 +194,7 @@ export default class FlashcardsController {
         answer: flashcard.answer,
         difficulty: flashcard.difficulty,
         flashcardSetId: set.id,
-      }));
+      }))
       const createdFlashcards = await Flashcard.createMany(
         newFlashcardData, { client: trx })
       const createdFlashcardIds = createdFlashcards.map((fc) => fc.id)
@@ -244,7 +267,7 @@ export default class FlashcardsController {
     const id = params.id
 
     try {
-      const user = await User.find(id);
+      const user = await User.find(id)
 
       if (!user) {
         return response.notFound({ message: `User ${id} not found` })

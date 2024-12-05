@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 interface FlashcardProps {
-  cards: { question: string; answer: string; difficulty: string }[]
+  cards: { question: string, answer: string, difficulty: string }[]
 }
 
 export const FlashcardPanel = ({ cards }: FlashcardProps) => {
@@ -12,17 +12,17 @@ export const FlashcardPanel = ({ cards }: FlashcardProps) => {
 
   const handleFlipCard = () => {
     setIsFlipped((prev) => !prev)
-  };
+  }
 
   const nextCard = () => {
     setCurrentCardIndex((prev) => (prev + 1) % cards.length)
     setIsFlipped(false)  // Reset flip state when moving to the next card
-  };
+  }
 
   const prevCard = () => {
     setCurrentCardIndex((prev) => (prev - 1 + cards.length) % cards.length)
     setIsFlipped(false)  // Reset flip state when moving to the previous card
-  };
+  }
 
   const currentCard = cards[currentCardIndex]
 

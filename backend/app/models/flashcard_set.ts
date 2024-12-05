@@ -1,9 +1,10 @@
 import { DateTime } from 'luxon'
-import { BaseModel, beforeSave, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-import Review from '#models/review'
+import { BaseModel, beforeSave, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
+import SetReview from '#models/set_review'
 import Flashcard from '#models/flashcard'
 import User from '#models/user'
+import Collection from '#models/collection'
 
 export default class FlashcardSet extends BaseModel {
   @column({ isPrimary: true })
@@ -18,8 +19,8 @@ export default class FlashcardSet extends BaseModel {
   @hasMany(() => Flashcard)
   declare flashcards: HasMany<typeof Flashcard>
 
-  @hasMany(() => Review)
-  declare reviews: HasMany<typeof Review>
+  @hasMany(() => SetReview)
+  declare reviews: HasMany<typeof SetReview>
 
   @column()
   declare averageRating: number
@@ -30,6 +31,12 @@ export default class FlashcardSet extends BaseModel {
   @belongsTo(() => User)
   declare creator: BelongsTo<typeof User>
 
+  @manyToMany(() => Collection, {
+    pivotTable: 'collection_flashcard_sets',
+    pivotTimestamps: true
+  })
+  declare collections: ManyToMany<typeof Collection>
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
@@ -38,10 +45,9 @@ export default class FlashcardSet extends BaseModel {
 
   @beforeSave()
   public static preventUpdatedAt(instance: FlashcardSet) {
-    // Use $dirty to check which fields are being updated
-    const changes = instance.$dirty
+    const changes = instance.$dirty  // which fields are being updated
 
-    // Prevent updating the 'updatedAt' column if
+    // Prevent updating the updatedAt column if
     // only the averageRating field has changed
     if (Object.keys(changes).length === 1 && 'averageRating' in changes) {
       return

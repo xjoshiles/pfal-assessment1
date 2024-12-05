@@ -4,15 +4,11 @@ import { cookies } from 'next/headers'
 import { getCurrentUser } from '@/lib/session'
 
 interface FlashcardSetProps {
-  params: {
-    id: string
-  }
+  params: { id: string }
 }
 
 const FlashcardSet = async ({ params }: FlashcardSetProps) => {
-  const { id } = await params;
-
-  // Fetch flashcards data from the server based on id
+  const { id } = await params
   const set = await getFlashcardSetById(id)
   const user = await getCurrentUser()
 
@@ -25,7 +21,12 @@ const FlashcardSet = async ({ params }: FlashcardSetProps) => {
         ) : (
           <>
             <FlashcardPanel cards={set.flashcards} />
-            <ReviewsSection setId={id} initialReviews={set.reviews} currentUser={user} />
+            <ReviewsSection
+              setId={id}
+              initialReviews={set.reviews}
+              currentUser={user}
+              resourceType={'sets'}
+            />
           </>
         )}
       </div>
@@ -38,12 +39,12 @@ async function getFlashcardSetById(id: string) {
 
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_ADONIS_API}/sets/${id}`, {
-      // no method
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${sessionToken}`
-      },
-    }
+    // no method
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${sessionToken}`
+    },
+  }
   )
   const data = await response.json()
   return data

@@ -197,11 +197,11 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
         <button
           type="button"
           onClick={handleAddFlashcard}
-          className="set_preview_btn bg-green-600 hover:bg-green-700"
+          className="w-full item_preview_btn"
         >
           Add Flashcard
         </button>
-        <button type="submit" className="set_preview_btn">
+        <button type="submit" className="w-full item_preview_btn">
           Save Flashcard Set
         </button>
       </div>

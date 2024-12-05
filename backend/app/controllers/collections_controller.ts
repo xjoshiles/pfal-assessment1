@@ -5,6 +5,20 @@ import { CollectionValidator } from '#validators/collection'
 import db from '@adonisjs/lucid/services/db'
 import { errors } from '@vinejs/vine'
 
+async function getCollectionAverageRating(collectionId: number) {
+  // Consider caching this result using a caching library when the application
+  // grows, as constantly calculating this for large datasets can be expensive
+  // https://adonisjs.com/blog/future-plans-for-adonisjs-6#adonisjscache
+  // https://bentocache.dev/docs/introduction
+  const result = await db
+    .from('collection_reviews')
+    .where('collection_id', collectionId)
+    .avg('rating as averageRating')
+    .first()
+
+  return result?.averageRating || 0
+}
+
 export default class CollectionsController {
   /**
    * Get all flashcard set collections
@@ -99,6 +113,38 @@ export default class CollectionsController {
       })
     }
   }
+
+  /**
+   * Get a collection by ID
+   */
+  async show({ params, response }: HttpContext) {
+    const id = params.id
+
+    const collection = await Collection.query()
+      .where('id', id)
+      .preload('flashcardSets', (query) => {
+        query.preload('creator')
+      })
+      .preload('reviews', (query) => {
+        query.preload('author')
+      })
+      .first()
+
+    if (!collection) {
+      return response.notFound({ message: `Collection ${id} not found` })
+    }
+
+    return response.json(collection)
+
+    // const averageRating = await getCollectionAverageRating(collection.id)
+
+    // return response.json({
+    //   ...collection.serialize(),
+    //   averageRating
+    // })
+  }
+
+
 
   /**
    * Redirect to a random flashcard set collection

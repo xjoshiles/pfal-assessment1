@@ -10,7 +10,8 @@
 const UsersController = () => import('#controllers/users_controller')
 const FlashcardsController = () => import('#controllers/flashcards_controller')
 const AuthController = () => import('#controllers/auth_controller')
-const ReviewsController = () => import('#controllers/reviews_controller')
+const SetReviewsController = () => import('#controllers/set_reviews_controller')
+const CollectionReviewsController = () => import('#controllers/collection_reviews_controller')
 const CollectionsController = () => import('#controllers/collections_controller')
 const UserCollectionsController = () => import('#controllers/user_collections_controller')
 const LimitsController = () => import('#controllers/limits_controller')
@@ -43,9 +44,16 @@ router.get('/auth/me', [AuthController, 'authorised'])
 
 router.put('/users/:id/admin', [UsersController, 'updateAdmin']).use(middleware.auth())
 
-router.post('/sets/:id/review', [ReviewsController, 'store']).use(middleware.auth())
-router.get('/sets/:id/review', [ReviewsController, 'show']).use(middleware.auth())
-router.delete('/sets/:id/review/:reviewId', [ReviewsController, 'destroy']).use(middleware.auth())
+router.post('/sets/:id/review', [SetReviewsController, 'store']).use(middleware.auth())
+router.get('/sets/:id/review', [SetReviewsController, 'show']).use(middleware.auth())
+router.delete('/sets/:id/review/:reviewId', [SetReviewsController, 'destroy']).use(middleware.auth())
+
+router.post('/collections/:id/review', [CollectionReviewsController, 'store']).use(middleware.auth())
+router.get('/collections/:id/review', [CollectionReviewsController, 'show']).use(middleware.auth())
+router.delete('/collections/:id/review/:reviewId', [CollectionReviewsController, 'destroy']).use(middleware.auth())
+
+
+
 
 router.post('/limits/sets', [LimitsController, 'updateDailyLimit']).use(middleware.auth())
 router.get('/limits/sets', [LimitsController, 'getDailyLimitInfo']).use(middleware.auth())
@@ -53,7 +61,7 @@ router.get('/limits/sets', [LimitsController, 'getDailyLimitInfo']).use(middlewa
 
 
 router.resource('/collections', CollectionsController)
-  .only(['index', 'store'])
+  .only(['index', 'store', 'show'])
   .middleware('*', middleware.auth())
 
 // router.delete('/users/:id', UsersController)

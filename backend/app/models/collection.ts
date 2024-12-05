@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column, manyToMany } from '@adonisjs/lucid/orm'
-import type { BelongsTo, ManyToMany } from '@adonisjs/lucid/types/relations'
+import { BaseModel, belongsTo, column, hasMany, manyToMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
 import FlashcardSet from '#models/flashcard_set'
+import CollectionReview from './collection_review.js'
 
 export default class Collection extends BaseModel {
   @column({ isPrimary: true })
@@ -13,6 +14,12 @@ export default class Collection extends BaseModel {
 
   @column()
   declare description: string
+
+  @hasMany(() => CollectionReview)
+  declare reviews: HasMany<typeof CollectionReview>
+
+  @column()
+  declare averageRating: number
 
   @column()
   declare userId: number

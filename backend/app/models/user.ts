@@ -5,9 +5,10 @@ import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
-import Review from '#models/review'
+import SetReview from '#models/set_review'
 import FlashcardSet from '#models/flashcard_set'
 import Collection from '#models/collection'
+import CollectionReview from '#models/collection_review'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['username'],
@@ -29,11 +30,14 @@ export default class User extends compose(BaseModel, AuthFinder) {
   }})
   declare admin: boolean
 
-  @hasMany(() => Review)
-  declare reviews: HasMany<typeof Review>
+  @hasMany(() => SetReview)
+  declare setReviews: HasMany<typeof SetReview>
 
   @hasMany(() => FlashcardSet)
   declare flashcardSets: HasMany<typeof FlashcardSet>
+
+  @hasMany(() => CollectionReview)
+  declare collectionReviews: HasMany<typeof CollectionReview>
 
   @hasMany(() => Collection)
   declare collections: HasMany<typeof Collection>

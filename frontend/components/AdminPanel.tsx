@@ -77,7 +77,6 @@ export function LimitSection({ limits }: { limits: LimitsInfoType }) {
 }
 
 export function UserSection({ users: initialUsers }: { users: UserType[] }) {
-  console.log(initialUsers)
   // Sort users by username initially
   const [users, setUsers] = useState(
     initialUsers.sort((a, b) => a.username.localeCompare(b.username))
