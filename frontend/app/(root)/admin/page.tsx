@@ -4,10 +4,10 @@ import { LimitSection, UserSection } from '@/components/AdminPanel'
 import { cookies } from 'next/headers'
 
 export default async function AdminPage() {
-  // Redirect to dashboard if the user is not an admin
+  // Redirect to the user's profile if they are not an admin
   const currentUser = await getCurrentUser()
   if (!currentUser.admin) {
-    redirect('/dashboard') // Redirect if the user is not an admin
+    redirect(`/users/${currentUser.id}`)
   }
 
   const sessionToken = (await cookies()).get('sessionToken')?.value

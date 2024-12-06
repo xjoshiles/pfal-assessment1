@@ -131,7 +131,7 @@ export default class FlashcardsController {
     // })
   }
 
-  
+
   /**
    * Update a flashcard set by ID
    */
@@ -155,12 +155,12 @@ export default class FlashcardsController {
       // If the current user is not the creator of the set nor an admin
       if (auth.user!.id != set.userId && !auth.user?.admin) {
         return response.unauthorized({
-          message: "You are not authorised to perform this action",
-          error: "Unauthorised"
+          message: "You are not authorised to perform this action"
         })
       }
       // Else
       set.name = payload.name
+      set.description = payload.description
       await set.useTransaction(trx).save()
 
       // Process flashcards
@@ -229,7 +229,7 @@ export default class FlashcardsController {
       }
       // Else...
       return response.badRequest({
-        message: error.message || 'Error creating set'
+        message: error.message || 'Error updating set'
       })
     }
   }
@@ -241,13 +241,16 @@ export default class FlashcardsController {
     const id = params.id
 
     try {
-      const set = await FlashcardSet.findOrFail(id)
+      // Find the flashcard set
+      const set = await FlashcardSet.find(id)
+      if (!set) {
+        return response.notFound({ message: `Set ${id} not found` })
+      }
 
       // If the current user is not the creator of the set nor an admin
       if (auth.user!.id != set.userId && !auth.user?.admin) {
         return response.unauthorized({
-          message: "You are not authorised to perform this action",
-          error: "Unauthorised"
+          message: "You are not authorised to perform this action"
         })
       }
       // Else delete set (flashcards are also deleted due to cascade rule)
@@ -255,8 +258,8 @@ export default class FlashcardsController {
       return response.noContent()
 
     } catch (error) {
-      return response.notFound(
-        { message: 'Unable to delete flashcard set', errors: error.messages })
+      return response.internalServerError(
+        { message: error.message || 'Error deleting flashcard set' })
     }
   }
 
@@ -275,7 +278,8 @@ export default class FlashcardsController {
 
       const sets = await FlashcardSet.query()
         .where('user_id', id)
-        .preload('flashcards')  // No .first() call here as we want all sets
+        .preload('flashcards')
+        .preload('creator')  // No .first() call here as we want all sets
 
       return response.json(sets)
 

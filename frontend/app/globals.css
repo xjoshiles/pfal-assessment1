@@ -156,11 +156,15 @@ body {
   }
 
   .item_preview_date {
-    @apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-full group-hover:bg-gray-100 transition-all duration-500
+    @apply font-medium text-[16px] bg-primary-100 px-4 py-2 rounded-full group-hover:bg-white transition-all duration-500
+  }
+
+  .item_preview_date_selected {
+    @apply font-medium text-[16px] bg-white px-4 py-2 rounded-full
   }
 
   .item_preview_desc {
-    @apply font-normal text-[16px] line-clamp-2 my-3 text-black-100 break-all
+    @apply font-normal text-[16px] break-words line-clamp-2 my-3 text-black-100
   }
 
   .item_preview_btn {

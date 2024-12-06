@@ -37,7 +37,6 @@ async function getCollectionById(id: string) {
 
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_ADONIS_API}/collections/${id}`, {
-    // no method
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${sessionToken}`

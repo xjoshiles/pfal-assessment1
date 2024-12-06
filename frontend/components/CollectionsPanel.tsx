@@ -2,36 +2,36 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import SetPreview from '@/components/SetPreview'
-import { FlashcardSetType } from '@/lib/types'
+import CollectionPreview from '@/components/CollectionPreview'
+import { CollectionType } from '@/lib/types'
 
-const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
-  // Sort sets by latest on initial load
-  initialSets.sort(
+const CollectionsPanel = ({ initialCollections }: { initialCollections: CollectionType[] }) => {
+  // Sort collections by latest on initial load
+  initialCollections.sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
   )
-  const [sets, setSets] = useState(initialSets)
+  const [collections, setCollections] = useState(initialCollections)
   const [sortBy, setSortBy] = useState('latest') // Default sorting
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
     setSortBy(value)
 
-    // Sort sets based on the selected option
-    const sortedSets = [...sets]
+    // Sort collections based on the selected option
+    const sortedCollections = [...collections]
     if (value === 'latest') {
-      sortedSets.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+      sortedCollections.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
     } else if (value === 'rating') {
-      sortedSets.sort((a, b) => b.averageRating - a.averageRating)
+      sortedCollections.sort((a, b) => b.averageRating - a.averageRating)
     }
-    setSets(sortedSets)
+    setCollections(sortedCollections)
   }
 
   return (
     <div>
       <div className="flex items-center justify-center items-center mt-8 gap-4">
-        <Link href='/sets/create'>
-          <button className='item_preview_btn'>Create Set</button>
+        <Link href='/collections/create'>
+          <button className='item_preview_btn'>Create Collection</button>
         </Link>
 
         <div className="flex justify-center item_preview_date border">
@@ -51,16 +51,16 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
       </div>
 
       <ul className="mt-8 card_grid">
-        {sets?.length > 0 ? (
-          sets.map((set: FlashcardSetType, index: number) => (
-            <SetPreview key={set?.id} set={set} />
+        {collections?.length > 0 ? (
+          collections.map((collection: CollectionType, index: number) => (
+            <CollectionPreview key={collection?.id} collection={collection} />
           ))
         ) : (
-          <p className="no-results">No flashcard sets found</p>
+          <p className="no-results">No flashcard set collections found</p>
         )}
       </ul>
     </div>
   )
 }
 
-export default SetsPanel
+export default CollectionsPanel

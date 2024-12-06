@@ -40,21 +40,6 @@ export default class FlashcardSet extends BaseModel {
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: false })
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
-
-  @beforeSave()
-  public static preventUpdatedAt(instance: FlashcardSet) {
-    const changes = instance.$dirty  // which fields are being updated
-
-    // Prevent updating the updatedAt column if
-    // only the averageRating field has changed
-    if (Object.keys(changes).length === 1 && 'averageRating' in changes) {
-      return
-
-    } else {
-      // Manually update 'updatedAt' only when other fields are dirty
-      instance.updatedAt = DateTime.local()
-    }
-  }
 }

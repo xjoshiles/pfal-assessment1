@@ -3,17 +3,30 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import SetSelect from './SetSelect'
-import { FlashcardSetType } from '@/lib/types'
+import { CollectionFormType, FlashcardSetType } from '@/lib/types'
 import { Toast, useToast } from '@/components/Toast'
 
-interface FlashcardSetCollectionFormProps {
+interface CollectionFormProps {
+  initialCollection?: CollectionFormType
+  collectionId?: string
   sets: FlashcardSetType[]
 }
 
-const CollectionForm = ({ sets }: FlashcardSetCollectionFormProps) => {
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [selectedSetIds, setSelectedSetIds] = useState<number[]>([])
+const newCollectionDefaults = {
+  name: '',
+  description: '',
+  flashcardSetIds: []
+}
+
+const CollectionForm = ({
+  initialCollection = newCollectionDefaults,
+  collectionId,
+  sets
+}: CollectionFormProps
+) => {
+  const [name, setName] = useState(initialCollection.name)
+  const [description, setDescription] = useState(initialCollection.description)
+  const [selectedSetIds, setSelectedSetIds] = useState(initialCollection.flashcardSetIds)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { toast, showToast, hideToast } = useToast()
   const errorRef = useRef<HTMLDivElement | null>(null)
@@ -21,6 +34,10 @@ const CollectionForm = ({ sets }: FlashcardSetCollectionFormProps) => {
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
+
+  // These variables determine whether to send a create or update request
+  const url = collectionId ? `/api/collections/${collectionId}` : '/api/collections'
+  const method = collectionId ? 'PUT' : 'POST'
 
   const handleSetSelection = (set: FlashcardSetType) => {
     const setId = set.id
@@ -54,14 +71,13 @@ const CollectionForm = ({ sets }: FlashcardSetCollectionFormProps) => {
     }
 
     try {
-      const res = await fetch('/api/collections', {
-        method: 'POST',
+      const res = await fetch(url, {
+        method: method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(collection)
       })
 
       if (res.ok) {
-        showToast('Collection saved successfully!', 'success')
         router.push('/collections')
 
       } else {

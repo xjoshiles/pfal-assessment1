@@ -51,7 +51,7 @@ export default function Navbar({ user }: { user: UserType }) {
               {/* Divider */}
               <span className="w-0.5 h-9 bg-gray-400"></span>
 
-              <Link href='/dashboard'>
+              <Link href='/sets'>
                 <span>Sets</span>
               </Link>
               <Link href='/collections'>
@@ -66,7 +66,7 @@ export default function Navbar({ user }: { user: UserType }) {
                 <span>Account</span>
               </Link>
 
-              <Link href={`/user/${session.id}`}>
+              <Link href={`/users/${session.id}`}>
                 <span>{session.username}</span>
               </Link>
             </>

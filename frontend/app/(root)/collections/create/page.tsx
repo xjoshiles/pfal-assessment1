@@ -28,8 +28,7 @@ async function getFlashcardSets() {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${sessionToken}`
     }
-  }
-  )
+  })
   const data = await response.json()
   return data
 }

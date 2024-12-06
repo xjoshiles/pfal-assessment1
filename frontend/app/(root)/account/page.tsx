@@ -81,7 +81,7 @@ export default function UpdateAccountPage() {
 
     if (response.ok) {
       setSuccess("Password updated successfully!")
-      setTimeout(() => { router.push("/dashboard") }, 1000)
+      setTimeout(() => { router.push(`/users/${user.id}`) }, 1000)
     } else {
       const errorData = await response.json()
       setError(errorData.message || "An error occurred")

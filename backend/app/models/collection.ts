@@ -3,7 +3,7 @@ import { BaseModel, belongsTo, column, hasMany, manyToMany } from '@adonisjs/luc
 import type { BelongsTo, HasMany, ManyToMany } from '@adonisjs/lucid/types/relations'
 import User from '#models/user'
 import FlashcardSet from '#models/flashcard_set'
-import CollectionReview from './collection_review.js'
+import CollectionReview from '#models/collection_review'
 
 export default class Collection extends BaseModel {
   @column({ isPrimary: true })

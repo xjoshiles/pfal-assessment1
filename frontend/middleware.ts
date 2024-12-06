@@ -11,11 +11,11 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Redirect to /dashboard if a sessionToken exists and trying to access
-  // /register or /login routes. Note that the middleware will attempt to
-  // validate the sessionToken during the redirect
+  // Redirect to /sets if a sessionToken exists and trying to access
+  // /register or /login routes. Note that the middleware will attempt
+  // to validate the sessionToken during the redirect
   if (sessionToken && ['/register', '/login'].includes(url.pathname)) {
-    url.pathname = '/dashboard'
+    url.pathname = '/sets'
     return NextResponse.redirect(url)
   }
 

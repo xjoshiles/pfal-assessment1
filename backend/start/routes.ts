@@ -13,7 +13,6 @@ const AuthController = () => import('#controllers/auth_controller')
 const SetReviewsController = () => import('#controllers/set_reviews_controller')
 const CollectionReviewsController = () => import('#controllers/collection_reviews_controller')
 const CollectionsController = () => import('#controllers/collections_controller')
-const UserCollectionsController = () => import('#controllers/user_collections_controller')
 const LimitsController = () => import('#controllers/limits_controller')
 
 
@@ -61,7 +60,7 @@ router.get('/limits/sets', [LimitsController, 'getDailyLimitInfo']).use(middlewa
 
 
 router.resource('/collections', CollectionsController)
-  .only(['index', 'store', 'show'])
+  .only(['index', 'store', 'show', 'update', 'destroy'])
   .middleware('*', middleware.auth())
 
 // router.delete('/users/:id', UsersController)
@@ -70,8 +69,11 @@ router.resource('/collections', CollectionsController)
 router.get('/users/:id/sets', [FlashcardsController, 'byUser'])
   .use(middleware.auth())
 
-
 router.get('/sets/:id/cards', [FlashcardsController, 'inSet'])
+
+
+router.get('/users/:id/collections', [CollectionsController, 'byUser'])
+  .use(middleware.auth())
 
 
 //router.resource('/users/:id/collections', UserCollectionsController).use('*', middleware.auth())

@@ -30,7 +30,7 @@ export default function LoginPage() {
       // router.refresh()
 
       // Redirect to homepage after 1 second
-      setTimeout(() => { router.push("/dashboard") }, 1000)
+      setTimeout(() => { router.push("/library") }, 1000)
 
     } else {
       const errorData = await response.json();

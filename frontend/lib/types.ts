@@ -15,7 +15,7 @@ export const defaultUser: UserType = {
 }
 
 export type FlashcardType = {
-  id: number,
+  id?: number,
   question: string,
   answer: string,
   difficulty: string
@@ -33,15 +33,10 @@ export type FlashcardSetType = {
   updatedAt: Date
 }
 
-export type ReviewType = {
-  id: number,
-  rating: number,
-  review: string,
-  userId: number,
-  author: UserType,
-  flashcardSetId: number,
-  createdAt: Date,
-  updatedAt: Date
+export type FlashcardSetFormType = {
+  name: string;
+  description: string;
+  flashcards: FlashcardType[];
 }
 
 export type CollectionType = {
@@ -51,7 +46,24 @@ export type CollectionType = {
   averageRating: number,
   userId: number,
   creator: UserType,
-  flashCardSets: FlashcardSetType[],
+  flashcardSets: FlashcardSetType[],
+  createdAt: Date,
+  updatedAt: Date
+}
+
+export type CollectionFormType = {
+  name: string,
+  description: string,
+  flashcardSetIds: number[]
+}
+
+export type ReviewType = {
+  id: number,
+  rating: number,
+  review: string,
+  userId: number,
+  author: UserType,
+  flashcardSetId: number,
   createdAt: Date,
   updatedAt: Date
 }

@@ -2,32 +2,30 @@
 
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { Toast, useToast } from '@/components/Toast'
+import { FlashcardSetFormType } from '@/lib/types'
 
-interface Flashcard {
-  question: string
-  answer: string
-  difficulty: string
+type FlashcardSetFormProps = 
+  | { initialSet: FlashcardSetFormType; setId: string } // Both must be present
+  | { initialSet?: undefined; setId?: undefined }     // Neither can be present
+
+const newSetDefaults = {
+  name: '',
+  description: '',
+  flashcards: [{ question: '', answer: '', difficulty: 'easy' }]
 }
 
-interface FlashcardSet {
-  id?: string // Optional for creating a new set
-  name: string
-  description: string
-  flashcards: Flashcard[]
-}
-
-interface FlashcardSetFormProps {
-  initialSet: FlashcardSet
-  setId?: string
-}
-
-const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
+const FlashcardSetForm = ({
+  initialSet = newSetDefaults,
+  setId
+}: FlashcardSetFormProps
+) => {
   const [name, setName] = useState(initialSet.name)
   const [description, setDescription] = useState(initialSet.description)
   const [flashcards, setFlashcards] = useState(
     initialSet.flashcards.map((flashcard) => ({ ...flashcard, isOpen: true }))
   )
-  const [error, setError] = useState<string | null>(null)
+  const { toast, showToast, hideToast } = useToast()
   const errorRef = useRef<HTMLDivElement | null>(null)
   const router = useRouter()
 
@@ -39,7 +37,7 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
     setFlashcards((prev) => [
       ...prev,
       { question: '', answer: '', difficulty: 'easy', isOpen: true },
-    ])
+    ]) 
   }
 
   const handleRemoveFlashcard = (index: number) => {
@@ -63,7 +61,7 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
   const validateFlashcards = () => {
     // Return false if there are no flashcards in the set
     if (flashcards.length === 0) {
-      setError('The set must contain at least one flashcard')
+      showToast('The set must contain at least one flashcard', 'error')
       errorRef.current?.scrollIntoView({ behavior: 'smooth' })
       return false
     }
@@ -72,12 +70,12 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
     for (let i = 0; i < flashcards.length; i++) {
       const { question, answer } = flashcards[i]
       if (!question.trim()) {
-        setError(`The question field for Flashcard ${i + 1} must be filled.`)
+        showToast(`The question field for Flashcard ${i + 1} must be filled`, 'error')
         errorRef.current?.scrollIntoView({ behavior: 'smooth' })
         return false
       }
       if (!answer.trim()) {
-        setError(`The answer field for Flashcard ${i + 1} must be filled.`)
+        showToast(`The answer field for Flashcard ${i + 1} must be filled`, 'error')
         errorRef.current?.scrollIntoView({ behavior: 'smooth' })
         return false
       }
@@ -90,7 +88,7 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    setError(null)                    // Clear previous errors
+    hideToast()                       // Clear previous errors
     if (!validateFlashcards()) return // Halt submission if validation fails
 
     const set = {
@@ -106,17 +104,17 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
     })
 
     if (res.ok) {
-      router.push('/dashboard')
+      router.push('/sets')
     } else {
       const errorData = await res.json()
-      setError(errorData.message || 'Failed to create flashcard set')
+      showToast(errorData.message || 'Failed to create flashcard set', 'error')
       errorRef.current?.scrollIntoView({ behavior: 'smooth' }) // Scroll to error
     }
   }
 
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6 mt-8">
+      {/* Set Name */}
       <input
         type="text"
         placeholder="Set Name"
@@ -125,6 +123,8 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
         className="form-textbox"
         required
       />
+
+      {/* Set Description */}
       <textarea
         placeholder="Description"
         value={description}
@@ -132,6 +132,8 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
         className="form-textbox"
         required
       />
+
+      {/* Flashcards */}
       {flashcards.map((flashcard, index) => (
         <div key={index} className="gradient-element">
           <div className="space-y-4 p-4 bg-white rounded-md shadow-md">
@@ -193,6 +195,7 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
         </div>
       ))}
 
+      {/* Form Buttons */}
       <div className="flex justify-between items-center mt-4 gap-4">
         <button
           type="button"
@@ -205,9 +208,16 @@ const FlashcardSetForm = ({ initialSet, setId }: FlashcardSetFormProps) => {
           Save Flashcard Set
         </button>
       </div>
-      {error && (
-        <div ref={errorRef} className="form-error-text mt-6">
-          {error}
+
+      {/* Render toast notification if there is one */}
+      {toast && (
+        <div className='text-center mt-2'>
+          <Toast
+            key={toast.id} // Ensures new instance
+            message={toast.message}
+            type={toast.type}
+            onFadeOut={hideToast}
+          />
         </div>
       )}
     </form>

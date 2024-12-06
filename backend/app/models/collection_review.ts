@@ -46,12 +46,11 @@ export default class CollectionReview extends BaseModel {
     const averageRating = result?.$extras.averageRating || 0
 
     // Update the collection's averageRating
+    // Note that this won't trigger an update of the updatedAt column
+    // of the collection as we are not calling save on a model
+    // instance, but rather running a raw SQL UPDATE query
     await Collection.query()
       .where('id', collectionId)
       .update({ averageRating })
-
-    // const collection = await Collection.find(collectionId)
-    // collection!.averageRating = averageRating
-    // collection!.save()
   }
 }

@@ -6,10 +6,42 @@ ItemsPanel component?... What does it need?:
   could pass custom handleSortChange function (could sort collections by # sets)?
 - needs to be able to accept either a setPreview or collectionPreview component
 
+When user creates set or collection, take them to their library with
+the relevant tab selected.
+
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+View, Edit, and Delete buttons on previews in My Library
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+instead of my library page, should be /users/[id], with the following tabs:
+- Flashcard Sets
+- Collections
+- Reviews (need get reviews by user id, should preload the associated set)
+- Account management (if user id is the currently logged in user)
+- Admin panel (if user id is the currently logged in user and an admin)
+
+Redirect to user's library in middleware (check user cookie)
+and upon login (return userId from login.ts API route to login page)?
+
+
 
 SetsPanel
 CollectionsPanel
+Could generalise these and give custom sorting options, optional create button
 
+Add auth to get flashcard set by id and get collection by id in controllers?
+
+
+openAPI file, adonis's default error response if unauthorised (no valid token).
+Not sure if I can override this or mention in the yaml:
+{
+    "errors": [
+        {
+            "message": "Unauthorized access"
+        }
+    ]
+}
 
 
 frontend tests?
@@ -21,12 +53,8 @@ New nav bar with icons?:
 // Joel got icons from "ion icons"
 // Both are installable
 
-Create collections
-View collections (is there anything in openapi that implies collections
-should be visible to other users? YES, GET ALL FLASHCARD SET COLLECTIONS)
 
 library: sets and collections, with tabs? This will give user create/edit options
-
 
 admin panel in navbar (if user is admin)
 
@@ -514,3 +542,18 @@ Old code:
         .update({ averageRating: averageRating })
     }
   }
+
+    // @beforeSave()
+  // public static preventUpdatedAt(instance: FlashcardSet) {
+  //   const changes = instance.$dirty  // which fields are being updated
+
+  //   // Prevent updating the updatedAt column if
+  //   // only the averageRating field has changed
+  //   if (Object.keys(changes).length === 1 && 'averageRating' in changes) {
+  //     return
+
+  //   } else {
+  //     // Manually update 'updatedAt' only when other fields are dirty
+  //     instance.updatedAt = DateTime.local()
+  //   }
+  // }

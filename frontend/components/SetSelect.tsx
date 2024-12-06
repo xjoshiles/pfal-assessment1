@@ -19,7 +19,7 @@ const SetSelect = ({
       className={`${isSelected ? 'item_preview_selected' : 'item_preview_select'}`}
     >
       <div className='flex-between gap-2'>
-        <p className='item_preview_date'>
+        <p className={`${isSelected ? 'item_preview_date_selected' : 'item_preview_date'}`}>
           {formatDate(updatedAt)}
         </p>
         <div className='flex gap-1.5'>

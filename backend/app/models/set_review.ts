@@ -46,12 +46,11 @@ export default class SetReview extends BaseModel {
     const averageRating = result?.$extras.averageRating || 0
 
     // Update the flashcard set's averageRating
-    // await FlashcardSet.query()
-    //   .where('id', flashcardSetId)
-    //   .update({ averageRating })
-
-    const set = await FlashcardSet.find(flashcardSetId)
-    set!.averageRating = averageRating
-    set!.save()
+    // Note that this won't trigger an update of the updatedAt column
+    // of the set as we are not calling save on a model instance, but
+    // rather running a raw SQL UPDATE query
+    await FlashcardSet.query()
+      .where('id', flashcardSetId)
+      .update({ averageRating })
   }
 }
