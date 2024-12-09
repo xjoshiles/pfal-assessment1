@@ -3,16 +3,15 @@
 import { useState, useEffect } from 'react'
 import { ReviewType, UserType } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
+import { useUserContext } from '@/context/UserContext'
 
 const ReviewsSection = ({
   setId,
   initialReviews,
-  currentUser,
   resourceType
 }: {
   setId: string
   initialReviews: ReviewType[],
-  currentUser: UserType,
   resourceType: 'sets' | 'collections' // Determines fetch endpoints
 }) => {
   // Sort reviews by latest (createdAt in descending order) on first render
@@ -27,6 +26,7 @@ const ReviewsSection = ({
   const [rating, setRating] = useState(0)
   const [error, setError] = useState('')
   const [userReview, setUserReview] = useState<ReviewType | null>(null)
+  const currentUser = useUserContext()
 
   // Check if the current user has a review
   useEffect(() => {

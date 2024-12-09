@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import SetSelect from './SetSelect'
 import { CollectionFormType, FlashcardSetType } from '@/lib/types'
@@ -29,7 +29,6 @@ const CollectionForm = ({
   const [selectedSetIds, setSelectedSetIds] = useState(initialCollection.flashcardSetIds)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const { toast, showToast, hideToast } = useToast()
-  const errorRef = useRef<HTMLDivElement | null>(null)
   const router = useRouter()
 
   const openModal = () => setIsModalOpen(true)
@@ -60,7 +59,6 @@ const CollectionForm = ({
 
     if (!name.trim() || !description.trim() || selectedSetIds.length === 0) {
       showToast('Please provide a name and description, and select at least one flashcard set', 'error')
-      errorRef.current?.scrollIntoView({ behavior: 'smooth' })
       return
     }
 
@@ -83,12 +81,10 @@ const CollectionForm = ({
       } else {
         const errorData = await res.json()
         showToast(errorData.message || 'Failed to save the collection', 'error')
-        errorRef.current?.scrollIntoView({ behavior: 'smooth' })
       }
 
     } catch (err) {
       showToast('An unexpected error occurred.', 'error')
-      errorRef.current?.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
@@ -136,11 +132,11 @@ const CollectionForm = ({
             <button
               type="button"
               onClick={openModal}
-              className="w-full item_preview_btn"
+              className="w-full item_add_btn"
             >
               Select Sets
             </button>
-            <button type="submit" className="w-full item_preview_btn">
+            <button type="submit" className="w-full item_save_btn">
               Save Collection
             </button>
           </div>
@@ -149,7 +145,7 @@ const CollectionForm = ({
 
       {/* Modal for selecting flashcard sets */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="gradient-element w-full sm:w-auto h-full sm:h-auto">
             <div className="bg-white p-4 md:py-6 rounded-md shadow-lg w-full sm:max-h-[90vh] h-full flex flex-col">
 

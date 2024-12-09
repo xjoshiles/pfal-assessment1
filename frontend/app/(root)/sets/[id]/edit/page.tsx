@@ -1,5 +1,7 @@
 import FlashcardSetForm from "@/components/FlashcardSetForm"
+import { getCurrentUser } from "@/lib/session"
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
 interface EditSetProps {
   params: { id: string }
@@ -8,10 +10,16 @@ interface EditSetProps {
 export default async function EditSet({ params }: EditSetProps) {
   const { id } = await params
   const set = await getFlashcardSetById(id)
+  const user = await getCurrentUser()
+
+  // Redirect user to the set if they do not have permission to edit
+  if (set.userId != user.id) {
+    redirect(`/sets/${id}`)
+  }
 
   return (
-    <section className="bg-gray-100">
-      <div className="section_container min-h-screen-nonav bg-gray-100 p-8">
+    <section>
+      <div className="section_container min-h-screen-nonav p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800">
           Edit Flashcard Set
         </h1>

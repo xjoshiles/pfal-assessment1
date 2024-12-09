@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Toast, useToast } from '@/components/Toast'
 import { UserType, LimitsInfoType } from '@/lib/types'
+import { useUserContext } from '@/context/UserContext'
 
 export function LimitSection({ limits }: { limits: LimitsInfoType }) {
   const [currentLimit, setCurrentLimit] = useState(limits.limit)
@@ -83,8 +84,15 @@ export function UserSection({ users: initialUsers }: { users: UserType[] }) {
   )
   const [sortConfig, setSortConfig] = useState({ key: 'username', direction: 'asc' })
   const { toast, showToast, hideToast } = useToast()
+  const currentUser = useUserContext()
 
   const toggleAdmin = async (userId: number, isAdmin: boolean) => {
+    // Guard clause to prevent admins from removing their own admin status
+    if (currentUser.id == userId) {
+      showToast('Only another admin can remove your admin status', 'error')
+      return
+    }
+
     try {
       const res = await fetch(`/api/users/${userId}/admin`, {
         method: 'PUT',
@@ -144,7 +152,7 @@ export function UserSection({ users: initialUsers }: { users: UserType[] }) {
     <div className="text-sm md:text-base">
       <h2 className="text-xl font-semibold text-gray-700 mb-4">Users</h2>
       <div className="overflow-x-auto">
-        <table className="min-w-full table-auto border-collapse overflow-x-auto">
+        <table className="min-w-full table-auto border-collapse">
           <thead>
             <tr className="border-b">
               <th

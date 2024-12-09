@@ -3,8 +3,8 @@ import { cookies } from "next/headers"
 
 export default async function CreateSet() {
   return (
-    <section className="bg-gray-100">
-      <div className="section_container min-h-screen-nonav bg-gray-100 p-8">
+    <section>
+      <div className="section_container h-screen p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800">
           Create Flashcard Set
         </h1>

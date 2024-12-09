@@ -33,16 +33,18 @@ export default async function AdminPage() {
   const users = await usersRes.json()
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-1 md:px-6 bg-gray-100">
-      <div className="gap-4 gradient-element shadow-md w-full mx-auto">
-        <div className='bg-white rounded-lg p-6 space-y-6'>
-          <h1 className="text-3xl font-bold text-center text-gray-800">Admin Control Panel</h1>
-          {/* Limit Management Section */}
-          <LimitSection limits={limits} />
-          {/* Horizontal divider */}
-          <hr className="gradient-divider" />
-          {/* User Management Section */}
-          <UserSection users={users} />
+    <div className="flex justify-center items-center h-screen">
+      <div className="container max-w-4xl w-full py-8 px-1 md:px-6">
+        <div className="gap-4 gradient-element shadow-md w-full mx-auto">
+          <div className="bg-white rounded-lg p-6 space-y-6">
+            <h1 className="text-3xl font-bold text-center text-gray-800">Admin Control Panel</h1>
+            {/* Limit Management Section */}
+            <LimitSection limits={limits} />
+            {/* Horizontal divider */}
+            <hr className="gradient-divider" />
+            {/* User Management Section */}
+            <UserSection users={users} />
+          </div>
         </div>
       </div>
     </div>

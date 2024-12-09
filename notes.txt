@@ -1,6 +1,66 @@
 to-do:
 
 
+node ace make:test posts/create --suite=functional
+
+Run unit tests: node ace test unit
+Run integration tests: node ace test integration
+Run all tests: node ace test
+
+
+
+If you're sending an actual HTTP request to the POST /users endpoint to test
+the API workflow, it's a functional test. Functional tests focus on the
+application as a whole from the end-user's perspective. Testing the
+creation of a user via the API simulates an actual workflow that
+an end-user or client (e.g., frontend app) would perform.
+They validate the entire process.
+
+If you're directly testing the store method without using the HTTP layer,
+it's an integration test. Integration tests are narrower in scope. If you
+were only testing how the UsersController.store method interacts with the
+RegisterUserValidator and the User model in isolation, without involving
+the full HTTP stack (routes, middleware, etc.), that would be an
+integration test.
+
+A unit test focuses on testing the smallest, isolated pieces of your
+application—often a single function, method, or class—without involving
+any external dependencies or interactions with other parts of the
+application. Unit tests are designed to validate the internal
+logic of the unit under test.
+
+Characteristics of Unit Tests
+- Isolated: Each test targets only one "unit" of code, such as a function,
+  method, or a small class. There is no interaction with the database, HTTP
+  requests, or other external systems.
+- Fast Execution: Since unit tests don't depend on external resources
+  (e.g., a database or API), they are very fast to execute.
+- Mocked Dependencies: If a function depends on external resources or other
+  methods, those dependencies are mocked or stubbed.
+- Specific: They are granular and test a single, well-defined behavior.
+- Purpose: To ensure the internal logic of the function or method works as
+  expected.
+
+
+
+
+╔═════════════════════╤══════════════════════════════════════════════╤═════════════════════════════════════════════════╤═══════════════════════════════════════════════╗
+║ Aspect              │ Unit Test                                    │ Integration Test                                │ Functional Test                               ║
+╠═════════════════════╪══════════════════════════════════════════════╪═════════════════════════════════════════════════╪═══════════════════════════════════════════════╣
+║ Scope               │ A single function or class.                  │ Interaction between components.                 │ Full-stack workflow of a feature.             ║
+╟─────────────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────────┼───────────────────────────────────────────────╢
+║ Dependencies        │ None (all dependencies mocked/stubbed).      │ Involves real interactions between components.  │ Real HTTP requests and database connections.  ║
+╟─────────────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────────┼───────────────────────────────────────────────╢
+║ Purpose             │ Validate internal logic of a function/class. │ Validate interactions between specific parts.   │ Validate the entire system as a user sees it. ║
+╟─────────────────────┼──────────────────────────────────────────────┼─────────────────────────────────────────────────┼───────────────────────────────────────────────╢
+║ Example in Your App │ User model's password hashing.               │ Controller method interacting with a validator. │ POST /users endpoint creating a user.         ║
+╚═════════════════════╧══════════════════════════════════════════════╧═════════════════════════════════════════════════╧═══════════════════════════════════════════════╝
+
+
+
+
+
+
 ItemsPanel component?... What does it need?:
 - needs to be able to sort items based on updatedAt attribute
   could pass custom handleSortChange function (could sort collections by # sets)?
@@ -48,17 +108,10 @@ frontend tests?
 Use Toast component throughout application
 
 
-New nav bar with icons?:
-// Jack got icons from import { TrashIcon } from '@heroicons/react/24/outline'
-// Joel got icons from "ion icons"
-// Both are installable
 
-
-library: sets and collections, with tabs? This will give user create/edit options
-
-admin panel in navbar (if user is admin)
 
 difficulty when doing a flashcard
+
 
 return 404 page on frontend if flashcard set not found
 
@@ -77,11 +130,7 @@ as I can preload the creator attribute which contains those details.
 Perhaps we should provide a message and an error throughout our controllers?
 
 
-My Library   Sets   Collections   Logout   josh
 
-Account, Admin
-
-???
 
 
 

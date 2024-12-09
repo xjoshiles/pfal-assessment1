@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Toast, useToast } from '@/components/Toast'
 import { FlashcardSetFormType } from '@/lib/types'
 
-type FlashcardSetFormProps = 
+type FlashcardSetFormProps =
   | { initialSet: FlashcardSetFormType; setId: string } // Both must be present
   | { initialSet?: undefined; setId?: undefined }     // Neither can be present
 
@@ -26,7 +26,6 @@ const FlashcardSetForm = ({
     initialSet.flashcards.map((flashcard) => ({ ...flashcard, isOpen: true }))
   )
   const { toast, showToast, hideToast } = useToast()
-  const errorRef = useRef<HTMLDivElement | null>(null)
   const router = useRouter()
 
   // These variables determine whether to send a create or update request
@@ -37,7 +36,7 @@ const FlashcardSetForm = ({
     setFlashcards((prev) => [
       ...prev,
       { question: '', answer: '', difficulty: 'easy', isOpen: true },
-    ]) 
+    ])
   }
 
   const handleRemoveFlashcard = (index: number) => {
@@ -62,7 +61,6 @@ const FlashcardSetForm = ({
     // Return false if there are no flashcards in the set
     if (flashcards.length === 0) {
       showToast('The set must contain at least one flashcard', 'error')
-      errorRef.current?.scrollIntoView({ behavior: 'smooth' })
       return false
     }
 
@@ -71,12 +69,10 @@ const FlashcardSetForm = ({
       const { question, answer } = flashcards[i]
       if (!question.trim()) {
         showToast(`The question field for Flashcard ${i + 1} must be filled`, 'error')
-        errorRef.current?.scrollIntoView({ behavior: 'smooth' })
         return false
       }
       if (!answer.trim()) {
         showToast(`The answer field for Flashcard ${i + 1} must be filled`, 'error')
-        errorRef.current?.scrollIntoView({ behavior: 'smooth' })
         return false
       }
     }
@@ -108,7 +104,6 @@ const FlashcardSetForm = ({
     } else {
       const errorData = await res.json()
       showToast(errorData.message || 'Failed to create flashcard set', 'error')
-      errorRef.current?.scrollIntoView({ behavior: 'smooth' }) // Scroll to error
     }
   }
 
@@ -182,13 +177,15 @@ const FlashcardSetForm = ({
                   <option value="medium">Medium</option>
                   <option value="hard">Hard</option>
                 </select>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveFlashcard(index)}
-                  className="text-red-600 hover:text-red-800 underline mt-2"
-                >
-                  Remove
-                </button>
+                <div className='flex justify-end'>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFlashcard(index)}
+                    className="item_delete_btn"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -200,11 +197,11 @@ const FlashcardSetForm = ({
         <button
           type="button"
           onClick={handleAddFlashcard}
-          className="w-full item_preview_btn"
+          className="w-full item_add_btn"
         >
           Add Flashcard
         </button>
-        <button type="submit" className="w-full item_preview_btn">
+        <button type="submit" className="w-full item_save_btn">
           Save Flashcard Set
         </button>
       </div>

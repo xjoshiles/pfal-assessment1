@@ -1,88 +1,193 @@
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
-import { useLogout } from '@/lib/logout'
-import { UserType } from '@/lib/types'
+import React from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { usePathname } from "next/navigation"
+import { useState } from "react"
+import { useUserContext } from "@/context/UserContext"
+import { useLogout } from "@/lib/logout"
+import {
+  ArrowLeftStartOnRectangleIcon,
+  ArrowRightStartOnRectangleIcon,
+  Bars3Icon,
+  Cog6ToothIcon,
+  HomeIcon,
+  LockClosedIcon,
+  RectangleStackIcon,
+  UserCircleIcon,
+  UserPlusIcon,
+  WalletIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline"
 
-export default function Navbar({ user }: { user: UserType }) {
-  const [session, setSession] = useState(user)
-  const pathname = usePathname()
+type menuType = {
+  title: string
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
+  gapAfter?: boolean
+  path: string
+}
+
+export default function Navbar() {
+  const user = useUserContext()
   const { handleLogout } = useLogout()
+  const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(true)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
-  // Fetch session data when the pathname changes
-  // (whenever the user navigates to a new route)
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const response = await fetch('/api/get-session', {
-          method: 'GET',
-          headers: {
-            accept: 'application/json'
-          }
-        })
-        const user = await response.json()
-        // console.log(data)
-        setSession(user as UserType)  // Update session with fetched data
-
-      } catch (error) {
-        console.error('Error fetching session:', error)
-      }
+  const NavItems: menuType[] = [
+    {
+      title: "Home",
+      icon: HomeIcon,
+      path: "/"
     }
-    fetchSession()        // Fetch session data on route change
-  }, [pathname])          // Ensure fetch whenever the user navigates
+  ]
+
+  if (user.id) {
+    NavItems.push(
+      {
+        title: "My Library",
+        icon: UserCircleIcon,
+        gapAfter: true,
+        path: `/users/${user.id}`
+      },
+      {
+        title: "Sets",
+        icon: RectangleStackIcon,
+        path: "/sets"
+      },
+      {
+        title: "Collections",
+        icon: WalletIcon,
+        gapAfter: true,
+        path: "/collections",
+      },
+      {
+        title: "Account",
+        icon: Cog6ToothIcon,
+        path: "/account",
+      })
+
+    if (user.admin) {
+      NavItems.push(
+        {
+          title: "Admin",
+          icon: LockClosedIcon,
+          path: "/admin"
+        })
+    }
+
+  } else {
+    NavItems.push(
+      {
+        title: "Login",
+        icon: ArrowRightStartOnRectangleIcon,
+        path: "/login"
+      },
+      {
+        title: "Register",
+        icon: UserPlusIcon,
+        path: "/register"
+      })
+  }
 
   return (
-    <header className='h-15 px-5 py-3 bg-white shadow-sm font-work-sans'>
-      <nav className='flex justify-between items-center'>
-        <Link href='/'>
-          <Image src='/logo.svg' alt='logo' width={144} height={36} />
-        </Link>
+    <div className="flex flex-col">
 
-        <div className='flex items-center gap-5 text-black'>
-          {session.id ? (
-            <>
-              <Link href='/library'>
-                <span>My Library</span>
-              </Link>
+      {/* Hamburger Button for Small Screens */}
+      <div className="bg-black-200 p-4 md:hidden flex items-center justify-between z-40">
+        <div onClick={() => setIsMobileOpen(!isMobileOpen)} className="cursor-pointer flex-between gap-4">
+          <Image
+            alt="TestVar logo"
+            src="/logo4.svg"
+            className={`cursor-pointer duration-500 ${isMobileOpen && "rotate-[360deg]"}`}
+            width={36}
+            height={34} />
+          <h1
+            className="text-white origin-left font-medium text-2xl"
+          >
+            TestVar
+          </h1>
+        </div>
+        <button
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          className="text-white focus:outline-none"
+        >
+          {isMobileOpen ? <XMarkIcon className="w-7 h-7" /> : <Bars3Icon className="w-8 h-8" />}
+        </button>
+      </div>
 
-              {/* Divider */}
-              <span className="w-0.5 h-9 bg-gray-400"></span>
-
-              <Link href='/sets'>
-                <span>Sets</span>
-              </Link>
-              <Link href='/collections'>
-                <span>Collections</span>
-              </Link>
-
-              {/* Divider */}
-              <span className="w-0.5 h-9 bg-gray-400"></span>
-              <button onClick={handleLogout}>Logout</button>
-
-              <Link href='/account'>
-                <span>Account</span>
-              </Link>
-
-              <Link href={`/users/${session.id}`}>
-                <span>{session.username}</span>
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link href='/register'>
-                <button>Register</button>
-              </Link>
-
-              <Link href='/login'>
-                <button>Login</button>
-              </Link>
-            </>
+      {/* Sidebar */}
+      <div
+        className={`fixed top-0 left-0 h-screen z-30 bg-black-200 p-5 pt-8
+          ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
+          md:translate-x-0 md:relative
+          ${isOpen ? "md:w-60" : "md:w-20"} w-60
+          transition-transform duration-500 ease-in-out 
+          md:transition-[width] md:duration-500
+          flex flex-col justify-between`}
+      >
+        <div>
+          <div className="flex gap-x-4 items-center">
+            <Image
+              alt="TestVar logo"
+              src="/logo4.svg"
+              className={`cursor-pointer duration-500 ${isOpen && "rotate-[360deg]"}`}
+              width={36}
+              height={34}
+              onClick={() => setIsOpen(!isOpen)}
+            />
+            <h1
+              className={`text-white origin-left font-medium text-2xl ${isOpen ? "menu-fade-in" : "menu-fade-out"}`}
+            >
+              TestVar
+            </h1>
+          </div>
+          <ul className="pt-6 font-semibold">
+            {NavItems.map((item, index) => (
+              <li key={index} className="mb-1">
+                <Link href={item.path} passHref>
+                  <button
+                    className={`${item.path === pathname ? "menu-button-selected" : "menu-button"}`}
+                  >
+                    <item.icon className="w-6 h-6 flex-shrink-0" />
+                    <span
+                      className={`ml-2 overflow-hidden whitespace-nowrap ${isOpen || isMobileOpen ? "menu-fade-in" : "menu-fade-out"}`}
+                    >
+                      {item.title}
+                    </span>
+                  </button>
+                </Link>
+                {/* Place a divider after the item if required */}
+                {item.gapAfter && <hr className="my-4 border-black-300" />}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="pb-4 font-semibold mt-auto">
+          {user.id && (
+            <button
+              onClick={() => { handleLogout() }}
+              className="menu-button"
+            >
+              <ArrowLeftStartOnRectangleIcon className="w-6 h-6 flex-shrink-0" />
+              <span
+                className={`ml-2 overflow-hidden whitespace-nowrap ${isOpen || isMobileOpen ? "menu-fade-in" : "menu-fade-out"}`}
+              >
+                Logout
+              </span>
+            </button>
           )}
         </div>
-      </nav>
-    </header>
+      </div>
+
+      {/* Overlay for Mobile Menu */}
+      {isMobileOpen && (
+        <div
+          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-20 md:hidden"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+    </div>
   )
 }

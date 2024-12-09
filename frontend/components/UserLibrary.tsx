@@ -15,7 +15,7 @@ const UserLibrary: React.FC<UserLibraryProps> = ({ sets, collections }) => {
   const [activeTab, setActiveTab] = useState<'sets' | 'collections'>('sets')
 
   return (
-    <div className="min-h-screen-nonav bg-gray-100 p-8">
+    <div className="min-h-screen-nonav p-8">
       <h1 className="text-3xl font-bold text-center text-gray-800">
         Your Library
       </h1>

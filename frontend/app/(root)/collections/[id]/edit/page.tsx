@@ -1,6 +1,8 @@
 import CollectionForm from "@/components/CollectionForm"
+import { getCurrentUser } from "@/lib/session"
 import { CollectionType } from "@/lib/types"
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
 interface EditCollectionProps {
   params: { id: string }
@@ -9,14 +11,22 @@ interface EditCollectionProps {
 export default async function EditCollection({ params }: EditCollectionProps) {
   const { id } = await params
   const collection = await getCollectionById(id) as CollectionType
+  const user = await getCurrentUser()
+
+  // Redirect user to the collection if they do not have permission to edit
+  if (collection.userId != user.id) {
+    redirect(`/collections/${id}`)
+  }
+
+  // Get the available sets to pass to the form component
   const sets = await getFlashcardSets()
 
   // Extract the flashcard set IDs to pass to the form component
   const flashcardSetIds = collection.flashcardSets.map(set => set.id)
 
   return (
-    <section className="bg-gray-100">
-      <div className="section_container min-h-screen-nonav bg-gray-100 p-8">
+    <section>
+      <div className="section_container min-h-screen-nonav p-8">
         <h1 className="text-3xl font-bold text-center text-gray-800">
           Edit Flashcard Set Collection
         </h1>

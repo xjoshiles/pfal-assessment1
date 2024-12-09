@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // Props that the Toast component will receive
 type ToastProps = {
@@ -14,11 +14,18 @@ type ToastState = (Omit<ToastProps, 'onFadeOut'> & { id: number }) | null
 export function Toast({ message, type, onFadeOut }: ToastProps) {
   // Initial state of false to render the toast as fully visible
   const [fadeOut, setFadeOut] = useState(false)
+  // Ref for the toast element
+  const toastRef = useRef<HTMLDivElement | null>(null)
 
   // Runs when mounted (rendered for the first time. Re-renders within
   // this Toast component will not trigger the useEffect again unless
   // any of its dependencies change)
   useEffect(() => {
+    // Automatically scroll the toast into view when it's rendered
+    if (toastRef.current) {
+      toastRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+
     // Start fade-out after 3 seconds (re-render of Toast component)
     const fadeTimer = setTimeout(() => setFadeOut(true), 3000)
 
@@ -35,6 +42,7 @@ export function Toast({ message, type, onFadeOut }: ToastProps) {
 
   return (
     <div
+      ref={toastRef}
       className={`${type === 'success' ? 'form-success-text' : 'form-error-text'}
       transition-opacity duration-1000 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}
     >

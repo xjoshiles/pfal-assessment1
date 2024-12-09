@@ -149,11 +149,13 @@ export default class FlashcardsController {
       // here as it is part of a larger transaction, ensuring consistency 
       const set = await FlashcardSet.find(id, { client: trx })
       if (!set) {
+        await trx.rollback()
         return response.notFound({ message: `Set ${id} not found` })
       }
 
       // If the current user is not the creator of the set nor an admin
       if (auth.user!.id != set.userId && !auth.user?.admin) {
+        await trx.rollback()
         return response.unauthorized({
           message: "You are not authorised to perform this action"
         })

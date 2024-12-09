@@ -39,7 +39,7 @@ const SetSelect = ({
         {onRemove && (
           <button
             onClick={onRemove}
-            className="form-button-disable-round"
+            className="item_delete_btn"
           >
             Remove
           </button>

@@ -35,13 +35,14 @@ router.get('/', async () => {
 //query gives me { oh: '2', adonis: [ 'sets', '3' ] }
 
 
+// Routes for users and managing authentication
 router.resource('/users', UsersController).use(['index', 'show', 'update', 'destroy'], middleware.auth())
-router.resource('/sets', FlashcardsController).use(['index', 'show', 'store', 'update', 'destroy'], middleware.auth())
+router.put('/users/:id/admin', [UsersController, 'updateAdmin']).use(middleware.auth())
 router.post('/login', [AuthController, 'login'])
 router.post('/logout', [AuthController, 'logout']).use(middleware.auth())
-router.get('/auth/me', [AuthController, 'authorised'])
 
-router.put('/users/:id/admin', [UsersController, 'updateAdmin']).use(middleware.auth())
+router.resource('/sets', FlashcardsController).use(['index', 'show', 'store', 'update', 'destroy'], middleware.auth())
+router.get('/auth/me', [AuthController, 'authorised'])
 
 router.post('/sets/:id/review', [SetReviewsController, 'store']).use(middleware.auth())
 router.get('/sets/:id/review', [SetReviewsController, 'show']).use(middleware.auth())

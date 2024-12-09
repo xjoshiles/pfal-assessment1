@@ -162,11 +162,13 @@ export default class CollectionsController {
       // here as it is part of a larger transaction, ensuring consistency 
       const collection = await Collection.find(id, { client: trx })
       if (!collection) {
+        await trx.rollback()
         return response.notFound({ message: `Collection ${id} not found` })
       }
 
       // If the current user is not the creator of the collection nor an admin
       if (auth.user!.id != collection.userId && !auth.user?.admin) {
+        await trx.rollback()
         return response.unauthorized({
           message: "You are not authorised to perform this action"
         })

@@ -62,6 +62,22 @@ body {
     @apply text-30-semibold text-black-100
   }
 
+  .menu-button {
+    @apply flex w-full items-center p-2 gap-x-4 rounded-md text-gray-300 text-sm hover:bg-black-100
+  }
+
+  .menu-button-selected {
+    @apply flex w-full items-center p-2 gap-x-4 rounded-md text-gray-300 text-sm bg-gray-700 text-blue-300
+  }
+
+  .menu-fade-in {
+    @apply transition-opacity duration-500 ease-in-out opacity-100
+  }
+
+  .menu-fade-out {
+    @apply transition-opacity duration-500 ease-in-out opacity-0
+  }
+
   .form-textbox {
     @apply block w-full px-4 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500
   }
@@ -88,10 +104,6 @@ body {
 
   .form-button-disable {
     @apply px-4 py-2 text-white bg-red-500 rounded-md transition duration-100 hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-red-400 focus:outline-none
-  }
-
-  .form-button-disable-round {
-    @apply px-4 py-2 text-white bg-red-500 rounded-full transition duration-100 hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-red-400 focus:outline-none
   }
 
   .form-error-text {
@@ -127,7 +139,7 @@ body {
   }
 
   .min-h-screen-nonav {
-    @apply h-[calc(100vh-60px)]
+    @apply h-[calc(100vh)]
   }
 
   .section_container {
@@ -135,7 +147,7 @@ body {
   }
 
   .card_grid {
-    @apply grid md:grid-cols-3 sm:grid-cols-2 gap-5
+    @apply grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-5
   }
 
   .card_grid-sm {
@@ -168,6 +180,34 @@ body {
   }
 
   .item_preview_btn {
-    @apply rounded-full bg-black-200 font-medium text-[16px] text-white px-5 py-3 !important
+    @apply px-4 py-2 text-white bg-black-200 rounded-full transition duration-100 hover:bg-black-100 focus-visible:ring-2 focus-visible:ring-black-300 focus:outline-none
+  }
+
+  .item_edit_btn {
+    @apply px-4 py-2 text-white bg-primary rounded-full transition duration-100 hover:bg-primary-700 focus-visible:ring-2 focus-visible:ring-blue-400 focus:outline-none
+  }
+
+  .item_delete_btn {
+    @apply px-4 py-2 text-white bg-red-500 rounded-full transition duration-100 hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-red-400 focus:outline-none
+  }
+
+  .item_add_btn {
+    @apply px-5 py-3 text-white font-medium bg-teal-600 rounded-full transition duration-100 hover:bg-teal-700 focus-visible:ring-2 focus-visible:ring-teal-500 focus:outline-none
+  }
+
+  .item_save_btn {
+    @apply px-5 py-3 text-white font-medium bg-primary rounded-full transition duration-100 hover:bg-primary-700 focus-visible:ring-2 focus-visible:ring-blue-400 focus:outline-none
+  }
+
+  .scrollbar-hidden {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* Internet Explorer 10+ */
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, and Edge */
   }
 }

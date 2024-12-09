@@ -1,6 +1,5 @@
 import ReviewsSection from '@/components/ReviewsSection'
 import { cookies } from 'next/headers'
-import { getCurrentUser } from '@/lib/session'
 import SetsPanel from '@/components/SetsPanel'
 
 interface CollectionProps {
@@ -10,10 +9,9 @@ interface CollectionProps {
 const Collection = async ({ params }: CollectionProps) => {
   const { id } = await params
   const collection = await getCollectionById(id)
-  const user = await getCurrentUser()
 
   return (
-    <div className="min-h-screen-nonav bg-gray-100 p-8">
+    <div className="min-h-screen-nonav p-8">
       <h1 className="text-3xl font-bold text-center text-gray-800">{collection.name}</h1>
       {!collection.flashcardSets || collection.flashcardSets.length === 0 ? (
         <div className='no-results'>No flashcard sets found for this collection</div>
@@ -23,7 +21,6 @@ const Collection = async ({ params }: CollectionProps) => {
           <ReviewsSection
             setId={id}
             initialReviews={collection.reviews}
-            currentUser={user}
             resourceType={'collections'}
           />
         </>

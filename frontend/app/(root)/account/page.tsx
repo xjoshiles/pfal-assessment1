@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { UserType } from '@/lib/types'
+import { useUserContext } from '@/context/UserContext'
 
 export default function UpdateAccountPage() {
   const [error, setError] = useState<string | null>(null)
@@ -10,30 +10,9 @@ export default function UpdateAccountPage() {
   const [isDisabled, setIsDisabled] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false) // Modal visibility state
   const [currentPassword, setCurrentPassword] = useState('') // Current password state
-  const [user, setUser] = useState<any>(null) // Store the user session
+  const user = useUserContext()
   const modalRef = useRef<HTMLDivElement>(null) // Reference to the modal content
   const router = useRouter()
-
-  // Fetch user session on page load
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const response = await fetch('/api/get-session')
-        if (response.ok) {
-          const user = await response.json()
-          setUser(user as UserType) // Set the user data
-        } else {
-          setError("Failed to fetch session. Please log in again.")
-          router.push('/login') // Redirect if not authenticated
-        }
-      } catch (err) {
-        setError("An error occurred while fetching session.")
-        console.error(err)
-      }
-    }
-
-    fetchSession()
-  }, [router])
 
   // Close modal if user clicks outside of it
   const handleOutsideClick = (event: MouseEvent) => {
@@ -112,9 +91,9 @@ export default function UpdateAccountPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen-nonav bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen-nonav">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
-        <h1 className="text-2xl font-bold text-center text-gray-800">Account</h1>
+        <h1 className="text-2xl font-bold text-center text-gray-800">Change Your Password</h1>
 
         {error && (<div className="form-error-text">{error}</div>)}
         {success && (<div className="form-success-text">{success}</div>)}
