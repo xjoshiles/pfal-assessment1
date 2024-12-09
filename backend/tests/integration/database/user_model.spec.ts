@@ -39,56 +39,96 @@ test.group('User Model', (group) => {
     assert.isTrue(await hash.verify(user.password, newPassword))
   })
 
-  test('query related models', async ({ assert }) => {
+  test('query set reviews for user', async ({ assert }) => {
     const user = await UserFactory
       .merge({ id: 1 })
-      .with('setReviews', 1,
-        (review) => review.with('flashcardSet', 1,
-          (flashcardSet) => flashcardSet.merge({ userId: 1 })))
-      .with('collectionReviews', 1,
-        (review) => review.with('collection', 1,
-          (collection) => collection.merge({ userId: 1 })))
+      .with('setReviews', 1, (review) => review.with(
+        'flashcardSet', 1, (flashcardSet) => flashcardSet.merge({ userId: 1 })))
       .create()
 
     const setReviews = await user.related('setReviews').query()
     assert.isArray(setReviews)
     assert.lengthOf(setReviews, 1)
+  })
+
+  test('query flashcard sets for user', async ({ assert }) => {
+    const user = await UserFactory
+      .merge({ id: 1 })
+      .with('setReviews', 1, (review) => review.with(
+        'flashcardSet', 1, (flashcardSet) => flashcardSet.merge({ userId: 1 })))
+      .create()
 
     const flashcardSets = await user.related('flashcardSets').query()
     assert.isArray(flashcardSets)
     assert.lengthOf(flashcardSets, 1)
+  })
 
-    const collectionReviews = await user.related('collectionReviews').query()
+  test('query collection reviews for user', async ({ assert }) => {
+    const user = await UserFactory
+      .merge({ id: 1 })
+      .with('collectionReviews', 1, (review) => review.with('collection', 1, (collection) => collection.merge({ userId: 1 })))
+      .create()
+
+    const collectionReviews = await user.related(
+      'collectionReviews').query()
     assert.isArray(collectionReviews)
     assert.lengthOf(collectionReviews, 1)
+  })
+
+  test('query collections for user', async ({ assert }) => {
+    const user = await UserFactory
+      .merge({ id: 1 })
+      .with('collectionReviews', 1, (review) => review.with(
+        'collection', 1, (collection) => collection.merge({ userId: 1 })))
+      .create()
 
     const collections = await user.related('collections').query()
     assert.isArray(collections)
     assert.lengthOf(collections, 1)
   })
 
-  test('load related models', async ({ assert }) => {
+  test('load set reviews for user', async ({ assert }) => {
     const user = await UserFactory
       .merge({ id: 1 })
-      .with('setReviews', 1,
-        (review) => review.with('flashcardSet', 1,
-          (flashcardSet) => flashcardSet.merge({ userId: 1 })))
-      .with('collectionReviews', 1,
-        (review) => review.with('collection', 1,
-          (collection) => collection.merge({ userId: 1 })))
+      .with('setReviews', 1, (review) => review.with(
+        'flashcardSet', 1, (flashcardSet) => flashcardSet.merge({ userId: 1 })))
       .create()
 
     await user.load('setReviews')
     assert.isArray(user.setReviews)
     assert.lengthOf(user.setReviews, 1)
+  })
+
+  test('load flashcard sets for user', async ({ assert }) => {
+    const user = await UserFactory
+      .merge({ id: 1 })
+      .with('setReviews', 1, (review) => review.with(
+        'flashcardSet', 1, (flashcardSet) => flashcardSet.merge({ userId: 1 })))
+      .create()
 
     await user.load('flashcardSets')
     assert.isArray(user.flashcardSets)
     assert.lengthOf(user.flashcardSets, 1)
+  })
+
+  test('load collection reviews for user', async ({ assert }) => {
+    const user = await UserFactory
+      .merge({ id: 1 })
+      .with('collectionReviews', 1, (review) => review.with(
+        'collection', 1, (collection) => collection.merge({ userId: 1 })))
+      .create()
 
     await user.load('collectionReviews')
     assert.isArray(user.collectionReviews)
     assert.lengthOf(user.collectionReviews, 1)
+  })
+
+  test('load collections for user', async ({ assert }) => {
+    const user = await UserFactory
+      .merge({ id: 1 })
+      .with('collectionReviews', 1, (review) => review.with(
+        'collection', 1, (collection) => collection.merge({ userId: 1 })))
+      .create()
 
     await user.load('collections')
     assert.isArray(user.collections)

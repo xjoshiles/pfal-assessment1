@@ -8,8 +8,7 @@ export const FlashcardSetFactory = factory
   .define(FlashcardSet, async ({ faker }) => {
     return {
       name: faker.lorem.words(),
-      description: faker.lorem.sentence(),
-      // userId: faker.number.int({ min: 1 })
+      description: faker.lorem.sentence()
     }
   })
   .relation('flashcards', () => FlashcardFactory)

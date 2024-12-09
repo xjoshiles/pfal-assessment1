@@ -1,13 +1,17 @@
 import type { HttpContext } from '@adonisjs/core/http'
 import User from '#models/user'
+import { LoginUserValidator } from '#validators/login_user'
 
 export default class AuthController {
 
   async login({ request, response }: HttpContext) {
-    const { username, password } = request.only(['username', 'password'])
-
     try {
-      // Verify credentials and get user (throws exception if fail)
+      // Validate that a username and password was provided (error if fail)
+      const { username, password } = await request.validateUsing(
+        LoginUserValidator
+      )
+
+      // Verify credentials and get user (error if fail)
       const user = await User.verifyCredentials(username, password)
 
       // Generate a token for the user
@@ -17,8 +21,18 @@ export default class AuthController {
       return response.ok({ token, user })
 
     } catch (error) {
-      return response.unauthorized({
-        message: 'Invalid username or password',
+      if (error.code === 'E_VALIDATION_ERROR') {
+        return response.unprocessableEntity({
+          message: 'Username or password was not provided',
+        })
+      }
+      if (error.code === 'E_INVALID_CREDENTIALS') {
+        return response.unauthorized({
+          message: 'Invalid username or password'
+        })
+      }
+      return response.internalServerError({
+        message: error.message || 'Unable to login'
       })
     }
   }

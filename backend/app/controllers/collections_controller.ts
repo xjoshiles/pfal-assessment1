@@ -6,7 +6,7 @@ import db from '@adonisjs/lucid/services/db'
 import { errors } from '@vinejs/vine'
 import User from '#models/user'
 import { DateTime } from 'luxon'
-import { areSetsEqual } from '../utils/array.js'
+import { areSetsEqual } from '#utils/array'
 
 async function getCollectionAverageRating(collectionId: number) {
   // Consider caching this result using a caching library when the application

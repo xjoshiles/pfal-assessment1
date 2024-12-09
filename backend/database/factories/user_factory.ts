@@ -8,7 +8,7 @@ import { CollectionFactory } from '#database/factories/collection_factory'
 export const UserFactory = factory
   .define(User, ({ faker }) => {
     return {
-      username: faker.internet.username(),
+      username: faker.lorem.word({ length: { min: 3, max: 12 } }),
       password: faker.internet.password(),
       admin: false  // Default is false, will be overridden when needed
     }

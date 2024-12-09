@@ -30,13 +30,21 @@ export default class UsersController {
       return response.created(user)
 
     } catch (error) {
-      // Return first error message if it's a validation error
       if (error instanceof errors.E_VALIDATION_ERROR) {
+
+        // Return 409 status code if username already exists
+        if (error.messages[0].rule == 'database.unique') {
+          return response.conflict({
+            message: error.messages[0].message
+          })
+        }
+
+        // Else return 422 for other validation errors
         return response.unprocessableEntity({
-          message: error.messages[0].message  // (VineJS SimpleErrorReporter)
+          message: error.messages[0].message
         })
       }
-      // Else...
+
       return response.internalServerError({
         message: error.message || 'Unable to create user'
       })
@@ -119,22 +127,24 @@ export default class UsersController {
     if (auth.user!.id != user.id && !auth.user?.admin) {
       return response.unauthorized({
         message: "You are not authorised to perform this action",
-        error: "Unauthorised"
       })
     }
 
     try {
-      const payload = await request.validateUsing(DeleteUserValidator)
+      // Ensure that regular users must provide their correct password
+      if (!auth.user?.admin) {
+        const payload = await request.validateUsing(DeleteUserValidator)
 
-      // Ensure the given password is correct before continuing
-      const isValid = await hash.verify(user.password, payload.password)
-      if (!isValid) {
-        return response.unauthorized({
-          message: "The current password was incorrect",
-          error: "Unauthorised"
-        })
+        // Ensure the given password is correct before continuing
+        const isValid = await hash.verify(user.password, payload.password)
+        if (!isValid) {
+          return response.unauthorized({
+            message: "The current password was incorrect"
+          })
+        }
       }
 
+      // By this point the user has verified their password or is admin
       await user.delete()
       return response.noContent()
 
@@ -147,8 +157,7 @@ export default class UsersController {
       }
       // Else...
       return response.internalServerError({
-        message: 'Unable to delete user',
-        errors: error.messages || error.message,
+        message: error.message || 'Unable to delete user',
       })
     }
   }

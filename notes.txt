@@ -8,6 +8,12 @@ Run integration tests: node ace test integration
 Run all tests: node ace test
 
 
+if a belongs to b, deleting b should delete a
+if a belongs to b, deleting a should not affect a
+
+
+
+
 
 If you're sending an actual HTTP request to the POST /users endpoint to test
 the API workflow, it's a functional test. Functional tests focus on the
