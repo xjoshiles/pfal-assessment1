@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import SetPreview from '@/components/SetPreview'
 import { FlashcardSetType } from '@/lib/types'
+import { ToastNotification, useToast } from '@/components/ToastNotification'
 
 const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
   // Sort sets by latest on initial load
@@ -12,6 +13,7 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
   )
   const [sets, setSets] = useState(initialSets)
   const [sortBy, setSortBy] = useState('latest') // Default sorting
+  const { toast, showToast, hideToast } = useToast()
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -27,22 +29,38 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
     setSets(sortedSets)
   }
 
+  async function handleDeleteSet(id: number) {
+    // Send the deletion request
+    const response = await fetch(`/api/sets/${id}`, { method: 'DELETE' })
+
+    if (response.status === 204) {
+      // Update the sets state after successful deletion
+      setSets((prevSets) => prevSets.filter((set) => set.id !== id))
+
+      showToast('Set deleted successfully', 'success')
+
+    } else {
+      const errorData = await response.json()
+      showToast(errorData.message || 'An error occurred', 'error')
+    }
+  }
+
   return (
     <div>
       <div className="flex items-center justify-center items-center mt-8 gap-4">
-        <Link href='/sets/create'>
-          <button className='item_preview_btn'>Create Set</button>
+        <Link href='/sets/create' passHref tabIndex={-1}>
+          <button className='item_preview_btn border-2 border-black-100'>Create Set</button>
         </Link>
 
-        <div className="flex justify-center item_preview_date border">
-          <label htmlFor="sort" className="text-gray-700 font-medium mr-2">
+        <div className="justify-center items-center sort">
+          <label htmlFor="sort" className="text-black-200 font-medium mr-1">
             Sort by
           </label>
           <select
             id="sort"
             value={sortBy}
             onChange={handleSortChange}
-            className="form-select border-gray-300 rounded-md"
+            className="option-select"
           >
             <option value="latest">Latest</option>
             <option value="rating">Rating</option>
@@ -52,13 +70,27 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
 
       <ul className="mt-8 card_grid">
         {sets?.length > 0 ? (
-          sets.map((set: FlashcardSetType, index: number) => (
-            <SetPreview key={set?.id} set={set} />
+          sets.map((set: FlashcardSetType) => (
+            <SetPreview
+              key={set?.id}
+              set={set}
+              onDeleteSet={handleDeleteSet}
+            />
           ))
         ) : (
-          <p className="no-results">No flashcard sets found</p>
+          <div className="no-results text-center">No flashcard sets found</div>
         )}
       </ul>
+
+      {/* Render toast notification if there is one */}
+      {toast && (
+        <ToastNotification
+          key={toast.id} // Ensures new instance
+          message={toast.message}
+          type={toast.type}
+          onFadeOut={hideToast}
+        />
+      )}
     </div>
   )
 }

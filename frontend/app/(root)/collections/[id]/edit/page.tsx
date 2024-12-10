@@ -26,19 +26,21 @@ export default async function EditCollection({ params }: EditCollectionProps) {
 
   return (
     <section>
-      <div className="section_container min-h-screen-nonav p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800">
-          Edit Flashcard Set Collection
+      <div className="min-h-screen">
+        <h1 className="title title-background">
+          Edit a Flashcard Set Collection
         </h1>
-        <CollectionForm
-          initialCollection={{
-            name: collection.name,
-            description: collection.description,
-            flashcardSetIds: flashcardSetIds
-          }}
-          collectionId={id}
-          sets={sets}
-        />
+        <div className="section_container">
+          <CollectionForm
+            initialCollection={{
+              name: collection.name,
+              description: collection.description,
+              flashcardSetIds: flashcardSetIds
+            }}
+            collectionId={id}
+            sets={sets}
+          />
+        </div>
       </div>
     </section>
   )

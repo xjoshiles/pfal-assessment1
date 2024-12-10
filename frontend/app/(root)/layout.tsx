@@ -1,4 +1,4 @@
-import Navbar from '@/components/Navbar'
+import Sidebar from '@/components/Sidebar'
 import { UserProvider } from '@/context/UserContext'
 import { getCurrentUser } from '@/lib/session'
 
@@ -8,12 +8,12 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
   return (
     <main className="font-work-sans h-screen">
       <UserProvider initialUser={user}>
-          <div className="relative h-full flex flex-col w-full md:flex-row overflow-hidden">
+          <div className="relative h-full flex flex-col w-full md:flex-row">
             {/* Sidebar */}
-            <Navbar />
+            <Sidebar />
             {/* Content */}
             <div
-              className="flex flex-col flex-grow overflow-y-auto mb-8"
+              className="flex flex-col flex-grow overflow-y-auto"
             >
               {children}
             </div>

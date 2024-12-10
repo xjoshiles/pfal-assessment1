@@ -132,7 +132,7 @@ const ReviewsSection = ({
 
             {/* Error message when failing to submit review */}
             {error && <p className="form-error-text">{error}</p>}
-            <button type="submit" className="w-full form-button">
+            <button type="submit" className="w-full item_preview_btn text-xl">
               Submit Review
             </button>
           </form>

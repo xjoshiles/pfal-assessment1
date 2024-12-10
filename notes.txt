@@ -1,17 +1,34 @@
 to-do:
 
+question difficulty when viewing set
+delete users from admin panel
+spacing at bottom of pages
+delete button on reviews
 
-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-The set creation limit should only apply to non-admin users...
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+backend tests and OpenAPI file
+frontend tests
+
 
 
 node ace make:test posts/create --suite=functional
 
-Run unit tests: node ace test unit
-Run integration tests: node ace test integration
-Run all tests: node ace test
+Run unit tests:
+ node ace test unit
 
+Run integration tests:
+ node ace test integration
+
+Run functional tests:
+ node ace test functional
+
+Run all tests:
+ node ace test
+
+Specific file (from backend directory):
+ node ace test --files tests/functional/sets/store.spec.ts
+
+
+node ace test integration /sets/store
 
 if a belongs to b, deleting b should delete a
 if a belongs to b, deleting a should not affect a

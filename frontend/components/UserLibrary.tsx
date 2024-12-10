@@ -5,57 +5,55 @@ import SetsPanel from '@/components/SetsPanel'
 import CollectionsPanel from '@/components/CollectionsPanel'
 import { FlashcardSetType } from '@/lib/types'
 import { CollectionType } from '@/lib/types'
+import { RectangleStackIcon, WalletIcon } from '@heroicons/react/24/outline'
 
 type UserLibraryProps = {
+  username: string
   sets: FlashcardSetType[]
   collections: CollectionType[]
 }
 
-const UserLibrary: React.FC<UserLibraryProps> = ({ sets, collections }) => {
+const UserLibrary: React.FC<UserLibraryProps> = ({ username, sets, collections }) => {
   const [activeTab, setActiveTab] = useState<'sets' | 'collections'>('sets')
 
   return (
-    <div className="min-h-screen-nonav p-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800">
-        Your Library
-      </h1>
-      <div className="mt-6 flex justify-center">
-        <button
-          className={`px-4 py-2 mx-2 ${
-            activeTab === 'sets' ? 'bg-blue-600 text-white' : 'bg-gray-200'
-          } rounded-md`}
-          onClick={() => setActiveTab('sets')}
-        >
-          Flashcard Sets
-        </button>
-        <button
-          className={`px-4 py-2 mx-2 ${
-            activeTab === 'collections' ? 'bg-blue-600 text-white' : 'bg-gray-200'
-          } rounded-md`}
-          onClick={() => setActiveTab('collections')}
-        >
-          Collections
-        </button>
+    <div className="min-h-screen z-60">
+
+      {/* Tab Controls */}
+      <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-y-2 gap-x-4 md:gap-y-0 px-2 bg-black-200 py-2 mt-0.5 md:mt-0 overflow-x-hidden">
+        {/* Tabs */}
+        <div className="flex flex-row gap-x-2 items-center">
+          <button
+            className={`${activeTab === 'sets' ? 'tab-selected' : 'tab'}`}
+            onClick={() => setActiveTab('sets')}
+          >
+            <RectangleStackIcon className="w-6 h-6 flex-shrink-0" />
+            Sets
+          </button>
+          <button
+            className={`${activeTab === 'collections' ? 'tab-selected' : 'tab'}`}
+            onClick={() => setActiveTab('collections')}
+          >
+            <WalletIcon className="w-6 h-6 flex-shrink-0" />
+            Collections
+          </button>
+        </div>
+
+        {/* Header */}
+        <div className='items-center'>
+          <h1 className="title">
+            {username}'s library
+          </h1>
+        </div>
+
+        {/* Empty Flex div for Centering of Header */}
+        <div className='flex min-w-[274px] hidden md:block'></div>
       </div>
-      <div className="mt-8">
-        {activeTab === 'sets' && (
-          <>
-            {!sets || sets.length === 0 ? (
-              <div className="no-results text-center">No flashcard sets found</div>
-            ) : (
-              <SetsPanel initialSets={sets} />
-            )}
-          </>
-        )}
-        {activeTab === 'collections' && (
-          <>
-            {!collections || collections.length === 0 ? (
-              <div className="no-results text-center">No collections found</div>
-            ) : (
-              <CollectionsPanel initialCollections={collections} />
-            )}
-          </>
-        )}
+
+      {/* Content */}
+      <div className="mt-8 px-8">
+        {activeTab === 'sets' && (<SetsPanel initialSets={sets} />)}
+        {activeTab === 'collections' && (<CollectionsPanel initialCollections={collections} />)}
       </div>
     </div>
   )

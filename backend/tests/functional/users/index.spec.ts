@@ -18,6 +18,7 @@ test.group('Get All Users', (group) => {
   })
 
   test('return 401 when trying to retrieve all users without authentication', async ({ assert, client }) => {
+    // Make an unauthenticated request
     const response = await client.get('/users')
 
     assert.equal(response.response.statusCode, 401) // Unauthorized

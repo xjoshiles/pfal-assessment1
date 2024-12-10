@@ -5,15 +5,11 @@ const Collections = async () => {
   const collections = await getCollections()
 
   return (
-    <div className="min-h-screen-nonav p-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800">Flashcard Set Collections</h1>
-      {!collections || collections.length === 0 ? (
-        <div className='no-results'>No collections found</div>
-      ) : (
-        <>
-          <CollectionsPanel initialCollections={collections} />
-        </>
-      )}
+    <div className="min-h-screen">
+      <h1 className="title title-background">Flashcard Set Collections</h1>
+      <div className='px-8'>
+        <CollectionsPanel initialCollections={collections} />
+      </div>
     </div>
   )
 }

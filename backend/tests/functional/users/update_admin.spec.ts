@@ -29,10 +29,7 @@ test.group("Update Admin Status of User by ID", (group) => {
       .json({ admin: validAdminStatus })
 
     assert.equal(response.response.statusCode, 200) // OK
-    assert.equal(
-      response.response.body.message,
-      'Admin status updated successfully'
-    )
+    assert.isTrue(response.response.body.admin)     // check returned user
 
     // Fetch updated user and check if admin status is true
     const updatedUser = await User.find(regularUser.id)

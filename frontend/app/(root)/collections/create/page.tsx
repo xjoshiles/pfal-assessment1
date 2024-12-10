@@ -7,11 +7,11 @@ export default async function CreateCollection() {
 
   return (
     <section>
-      <div className="section_container min-h-screen-nonav p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800">
-          Create Flashcard Set Collection
+      <div className="min-h-screen">
+        <h1 className="title title-background">
+          Create a Flashcard Set Collection
         </h1>
-        <div>
+        <div className="section_container">
           <CollectionForm sets={sets} />
         </div>
       </div>

@@ -1,101 +1,130 @@
-import Image from "next/image";
+import { getCurrentUser } from '@/lib/session'
+import Image from 'next/image'
+import Link from 'next/link'
+import { ReactNode } from 'react'
 
-export default function Home() {
+type FeatureCardProps = {
+  icon: ReactNode     // Accepts any React component or JSX (like an SVG)
+  title: string       // The title of the feature
+  description: string // Description text
+  linkText: string    // Text for the link
+  href: string        // URL for the link
+  bgColor: string     // Tailwindcss utility class for background color
+}
+
+export default async function Home() {
+  const user = await getCurrentUser()
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen-nonav p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+    <div className="min-h-screen text-gray-800 flex flex-col items-center px-6 py-8">
+      {/* Logo Section */}
+      <div className="flex flex-col items-center text-center space-y-4">
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+          src="/logo4.svg"
+          alt="Flashcard App Logo"
+          width={128}
+          height={128}
+          className="md:w-32 md:h-32"
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+        <h1 className="text-4xl font-extrabold text-gray-900">TestVar</h1>
+        <p className="text-lg text-gray-600">Learn smarter, one flashcard at a time.</p>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Features Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12 max-w-7xl w-full">
+        {/* Create Flashcard Sets */}
+        <FeatureCard
+          icon={
+            <svg
+              className="w-10 h-10 text-blue-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          }
+          title="Create Flashcard Sets"
+          description="Easily create custom flashcard sets to master any topic."
+          linkText="Get Started →"
+          href="/sets/create"
+          bgColor="bg-blue-100"
+        />
+
+        {/* Create Collections */}
+        <FeatureCard
+          icon={
+            <svg
+              className="w-10 h-10 text-green-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14m-7-7v14" />
+            </svg>
+          }
+          title="Organize Collections"
+          description="Group your flashcard sets into collections for better organization."
+          linkText="Start Organizing →"
+          href="/collections/create"
+          bgColor="bg-green-100"
+        />
+
+        {/* Leave Reviews */}
+        <FeatureCard
+          icon={
+            <svg
+              className="w-10 h-10 text-yellow-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 4.5l3.09 6.26L21 12l-5.91 1.24L12 19.5l-3.09-6.26L3 12l5.91-1.24L12 4.5z"
+              />
+            </svg>
+          }
+          title="Leave Reviews"
+          description="Share your thoughts on flashcard sets and collections to help others."
+          linkText="Browse Sets →"
+          href="/sets"
+          bgColor="bg-yellow-100"
+        />
+      </div>
+
+      {/* Call to action if user is not logged in */}
+      {!user.id && (
+        <div className="mt-16 text-center">
+          <h2 className="text-2xl font-bold text-gray-900">Start Learning Today</h2>
+          <p className="text-gray-600 mt-2">
+            Join other users using TestVar to achieve their goals. It's completely free!
+          </p>
+          <Link href="/register" className="mt-6 inline-block text-2xl item_preview_btn !px-10 !py-4">
+            Register
+          </Link>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
     </div>
-  );
+  )
+}
+
+const FeatureCard: React.FC<FeatureCardProps> = (
+  { icon, title, description, linkText, href, bgColor }
+) => {
+  return (
+    <>
+      <div className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center text-center">
+        <div className={`${bgColor} p-4 rounded-full`}>{icon}</div>
+        <h2 className="text-xl font-semibold mt-4">{title}</h2>
+        <p className="text-gray-600 mt-2">{description}</p>
+        <Link href={href} className="mt-4 text-primary hover:underline font-medium">{linkText}</Link>
+      </div>
+    </>
+  )
 }

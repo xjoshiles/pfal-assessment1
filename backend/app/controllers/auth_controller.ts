@@ -23,7 +23,7 @@ export default class AuthController {
     } catch (error) {
       if (error.code === 'E_VALIDATION_ERROR') {
         return response.unprocessableEntity({
-          message: 'Username or password was not provided',
+          message: error.messages[0].message  // (VineJS SimpleErrorReporter)
         })
       }
       if (error.code === 'E_INVALID_CREDENTIALS') {

@@ -1,16 +1,24 @@
-import FlashcardSetForm from "@/components/FlashcardSetForm"
+import FlashcardSetForm from "@/components/SetForm"
 import { cookies } from "next/headers"
+import { getCurrentUser } from "@/lib/session"
 
 export default async function CreateSet() {
+  const user = await getCurrentUser()
+  const canCreate = user.admin ? true : await canCreateSet()
+
   return (
     <section>
-      <div className="section_container h-screen p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800">
-          Create Flashcard Set
+      <div className="min-h-screen">
+        <h1 className="title title-background">
+          Create a Flashcard Set
         </h1>
 
-        {await canCreateSet() ? (
-          <FlashcardSetForm />
+        {canCreate ? (
+          <>
+            <div className="section_container">
+              <FlashcardSetForm />
+            </div>
+          </>
         ) : (
           <div className="form-error-text mt-8">
             Daily set creation limit reached, please try again tomorrow

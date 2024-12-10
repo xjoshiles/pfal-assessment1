@@ -33,7 +33,7 @@ export type FlashcardSetType = {
   updatedAt: Date
 }
 
-export type FlashcardSetFormType = {
+export type SetFormType = {
   name: string;
   description: string;
   flashcards: FlashcardType[];

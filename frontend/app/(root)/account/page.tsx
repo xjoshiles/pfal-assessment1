@@ -42,7 +42,7 @@ export default function UpdateAccountPage() {
       return
     }
 
-    if (newPassword == password){
+    if (newPassword == password) {
       setError("Your new password must be different than your current password")
       setIsDisabled(false)
       return
@@ -91,7 +91,7 @@ export default function UpdateAccountPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen-nonav">
+    <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
         <h1 className="text-2xl font-bold text-center text-gray-800">Change Your Password</h1>
 
@@ -122,19 +122,20 @@ export default function UpdateAccountPage() {
           </div>
           <button
             type="submit"
-            className={`w-full ${isDisabled ? "form-button-disabled" : "form-button"}`}
+            className={`w-full ${isDisabled ? "item_save_btn-disabled" : "item_save_btn"}`}
             disabled={isDisabled}
           >
             Update Password
           </button>
 
           {/* Account deletion */}
-          <div className='text-red-600 w-full text-center pt-10'>
+          <div className='text-center pt-10'>
             <button
+              className='text-sm item_delete_btn'
               type="button"
               onClick={() => {
                 if (!currentPassword) {
-                  setError("Please confirm you current password")
+                  setError("Please confirm your current password")
                   return
                 }
                 setShowDeleteModal(true)

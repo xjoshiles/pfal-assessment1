@@ -28,7 +28,7 @@ type menuType = {
   path: string
 }
 
-export default function Navbar() {
+export default function Sidebar() {
   const user = useUserContext()
   const { handleLogout } = useLogout()
   const pathname = usePathname()
@@ -119,10 +119,10 @@ export default function Navbar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-screen z-30 bg-black-200 p-5 pt-8
+        className={`fixed top-0 left-0 h-screen z-30 bg-black-200 p-4 pt-4
           ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
           md:translate-x-0 md:relative
-          ${isOpen ? "md:w-60" : "md:w-20"} w-60
+          ${isOpen ? "md:w-[210px]" : "md:w-[72px]"} w-[210px]
           transition-transform duration-500 ease-in-out 
           md:transition-[width] md:duration-500
           flex flex-col justify-between`}
@@ -146,7 +146,7 @@ export default function Navbar() {
           <ul className="pt-6 font-semibold">
             {NavItems.map((item, index) => (
               <li key={index} className="mb-1">
-                <Link href={item.path} passHref>
+                <Link href={item.path} passHref tabIndex={-1}>
                   <button
                     className={`${item.path === pathname ? "menu-button-selected" : "menu-button"}`}
                   >

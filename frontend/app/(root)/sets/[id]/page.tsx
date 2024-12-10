@@ -12,8 +12,9 @@ const FlashcardSet = async ({ params }: FlashcardSetProps) => {
 
   return (
     <div>
-      <div className="min-h-screen-nonav p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800">{set.name}</h1>
+      <div className="min-h-screen">
+        <h1 className="title title-background">{set.name}</h1>
+        <div className='section_container px-8'>
         {!set.flashcards || set.flashcards.length === 0 ? (
           <div className='no-results'>No flashcards found for this set</div>
         ) : (
@@ -26,6 +27,7 @@ const FlashcardSet = async ({ params }: FlashcardSetProps) => {
             />
           </>
         )}
+        </div>
       </div>
     </div>
   )

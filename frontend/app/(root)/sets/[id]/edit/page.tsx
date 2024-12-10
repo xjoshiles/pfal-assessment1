@@ -1,4 +1,4 @@
-import FlashcardSetForm from "@/components/FlashcardSetForm"
+import FlashcardSetForm from "@/components/SetForm"
 import { getCurrentUser } from "@/lib/session"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
@@ -19,11 +19,13 @@ export default async function EditSet({ params }: EditSetProps) {
 
   return (
     <section>
-      <div className="section_container min-h-screen-nonav p-8">
-        <h1 className="text-3xl font-bold text-center text-gray-800">
-          Edit Flashcard Set
+      <div className="min-h-screen">
+        <h1 className="title title-background">
+          Edit a Flashcard Set
         </h1>
+        <div className="section_container">
         <FlashcardSetForm initialSet={set} setId={id} />
+        </div>
       </div>
     </section>
   )

@@ -65,7 +65,10 @@ test.group('User Login', (group) => {
       .json({ password: validPassword }) // Missing username
 
     assert.equal(response.response.statusCode, 422) // Unprocessable Entity
-    assert.equal(response.response.body.message, 'Username or password was not provided')
+    assert.equal(
+      response.response.body.message,
+      'The username field must be defined'
+    )
   })
 
   test('return 422 when password is missing', async ({ assert, client }) => {
@@ -74,7 +77,10 @@ test.group('User Login', (group) => {
       .json({ username: validUsername }) // Missing password
 
     assert.equal(response.response.statusCode, 422) // Unprocessable Entity
-    assert.equal(response.response.body.message, 'Username or password was not provided')
+    assert.equal(
+      response.response.body.message,
+      'The password field must be defined'
+    )
   })
 
   test('return 422 when required fields are missing', async ({ assert, client }) => {
@@ -83,7 +89,10 @@ test.group('User Login', (group) => {
       .json({}) // No username and password
 
     assert.equal(response.response.statusCode, 422) // Unprocessable Entity
-    assert.equal(response.response.body.message, 'Username or password was not provided')
+    assert.equal(
+      response.response.body.message,
+      'The username field must be defined'
+    )
   })
 
   test('return 422 for incorrect data types', async ({ assert, client }) => {
@@ -92,6 +101,9 @@ test.group('User Login', (group) => {
       .json({ username: 12345, password: 'password' }) // Invalid username type
 
     assert.equal(response.response.statusCode, 422) // Unprocessable Entity
-    assert.equal(response.response.body.message, 'Username or password was not provided')
+    assert.equal(
+      response.response.body.message,
+      'The username field must be a string'
+    )
   })
 })

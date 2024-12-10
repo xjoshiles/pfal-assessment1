@@ -43,7 +43,7 @@ export default function Logout() {
         {error && (<div className="form-error-text">{error}</div>)}
         {success && (<div className="form-success-text">{success}</div>)}
         
-        <button type="submit" className="w-full form-button" onClick={handleSubmit}>Logout</button>
+        <button type="submit" className="w-full item_save_btn" onClick={handleSubmit}>Logout</button>
       </div>
     </div>
   );

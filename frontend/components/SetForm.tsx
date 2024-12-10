@@ -3,10 +3,10 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Toast, useToast } from '@/components/Toast'
-import { FlashcardSetFormType } from '@/lib/types'
+import { SetFormType } from '@/lib/types'
 
-type FlashcardSetFormProps =
-  | { initialSet: FlashcardSetFormType; setId: string } // Both must be present
+type SetFormProps =
+  | { initialSet: SetFormType; setId: string } // Both must be present
   | { initialSet?: undefined; setId?: undefined }     // Neither can be present
 
 const newSetDefaults = {
@@ -15,10 +15,10 @@ const newSetDefaults = {
   flashcards: [{ question: '', answer: '', difficulty: 'easy' }]
 }
 
-const FlashcardSetForm = ({
+const SetForm = ({
   initialSet = newSetDefaults,
   setId
-}: FlashcardSetFormProps
+}: SetFormProps
 ) => {
   const [name, setName] = useState(initialSet.name)
   const [description, setDescription] = useState(initialSet.description)
@@ -221,4 +221,4 @@ const FlashcardSetForm = ({
   )
 }
 
-export default FlashcardSetForm
+export default SetForm

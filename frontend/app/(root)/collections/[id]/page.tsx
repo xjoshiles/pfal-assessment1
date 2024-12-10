@@ -11,20 +11,22 @@ const Collection = async ({ params }: CollectionProps) => {
   const collection = await getCollectionById(id)
 
   return (
-    <div className="min-h-screen-nonav p-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800">{collection.name}</h1>
-      {!collection.flashcardSets || collection.flashcardSets.length === 0 ? (
-        <div className='no-results'>No flashcard sets found for this collection</div>
-      ) : (
-        <>
-          <SetsPanel initialSets={collection.flashcardSets} />
-          <ReviewsSection
-            setId={id}
-            initialReviews={collection.reviews}
-            resourceType={'collections'}
-          />
-        </>
-      )}
+    <div className="min-h-screen">
+      <h1 className="title title-background">{collection.name}</h1>
+      <div className='px-8'>
+        {!collection.flashcardSets || collection.flashcardSets.length === 0 ? (
+          <div className='no-results'>No flashcard sets found for this collection</div>
+        ) : (
+          <>
+            <SetsPanel initialSets={collection.flashcardSets} />
+            <ReviewsSection
+              setId={id}
+              initialReviews={collection.reviews}
+              resourceType={'collections'}
+            />
+          </>
+        )}
+      </div>
     </div>
   )
 }

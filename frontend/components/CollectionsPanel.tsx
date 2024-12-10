@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import CollectionPreview from '@/components/CollectionPreview'
 import { CollectionType } from '@/lib/types'
+import { ToastNotification, useToast } from '@/components/ToastNotification'
 
 const CollectionsPanel = ({ initialCollections }: { initialCollections: CollectionType[] }) => {
   // Sort collections by latest on initial load
@@ -12,6 +13,7 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
   )
   const [collections, setCollections] = useState(initialCollections)
   const [sortBy, setSortBy] = useState('latest') // Default sorting
+  const { toast, showToast, hideToast } = useToast()
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -27,14 +29,31 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
     setCollections(sortedCollections)
   }
 
+  async function handleDeleteCollection(id: number) {
+    // Send the deletion request
+    const response = await fetch(`/api/collections/${id}`, { method: 'DELETE' })
+
+    if (response.status === 204) {
+      // Update the collections state after successful deletion
+      setCollections((prevCollections) => prevCollections.filter(
+        (collection) => collection.id !== id))
+
+      showToast('Collection deleted successfully', 'success')
+
+    } else {
+      const errorData = await response.json()
+      showToast(errorData.message || 'An error occurred', 'error')
+    }
+  }
+
   return (
     <div>
       <div className="flex items-center justify-center items-center mt-8 gap-4">
-        <Link href='/collections/create'>
-          <button className='item_preview_btn'>Create Collection</button>
+        <Link href='/collections/create' passHref tabIndex={-1}>
+          <button className='item_preview_btn border-2 border-black-100'>Create Collection</button>
         </Link>
 
-        <div className="flex justify-center item_preview_date border">
+        <div className="justify-center items-center sort">
           <label htmlFor="sort" className="text-gray-700 font-medium mr-2">
             Sort by
           </label>
@@ -42,7 +61,7 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
             id="sort"
             value={sortBy}
             onChange={handleSortChange}
-            className="form-select border-gray-300 rounded-md"
+            className="option-select"
           >
             <option value="latest">Latest</option>
             <option value="rating">Rating</option>
@@ -52,13 +71,27 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
 
       <ul className="mt-8 card_grid">
         {collections?.length > 0 ? (
-          collections.map((collection: CollectionType, index: number) => (
-            <CollectionPreview key={collection?.id} collection={collection} />
+          collections.map((collection: CollectionType) => (
+            <CollectionPreview
+              key={collection?.id}
+              collection={collection}
+              onDeleteCollection={handleDeleteCollection}
+            />
           ))
         ) : (
-          <p className="no-results">No flashcard set collections found</p>
+          <div className="no-results text-center">No collections found</div>
         )}
       </ul>
+
+      {/* Render toast notification if there is one */}
+      {toast && (
+        <ToastNotification
+          key={toast.id} // Ensures new instance
+          message={toast.message}
+          type={toast.type}
+          onFadeOut={hideToast}
+        />
+      )}
     </div>
   )
 }

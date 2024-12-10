@@ -43,7 +43,7 @@ export const FlashcardPanel = ({ cards }: FlashcardProps) => {
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <button onClick={prevCard} className="w-full form-button text-xl">
+        <button onClick={prevCard} className="w-full item_preview_btn text-xl">
           Previous
         </button>
 
@@ -55,7 +55,7 @@ export const FlashcardPanel = ({ cards }: FlashcardProps) => {
           </div>
         </div>
 
-        <button onClick={nextCard} className="w-full form-button text-xl">
+        <button onClick={nextCard} className="w-full item_preview_btn text-xl">
           Next
         </button>
       </div>

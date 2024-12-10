@@ -46,14 +46,16 @@ export default class FlashcardsController {
     const trx = await db.transaction()
 
     try {
-      // Check if the user can create a new set
-      const canCreate = await RateLimiter.canCreateSet(trx)
+      // Rate limiting for regular users
+      if (!auth.user?.admin) {
+        const canCreate = await RateLimiter.canCreateSet(trx)
 
-      if (!canCreate) {
-        await trx.rollback()
-        return response.status(429).json({
-          message: 'Daily set creation limit reached, please try again tomorrow',
-        })
+        if (!canCreate) {
+          await trx.rollback()
+          return response.status(429).json({
+            message: 'Daily set creation limit reached, please try again tomorrow',
+          })
+        }
       }
 
       const payload = await request.validateUsing(FlashcardSetValidator)
@@ -138,8 +140,6 @@ export default class FlashcardsController {
   async update({ params, request, response, auth }: HttpContext) {
     const { id } = params
 
-    const payload = await request.validateUsing(FlashcardSetValidator)
-
     // Start a database transaction for atomic operations
     const trx = await db.transaction()
 
@@ -160,7 +160,10 @@ export default class FlashcardsController {
           message: "You are not authorised to update this set"
         })
       }
-      // Else
+
+      // Ensure the request contains valid data
+      const payload = await request.validateUsing(FlashcardSetValidator)
+
       set.name = payload.name
       set.description = payload.description
       await set.useTransaction(trx).save()

@@ -151,8 +151,6 @@ export default class CollectionsController {
   async update({ params, request, response, auth }: HttpContext) {
     const { id } = params
 
-    const payload = await request.validateUsing(CollectionValidator)
-
     // Start a database transaction for atomic operations
     const trx = await db.transaction()
 
@@ -173,7 +171,10 @@ export default class CollectionsController {
           message: "You are not authorised to update this collection"
         })
       }
-      // Else
+
+      // Ensure the request contains valid data
+      const payload = await request.validateUsing(CollectionValidator)
+
       collection.name = payload.name
       collection.description = payload.description
 

@@ -5,15 +5,11 @@ const Sets = async () => {
   const sets = await getFlashcardSets()
 
   return (
-    <div className="min-h-screen-nonav p-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800">Flashcard Sets</h1>
-      {!sets || sets.length === 0 ? (
-        <div className='no-results'>No flashcard sets found</div>
-      ) : (
-        <>
-          <SetsPanel initialSets={sets} />
-        </>
-      )}
+    <div className="min-h-screen">
+      <h1 className="title title-background">Flashcard Sets</h1>
+      <div className='px-8'>
+        <SetsPanel initialSets={sets} />
+      </div>
     </div>
   )
 }
