@@ -3,7 +3,7 @@ import { UserFactory } from '#database/factories/user_factory'
 import testUtils from '@adonisjs/core/services/test_utils'
 import User from '#models/user'
 
-test.group('User Deletion', (group) => {
+test.group('Delete user via ID', (group) => {
   // Start a transaction before and roll back at the end for each test
   group.each.setup(() => testUtils.db().withGlobalTransaction())
 
@@ -25,6 +25,21 @@ test.group('User Deletion', (group) => {
     assert.isNull(deletedUser)
   })
 
+  test('return 401 when attempting to delete user without authentication', async ({ assert, client }) => {
+    const user = await UserFactory.merge({ password: validPassword }).create()
+
+    // Make an unauthenticated request
+    const response = await client
+      .delete(`/users/${user.id}`)
+      .json({ password: validPassword })
+
+    assert.equal(response.response.statusCode, 401) // Unauthorized
+    assert.equal(
+      response.response.body.message,
+      'Unauthorised: Missing or invalid authentication credentials'
+    )
+  })
+
   test('return 404 if the user does not exist', async ({ assert, client }) => {
     const nonExistentUserId = 9999
     const user = await UserFactory.merge({ admin: true }).create()
@@ -41,7 +56,7 @@ test.group('User Deletion', (group) => {
     )
   })
 
-  test('return 401 if not authorised to delete another user', async ({ assert, client }) => {
+  test('return 403 if not authorised to delete another user', async ({ assert, client }) => {
     const user = await UserFactory.merge({ password: validPassword }).create()
     const otherUser = await UserFactory.merge({ admin: false }).create()
 
@@ -50,10 +65,10 @@ test.group('User Deletion', (group) => {
       .json({ password: validPassword })
       .loginAs(otherUser)
 
-    assert.equal(response.response.statusCode, 401) // Unauthorised
+    assert.equal(response.response.statusCode, 403) // Forbidden
     assert.equal(
       response.response.body.message,
-      'You are not authorised to perform this action'
+      'You are not authorised to delete this user'
     )
   })
 
@@ -69,6 +84,21 @@ test.group('User Deletion', (group) => {
     assert.equal(
       response.response.body.message,
       'The password field must be defined'
+    )
+  })
+
+  test('return 422 if the password is an incorrect datatype', async ({ assert, client }) => {
+    const user = await UserFactory.merge({ password: validPassword }).create()
+
+    const response = await client
+      .delete(`/users/${user.id}`)
+      .json({ password: 12345 }) // Invalid data type for password
+      .loginAs(user)
+
+    assert.equal(response.response.statusCode, 422) // Unprocessable Entity
+    assert.equal(
+      response.response.body.message,
+      'The password field must be a string'
     )
   })
 

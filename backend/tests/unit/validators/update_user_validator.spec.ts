@@ -51,7 +51,10 @@ test.group('UpdateUserValidator', () => {
 
     } catch (error) {
       if (error instanceof errors.E_VALIDATION_ERROR) {
-        assert.equal(error.messages[0].message, 'The new password must be at least 6 characters')
+        assert.equal(
+          error.messages[0].message,
+          'The new password must be at least 6 characters'
+        )
       } else {
         throw error
       }

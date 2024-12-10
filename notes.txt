@@ -1,6 +1,11 @@
 to-do:
 
 
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+The set creation limit should only apply to non-admin users...
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 node ace make:test posts/create --suite=functional
 
 Run unit tests: node ace test unit

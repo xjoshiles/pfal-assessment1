@@ -27,6 +27,7 @@ export default class UsersController {
     try {
       const payload = await request.validateUsing(RegisterUserValidator)
       const user = await User.create(payload)
+      await user.refresh()
       return response.created(user)
 
     } catch (error) {
@@ -73,8 +74,8 @@ export default class UsersController {
 
     // Only allow users to change their own passwords
     if (auth.user?.id != id) {
-      return response.unauthorized({
-        message: "You are not authorised to perform this action"
+      return response.forbidden({
+        message: "You are not authorised to update this user's password"
       })
     }
 
@@ -87,7 +88,7 @@ export default class UsersController {
       // Ensure the given password is correct before continuing
       const isValid = await hash.verify(user.password, payload.password)
       if (!isValid) {
-        return response.unauthorized({
+        return response.unauthorized({  // additional authentication failed
           message: "The current password was incorrect"
         })
       }
@@ -125,26 +126,27 @@ export default class UsersController {
 
     // If current user is not the given user nor an admin
     if (auth.user!.id != user.id && !auth.user?.admin) {
-      return response.unauthorized({
-        message: "You are not authorised to perform this action",
+      return response.forbidden({
+        message: "You are not authorised to delete this user",
       })
     }
 
     try {
-      // Ensure that regular users must provide their correct password
-      if (!auth.user?.admin) {
+      // Ensure that users provide their password if deleting their own account
+      if (auth.user!.id == user.id) {
         const payload = await request.validateUsing(DeleteUserValidator)
 
         // Ensure the given password is correct before continuing
         const isValid = await hash.verify(user.password, payload.password)
         if (!isValid) {
-          return response.unauthorized({
+          return response.unauthorized({  // additional authentication failed
             message: "The current password was incorrect"
           })
         }
       }
 
-      // By this point the user has verified their password or is admin
+      // By this point the user has verified their password
+      // or is admin deleting the account of another user
       await user.delete()
       return response.noContent()
 
@@ -163,21 +165,21 @@ export default class UsersController {
   }
 
   /**
-   * Update the admin status of the user by ID
+   * Update admin status of user by ID
    */
   async updateAdmin({ params, request, response, auth }: HttpContext) {
     const id = params.id
 
     // Only admins can update the admin status of a user
     if (!auth.user?.admin) {
-      return response.unauthorized({
-        message: "You are not authorised to perform this action"
+      return response.forbidden({
+        message: "You are not authorised to make this user an admin"
       })
     }
 
     // Admins cannot remove their own admin status
     if (auth.user.id == id) {
-      return response.unauthorized({
+      return response.forbidden({
         message: "Only another admin can remove your admin status"
       })
     }
@@ -194,7 +196,7 @@ export default class UsersController {
       user.admin = payload.admin
 
       await user.save()
-      return response.ok({ message: 'Admin status updated successfully' })
+      return response.ok(user)
 
     } catch (error) {
       // Return first error message if it's a validation error

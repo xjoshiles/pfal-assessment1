@@ -169,8 +169,8 @@ export default class CollectionsController {
       // If the current user is not the creator of the collection nor an admin
       if (auth.user!.id != collection.userId && !auth.user?.admin) {
         await trx.rollback()
-        return response.unauthorized({
-          message: "You are not authorised to perform this action"
+        return response.forbidden({
+          message: "You are not authorised to update this collection"
         })
       }
       // Else
@@ -236,8 +236,8 @@ export default class CollectionsController {
 
       // If the current user is not the creator of the collection nor an admin
       if (auth.user!.id != collection.userId && !auth.user?.admin) {
-        return response.unauthorized({
-          message: "You are not authorised to perform this action"
+        return response.forbidden({
+          message: "You are not authorised to delete this collection"
         })
       }
       // Else delete set (many-to-many relationships to its

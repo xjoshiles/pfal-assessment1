@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 import { UserFactory } from '#database/factories/user_factory'
 import testUtils from '@adonisjs/core/services/test_utils'
 
-test.group('User Registration', (group) => {
+test.group('User Registration (store)', (group) => {
   // Start a transaction before and roll back at the end for each test
   group.each.setup(() => testUtils.db().withGlobalTransaction())
 

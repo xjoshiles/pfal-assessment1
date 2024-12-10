@@ -34,7 +34,7 @@ export default async function AdminPage() {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="container max-w-4xl w-full py-8 px-1 md:px-6">
+      <div className="container max-w-4xl w-full px-1 md:px-6">
         <div className="gap-4 gradient-element shadow-md w-full mx-auto">
           <div className="bg-white rounded-lg p-6 space-y-6">
             <h1 className="text-3xl font-bold text-center text-gray-800">Admin Control Panel</h1>

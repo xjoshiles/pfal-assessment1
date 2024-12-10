@@ -1,7 +1,13 @@
-import vine from '@vinejs/vine'
+import vine, { SimpleMessagesProvider } from '@vinejs/vine'
 
-export const ToggleAdminValidator = vine.compile(
+const ToggleAdminValidator = vine.compile(
   vine.object({
     admin: vine.boolean()
   })
 )
+
+ToggleAdminValidator.messagesProvider = new SimpleMessagesProvider({
+  'admin.boolean': 'The admin field must be a boolean value'
+})
+
+export { ToggleAdminValidator }

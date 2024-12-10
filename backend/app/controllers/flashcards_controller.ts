@@ -156,8 +156,8 @@ export default class FlashcardsController {
       // If the current user is not the creator of the set nor an admin
       if (auth.user!.id != set.userId && !auth.user?.admin) {
         await trx.rollback()
-        return response.unauthorized({
-          message: "You are not authorised to perform this action"
+        return response.forbidden({
+          message: "You are not authorised to update this set"
         })
       }
       // Else
@@ -251,8 +251,8 @@ export default class FlashcardsController {
 
       // If the current user is not the creator of the set nor an admin
       if (auth.user!.id != set.userId && !auth.user?.admin) {
-        return response.unauthorized({
-          message: "You are not authorised to perform this action"
+        return response.forbidden({
+          message: "You are not authorised to delete this set"
         })
       }
       // Else delete set (flashcards are also deleted due to cascade rule)

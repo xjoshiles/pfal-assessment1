@@ -20,7 +20,7 @@ export default class LimitsController {
   public async updateDailyLimit({ auth, request, response }: HttpContext) {
     // Ensure the user is authenticated as an admin
     if (!auth.user?.admin) {
-      return response.unauthorized({ message: 'Access denied' })
+      return response.forbidden({ message: 'Access denied' })
     }
 
     try {

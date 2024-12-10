@@ -227,6 +227,12 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/User"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     post:
       summary: "Create a new user"
       tags:
@@ -236,15 +242,7 @@ paths:
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: "#/components/schemas/User"
-              - type: object
-                properties:     
-                  password:
-                    type: "string"
-                    format: "password"
-                    example: "password"
-                    nullable: true
+              $ref: "#/components/schemas/UserCredentials"
       responses:
         "201":
           description: "The created user"
@@ -252,8 +250,19 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
-        "400":
-          description: "The user could not be created"
+        "409":
+          description: "The username is already taken"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: |
+            The request was well-formed but contains semantic errors. The server is unable to process the request due to invalid or missing data, such as:
+            - Invalid username (too short or too long)
+            - Invalid password (too short)
+            - Missing required fields
+            - Incorrect data types
           content:
             application/json:
               schema:
@@ -277,6 +286,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/User"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         "404":
           description: "The user was not found"
           content:
@@ -284,33 +299,48 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     put:
-      summary: "Update a user by ID"
+      summary: "Update a user's password by ID"
       tags:
         - "Users"
-      description: "Admin status only editable if the current user is an admin"
+      description: "A user can only update their own password"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              allOf:
-              - $ref: "#/components/schemas/User"
-              - type: object
-                properties:     
-                  password:
-                    type: "string"
-                    format: "password"
-                    example: "password"
-                    nullable: true
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: "password"
+                newPassword:
+                  type: string
+                  example: "validNewPassword"
       responses:
         "200":
-          description: "The updated user"
+          description: "A success message"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
-        "404":
-          description: "The user was not found"
+                $ref: "#/components/schemas/Success"
+        "401":
+          description: "Invalid authentication token or password"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Attempted to update another user's password"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: |
+            The request was well-formed but contains semantic errors. The server is unable to process the request due to invalid or missing data, such as:
+            - Invalid newPassword (too short)
+            - Missing required fields
+            - Incorrect data types
           content:
             application/json:
               schema:
@@ -319,11 +349,86 @@ paths:
       summary: "Delete a user by ID"
       tags:
         - "Users"
+      description: "A user can only delete their own account unless they are an admin. When deleting their own account, they must provide a password"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                  example: "password"
       responses:
         "204":
           description: "The user was deleted"
+        "401":
+          description: "Invalid authentication token or password"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Attempted to delete another user as a non-admin"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         "404":
           description: "The user was not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: "The password was missing or an incorrect datatype"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/{userId}/admin:
+    put:
+      summary: "Update admin status of user by ID"
+      tags:
+        - "Users"
+      description: "Admin status only editable if the current user is an admin, but an admin cannot remove their own admin status"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                admin:
+                  type: "boolean"
+                  example: true
+      responses:
+        "200":
+          description: "The updated user"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Attempted to remove own admin status"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "404":
+          description: "The user was not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: "The admin field was missing or an incorrect datatype"
           content:
             application/json:
               schema:
@@ -634,6 +739,14 @@ components:
       properties:
         message:
           type: "string"
+          example: "Error"
+          nullable: false
+    Success:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          example: "Success"
           nullable: false
     Difficulty:
       type: "string"
@@ -656,6 +769,18 @@ components:
           default: false
           nullable: true
           description: "The set creation limit should only apply to non-admin users"
+    UserCredentials:
+      type: "object"
+      properties:
+        username:
+          type: "string"
+          example: "johndoe"
+        password:
+          type: "string"
+          example: "password"
+      required:
+        - username
+        - password
     Collection:
       type: "array"
       items:
