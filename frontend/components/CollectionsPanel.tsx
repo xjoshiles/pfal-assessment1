@@ -9,10 +9,9 @@ import { usePathname, useRouter } from 'next/navigation'
 
 const CollectionsPanel = ({ initialCollections }: { initialCollections: CollectionType[] }) => {
   // Sort collections by latest on initial load
-  initialCollections.sort(
+  const [collections, setCollections] = useState([...initialCollections].sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  )
-  const [collections, setCollections] = useState(initialCollections)
+  ))
   const [sortBy, setSortBy] = useState('latest') // Default sorting
   const { showToast } = useToast()
   const router = useRouter()
@@ -54,11 +53,13 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
     <div>
       <div className="flex items-center justify-center items-center mt-8 gap-4">
         <Link href='/collections/create' passHref tabIndex={-1}>
-          <button className='item_preview_btn border-2 border-black-100'>Create Collection</button>
+          <button className='item_preview_btn border-2 border-black-100' aria-label="Create a new collection">
+            Create Collection
+          </button>
         </Link>
 
         <div className="justify-center items-center sort">
-          <label htmlFor="sort" className="text-gray-700 font-medium mr-2">
+          <label htmlFor="sort" className="text-gray-700 font-medium mr-1" id="sort-label">
             Sort by
           </label>
           <select
@@ -66,6 +67,7 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
             value={sortBy}
             onChange={handleSortChange}
             className="option-select"
+            aria-labelledby="sort-label"
           >
             <option value="latest">Latest</option>
             <option value="rating">Rating</option>
@@ -73,7 +75,7 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
         </div>
       </div>
 
-      <ul className="mt-8 card_grid">
+      <ul className="mt-8 card_grid" aria-label="List of collections">
         {collections?.length > 0 ? (
           collections.map((collection: CollectionType) => (
             <CollectionPreview
@@ -83,7 +85,7 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
             />
           ))
         ) : (
-          <div className="no-results text-center">No collections found</div>
+          <p className="no-results text-center">No collections found</p>
         )}
       </ul>
     </div>

@@ -136,7 +136,7 @@ const ReviewsSection = ({
                 </button>
               ))}
             </div>
-            <button type="submit" className="w-full item_preview_btn text-xl">
+            <button type="submit" className="w-full text-base sm:text-xl item_preview_btn">
               Submit Review
             </button>
           </form>
@@ -144,24 +144,27 @@ const ReviewsSection = ({
           {/* Reviews section */}
           <div className="space-y-4 mt-6">
             {reviews.map((review) => (
-              <div key={review.id} className="p-4 border rounded-md bg-gray-50">
-                <p className="text-gray-700">
-                  <strong>{review.author.username}</strong> - {formatDate(review.createdAt)}
-                </p>
-                <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-yellow-500 text-lg">
-                      {i < review.rating ? '★' : '☆'}
-                    </span>
-                  ))}
-                </div>
-                <p>{review.review}</p>
+              <div key={review.id} className="p-4 border rounded-md bg-gray-50 flex flex-col sm:flex-row justify-between items-start">
+                <div className='flex flex-col'>
 
+                  <p className="text-gray-700">
+                    <strong>{review.author.username}</strong> - {formatDate(review.createdAt)}
+                  </p>
+                  <div className="flex items-center space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className="text-yellow-500 text-lg">
+                        {i < review.rating ? '★' : '☆'}
+                      </span>
+                    ))}
+                  </div>
+                  <p>{review.review}</p>
+
+                </div>
                 {/* Show a delete button on review for author or admin */}
                 {review.userId === currentUser.id || currentUser.admin ? (
                   <button
                     onClick={() => handleDeleteReview(review.id, review.userId)}
-                    className="text-red-600 mt-2"
+                    className="item_delete_btn mt-2 sm:mt-0 text-sm sm:text-base"
                   >
                     Delete Review
                   </button>

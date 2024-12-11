@@ -38,7 +38,7 @@ export default function Register() {
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
         <h1 className="text-2xl font-bold text-center text-gray-800">Register</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form role="form" onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input type="username" name="username" placeholder="Username" required className="form-textbox-minimal" />
           </div>

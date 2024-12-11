@@ -9,10 +9,9 @@ import { usePathname, useRouter } from 'next/navigation'
 
 const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
   // Sort sets by latest on initial load
-  initialSets.sort(
+  const [sets, setSets] = useState([...initialSets].sort(
     (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  )
-  const [sets, setSets] = useState(initialSets)
+  ))
   const [sortBy, setSortBy] = useState('latest') // Default sorting
   const { showToast } = useToast()
   const router = useRouter()
@@ -53,11 +52,13 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
     <div>
       <div className="flex items-center justify-center items-center mt-8 gap-4">
         <Link href='/sets/create' passHref tabIndex={-1}>
-          <button className='item_preview_btn border-2 border-black-100'>Create Set</button>
+          <button className='item_preview_btn border-2 border-black-100' aria-label="Create a new flashcard set">
+            Create Set
+          </button>
         </Link>
 
         <div className="justify-center items-center sort">
-          <label htmlFor="sort" className="text-black-200 font-medium mr-1">
+          <label htmlFor="sort" className="text-black-200 font-medium mr-1" id="sort-label">
             Sort by
           </label>
           <select
@@ -65,6 +66,7 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
             value={sortBy}
             onChange={handleSortChange}
             className="option-select"
+            aria-labelledby="sort-label"
           >
             <option value="latest">Latest</option>
             <option value="rating">Rating</option>
@@ -72,7 +74,7 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
         </div>
       </div>
 
-      <ul className="mt-8 card_grid">
+      <ul className="mt-8 card_grid" aria-label="List of flashcard sets">
         {sets?.length > 0 ? (
           sets.map((set: FlashcardSetType) => (
             <SetPreview
@@ -82,7 +84,7 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
             />
           ))
         ) : (
-          <div className="no-results text-center">No flashcard sets found</div>
+          <p className="no-results text-center">No flashcard sets found</p>
         )}
       </ul>
     </div>

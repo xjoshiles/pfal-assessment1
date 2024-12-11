@@ -16,6 +16,7 @@ const SetSelect = ({
 
   return (
     <div
+      role="listitem"
       className={`${isSelected ? 'item_preview_selected' : 'item_preview_select'}`}
     >
       <div className='flex-between gap-2'>

@@ -22,6 +22,11 @@ body {
 }
 
 @layer utilities {
+  .resize-text {
+    font-size: clamp(1rem, 5vw, 2.5rem)
+    /* Min 1rem, scales with viewport */
+  }
+
   .flex-between {
     @apply flex justify-between items-center
   }

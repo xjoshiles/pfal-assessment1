@@ -18,12 +18,14 @@ const UserLibrary: React.FC<UserLibraryProps> = ({ username, sets, collections }
 
   return (
     <div className="min-h-screen z-60">
-
       {/* Tab Controls */}
       <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-y-2 gap-x-4 md:gap-y-0 px-2 bg-black-200 py-2 mt-0.5 md:mt-0 overflow-x-hidden">
         {/* Tabs */}
-        <div className="flex flex-row gap-x-2 items-center">
+        <div role="tablist" className="flex flex-row gap-x-2 items-center">
           <button
+            role="tab"
+            aria-selected={activeTab === 'sets'}
+            aria-controls="sets-panel"
             className={`${activeTab === 'sets' ? 'tab-selected' : 'tab'}`}
             onClick={() => setActiveTab('sets')}
           >
@@ -31,6 +33,9 @@ const UserLibrary: React.FC<UserLibraryProps> = ({ username, sets, collections }
             Sets
           </button>
           <button
+            role="tab"
+            aria-selected={activeTab === 'collections'}
+            aria-controls="collections-panel"
             className={`${activeTab === 'collections' ? 'tab-selected' : 'tab'}`}
             onClick={() => setActiveTab('collections')}
           >
@@ -52,8 +57,20 @@ const UserLibrary: React.FC<UserLibraryProps> = ({ username, sets, collections }
 
       {/* Content */}
       <div className="mt-8 px-8">
-        {activeTab === 'sets' && (<SetsPanel initialSets={sets} />)}
-        {activeTab === 'collections' && (<CollectionsPanel initialCollections={collections} />)}
+        <div
+          id="sets-panel"
+          role="tabpanel"
+          hidden={activeTab !== 'sets'}
+        >
+          {activeTab === 'sets' && <SetsPanel initialSets={sets} />}
+        </div>
+        <div
+          id="collections-panel"
+          role="tabpanel"
+          hidden={activeTab !== 'collections'}
+        >
+          {activeTab === 'collections' && <CollectionsPanel initialCollections={collections} />}
+        </div>
       </div>
     </div>
   )
