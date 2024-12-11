@@ -7,6 +7,8 @@ import db from '@adonisjs/lucid/services/db'
 import { shuffle } from 'lodash-es'
 import { errors } from '@vinejs/vine'
 import RateLimiter from '#services/rate_limiter'
+import { DateTime } from 'luxon'
+import { areSetsEqual } from '#utils/array'
 
 async function getFlashcardSetAverageRating(flashcardSetId: number) {
   // Consider caching this result using a caching library when the application
@@ -30,7 +32,9 @@ export default class FlashcardsController {
     try {
       const sets = await FlashcardSet.query()
         .preload('flashcards')
-        .preload('reviews')
+        .preload('reviews', (query) => {
+          query.preload('author')
+        })
         .preload('creator')
       return response.json(sets)
     } catch (error) {

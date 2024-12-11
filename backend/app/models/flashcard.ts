@@ -16,7 +16,7 @@ export default class Flashcard extends BaseModel {
   @column()
   declare difficulty: 'easy' | 'medium' | 'hard'
 
-  @column()
+  @column({ serializeAs: null })
   declare flashcardSetId: number
 
   @belongsTo(() => FlashcardSet)

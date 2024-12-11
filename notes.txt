@@ -3,17 +3,15 @@ to-do:
 delete users from admin panel
 spacing at bottom of pages
 
-
-
 SetPreview.test.jsx could provide insight into how to better run
 integration tests for CollectionPanel.test.jsx, as we need to mock
 the user context
 
-
-
 backend tests and OpenAPI file
 frontend tests
 readme and setup guides
+Write some more seeds?
+Mention how it uses responsive design (usability)
 
 
 
@@ -641,3 +639,13 @@ Old code:
   //     instance.updatedAt = DateTime.local()
   //   }
   // }
+
+
+        await set.load('flashcards')
+      const currentIds = set.flashcards.map((fc) => fc.id)
+      const payloadIsds = payload.flashcards.map((fc) => fc.id)
+
+      if (!areSetsEqual(currentIds, payloadIsds)) {
+        set.updatedAt = DateTime.local()  // required manual update
+        await set.useTransaction(trx).save()
+      }

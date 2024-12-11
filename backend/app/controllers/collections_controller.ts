@@ -33,6 +33,9 @@ export default class CollectionsController {
         .preload('flashcardSets', (query) => {
           query.preload('flashcards').preload('creator')
         })
+        .preload('reviews', (query) => {
+          query.preload('author')
+        })
         .preload('creator')
 
       return response.json(collections)
@@ -129,6 +132,7 @@ export default class CollectionsController {
       .preload('reviews', (query) => {
         query.preload('author')
       })
+      .preload('creator')
       .first()
 
     if (!collection) {

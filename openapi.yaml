@@ -172,7 +172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Comment"
+                $ref: "#/components/schemas/SetReview"
         "404":
           description: "The flashcard set was not found"
           content:
@@ -206,7 +206,7 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/FlashCard"
+                  $ref: "#/components/schemas/Flashcard"
         "404":
           description: "The flashcard set was not found"
           content:
@@ -691,9 +691,13 @@ paths:
 
 components:
   schemas:
-    FlashCard:
+    Flashcard:
       type: "object"
       properties:
+        id:
+          type: integer
+          example: 1
+          minimum: 1
         question:
           type: "string"
           example: "What is the capital of France?"
@@ -707,33 +711,42 @@ components:
       type: "object"
       properties:
         id:
-          type: "number"
+          type: integer
           example: 1
+          minimum: 1
         name:
           type: "string"
           example: "European Capitals"
-        cards:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/FlashCard"
-        created_at:
+        description:
+          type: "string"
+          example: "Do you know the names of these capital cities?"
+        averageRating:
+          type: "number"
+          example: 5
+          minimum: 1
+          maximum: 5
+        userId:
+          type: integer
+          example: 1
+          minimum: 1
+        createdAt:
           type: "string"
           format: "date-time"
           example: "2024-10-14T12:00:00Z"
-        updated_at:
+        updatedAt:
           type: "string"
           format: "date-time"
           example: "2024-10-15T12:00:00Z"
-        comments:
+        flashcards:
           type: "array"
           items:
-            type: "object"
-            properties:
-              comment:
-                type: "string"
-                example: "I love this set!"
-              author:
-                $ref: "#/components/schemas/User"
+            $ref: "#/components/schemas/Flashcard"
+        reviews:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/SetReview"
+        creator:
+          $ref: "#/components/schemas/User"
     Error:
       type: "object"
       properties:
@@ -758,8 +771,9 @@ components:
       type: "object"
       properties:
         id:
-          type: "number"
+          type: integer
           example: 1
+          minimum: 1
         username:
           type: "string"
           example: "johndoe"
@@ -768,7 +782,6 @@ components:
           example: false
           default: false
           nullable: true
-          description: "The set creation limit should only apply to non-admin users"
     UserCredentials:
       type: "object"
       properties:
@@ -782,28 +795,106 @@ components:
         - username
         - password
     Collection:
-      type: "array"
-      items:
-        type: "object"
-        properties:
-          comment:
-            type: "string"
-            example: "I love this set!"
-          set:
+      type: "object"
+      properties:
+        id:
+          type: integer
+          example: 1
+          minimum: 1
+        name:
+          type: "string"
+          example: "Geography"
+        description:
+          type: "string"
+          example: "A collection of Geography flashcard sets"
+        averageRating:
+          type: "number"
+          example: 5
+          minimum: 1
+          maximum: 5
+        userId:
+          type: integer
+          example: 1
+          minimum: 1
+        createdAt:
+          type: "string"
+          format: "date-time"
+          example: "2024-10-14T12:00:00Z"
+        updatedAt:
+          type: "string"
+          format: "date-time"
+          example: "2024-10-15T12:00:00Z"
+        flashcardSets:
+          type: "array"
+          items:
             $ref: "#/components/schemas/FlashcardSet"
-            nullable: true
-          author:
-            $ref: "#/components/schemas/User"
-            nullable: true
-    Comment:
-          type: "object"
-          properties:
-            comment:
-              type: "string"
-              example: "I love this set!"
-            set:
-              $ref: "#/components/schemas/FlashcardSet"
-              nullable: true
-            author:
-              $ref: "#/components/schemas/User"
-              nullable: true
+        reviews:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/CollectionReview"
+        creator:
+          $ref: "#/components/schemas/User"
+    SetReview:
+      type: "object"
+      properties:
+        id:
+          type: integer
+          example: 1
+          minimum: 1
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        review:
+          type: "string"
+          example: "I love this set!"
+        userId:
+          type: integer
+          example: 1
+          minimum: 1
+        flashcardSetId:
+          type: integer
+          example: 1
+          minimum: 1
+        createdAt:
+          type: "string"
+          format: "date-time"
+          example: "2024-10-14T12:00:00Z"
+        updatedAt:
+          type: "string"
+          format: "date-time"
+          example: "2024-10-15T12:00:00Z"
+        author:
+          $ref: "#/components/schemas/User"
+    CollectionReview:
+      type: "object"
+      properties:
+        id:
+          type: integer
+          example: 1
+          minimum: 1
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        review:
+          type: "string"
+          example: "I love this collection!"
+        userId:
+          type: integer
+          example: 1
+          minimum: 1
+        collectionId:
+          type: integer
+          example: 1
+          minimum: 1
+        createdAt:
+          type: "string"
+          format: "date-time"
+          example: "2024-10-14T12:00:00Z"
+        updatedAt:
+          type: "string"
+          format: "date-time"
+          example: "2024-10-15T12:00:00Z"
+        author:
+          $ref: "#/components/schemas/User"

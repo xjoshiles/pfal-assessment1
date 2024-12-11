@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import UpdateAccountPage from '@/app/(root)/account/page' // Adjust path accordingly
-import { useUserContext } from '@/context/UserContext'
 import { useToast } from '@/context/ToastContext'
 
 // Mock user context hooks

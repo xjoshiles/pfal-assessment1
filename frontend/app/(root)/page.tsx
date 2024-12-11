@@ -20,7 +20,7 @@ export default async function Home() {
       {/* Logo Section */}
       <div className="flex flex-col items-center text-center space-y-4">
         <Image
-          src="/logo4.svg"
+          src="/logo.svg"
           alt="Flashcard App Logo"
           width={128}
           height={128}

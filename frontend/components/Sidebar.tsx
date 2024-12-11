@@ -100,7 +100,7 @@ export default function Sidebar() {
         <div onClick={() => setIsMobileOpen(!isMobileOpen)} className="cursor-pointer flex-between gap-4">
           <Image
             alt="TestVar logo"
-            src="/logo4.svg"
+            src="/logo.svg"
             className={`cursor-pointer duration-500 ${isMobileOpen && "rotate-[360deg]"}`}
             width={36}
             height={34} />
@@ -132,7 +132,7 @@ export default function Sidebar() {
           <div className="flex gap-x-4 items-center">
             <Image
               alt="TestVar logo"
-              src="/logo4.svg"
+              src="/logo.svg"
               className={`cursor-pointer duration-500 ${isOpen && "rotate-[360deg]"}`}
               width={36}
               height={34}
