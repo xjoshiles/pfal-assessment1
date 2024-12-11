@@ -94,13 +94,17 @@ export default function UpdateAccountPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
-        <h1 className="text-2xl font-bold text-center text-gray-800">Change Your Password</h1>
+      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg" role="main">
+        <h1 className="text-2xl font-bold text-center text-gray-800" role="heading" aria-level={1}>
+          Change Your Password
+        </h1>
 
         {/* Update form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form role="form" onSubmit={handleSubmit} className="space-y-4" aria-labelledby="update-password-form">
           <div>
+            <label htmlFor="password" className="sr-only">Current Password</label>
             <input
+              id="password"
               type="password"
               name="password"
               placeholder="Current Password"
@@ -108,21 +112,30 @@ export default function UpdateAccountPage() {
               className="form-textbox-minimal"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)} // Update password state
+              aria-required="true"
+              aria-describedby="current-password-description"
             />
+            <p id="current-password-description" className="sr-only">Enter your current password to continue.</p>
           </div>
           <div>
+            <label htmlFor="newPassword" className="sr-only">New Password</label>
             <input
+              id="newPassword"
               type="password"
               name="newPassword"
               placeholder="New Password"
               required
               className="form-textbox-minimal"
+              aria-required="true"
+              aria-describedby="new-password-description"
             />
+            <p id="new-password-description" className="sr-only">Enter a new password that is different from your current one.</p>
           </div>
           <button
             type="submit"
             className={`w-full ${isDisabled ? "item_save_btn-disabled" : "item_save_btn"}`}
             disabled={isDisabled}
+            aria-live="polite"
           >
             Update Password
           </button>
@@ -140,6 +153,7 @@ export default function UpdateAccountPage() {
                 setShowDeleteModal(true)
                 document.addEventListener('mousedown', handleOutsideClick)
               }}
+              aria-label="Delete your account"
             >
               Delete Account
             </button>
@@ -149,13 +163,17 @@ export default function UpdateAccountPage() {
 
       {/* Modal for account deletion */}
       {showDeleteModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" role="dialog" aria-labelledby="delete-account-modal" aria-hidden="false">
           <div
             ref={modalRef}
             className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm space-y-4"
+            role="document"
+            aria-describedby="delete-account-description"
           >
-            <h2 className="text-lg font-bold text-red-600">Delete Account</h2>
-            <p className="text-sm text-gray-600">
+            <h2 id="delete-account-modal" className="text-lg font-bold text-red-600" role="heading" aria-level={2}>
+              Delete Account
+            </h2>
+            <p id="delete-account-description" className="text-sm text-gray-600">
               Are you sure? This action can't be reversed, and all your sets, collections, and reviews will be deleted.
             </p>
             <div className="flex justify-end space-x-4">
@@ -165,6 +183,7 @@ export default function UpdateAccountPage() {
                   document.removeEventListener('mousedown', handleOutsideClick)
                 }}
                 className="w-full form-button"
+                aria-label="Cancel account deletion"
               >
                 Cancel
               </button>
@@ -176,6 +195,7 @@ export default function UpdateAccountPage() {
                 }}
                 className="w-full form-button-danger"
                 disabled={isDisabled}
+                aria-label="Confirm account deletion"
               >
                 Delete
               </button>

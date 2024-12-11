@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "__tests__/components/SetPreview.test.jsx", "__tests__/login/page.test.jsx", "jest.setup.js", "__tests__/test-utils.js", "__tests__/Register.jsx", "__tests__/Register.jsx", "__tests__/Register.jsx", "__tests__/components/FlashcardPanel.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "__tests__/components/SetPreview.test.jsx", "__tests__/login/page.test.jsx", "jest.setup.js", "__tests__/test-utils.js", "__tests__/Register.jsx", "__tests__/Register.jsx", "__tests__/Register.jsx", "__tests__/components/FlashcardPanel.test.jsx"],
   "exclude": ["node_modules"]
 }
