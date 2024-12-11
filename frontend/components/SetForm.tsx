@@ -6,8 +6,8 @@ import { Toast, useToast } from '@/components/Toast'
 import { SetFormType } from '@/lib/types'
 
 type SetFormProps =
-  | { initialSet: SetFormType; setId: string } // Both must be present
-  | { initialSet?: undefined; setId?: undefined }     // Neither can be present
+  | { initialSet: SetFormType; setId: string }     // Both must be present
+  | { initialSet?: undefined; setId?: undefined }  // Neither can be present
 
 const newSetDefaults = {
   name: '',

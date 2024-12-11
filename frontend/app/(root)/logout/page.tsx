@@ -19,7 +19,7 @@ export default function Logout() {
       })
 
       if (response.ok) {
-        const data = await response.json();
+        const data = await response.json()
         setSuccess(data.message)
         // router.refresh()
 
@@ -27,13 +27,13 @@ export default function Logout() {
         setTimeout(() => { router.push("/login") }, 1000)
 
       } else {
-        const errorData = await response.json();
+        const errorData = await response.json()
         setError(errorData.message || "An error occurred")
       }
     } catch (err) {
       setError('Failed to connect to the server. Please try again later.')
     }
-  };
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen">
@@ -46,5 +46,5 @@ export default function Logout() {
         <button type="submit" className="w-full item_save_btn" onClick={handleSubmit}>Logout</button>
       </div>
     </div>
-  );
+  )
 }

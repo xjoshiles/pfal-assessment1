@@ -21,10 +21,10 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline"
 
-type menuType = {
+type navItemType = {
   title: string
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
-  gapAfter?: boolean
+  gapBefore?: boolean
   path: string
 }
 
@@ -35,7 +35,7 @@ export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
 
-  const NavItems: menuType[] = [
+  const NavItems: navItemType[] = [
     {
       title: "Home",
       icon: HomeIcon,
@@ -48,24 +48,24 @@ export default function Sidebar() {
       {
         title: "My Library",
         icon: UserCircleIcon,
-        gapAfter: true,
         path: `/users/${user.id}`
       },
       {
         title: "Sets",
         icon: RectangleStackIcon,
-        path: "/sets"
+        path: "/sets",
+        gapBefore: true
       },
       {
         title: "Collections",
         icon: WalletIcon,
-        gapAfter: true,
         path: "/collections",
       },
       {
         title: "Account",
         icon: Cog6ToothIcon,
         path: "/account",
+        gapBefore: true,
       })
 
     if (user.admin) {
@@ -80,14 +80,15 @@ export default function Sidebar() {
   } else {
     NavItems.push(
       {
+        title: "Register",
+        icon: UserPlusIcon,
+        path: "/register",
+        gapBefore: true
+      },
+      {
         title: "Login",
         icon: ArrowRightStartOnRectangleIcon,
         path: "/login"
-      },
-      {
-        title: "Register",
-        icon: UserPlusIcon,
-        path: "/register"
       })
   }
 
@@ -146,6 +147,10 @@ export default function Sidebar() {
           <ul className="pt-6 font-semibold">
             {NavItems.map((item, index) => (
               <li key={index} className="mb-1">
+
+                {/* Place a divider before the item if required */}
+                {item.gapBefore && <hr className="my-4 border-black-300" />}
+
                 <Link href={item.path} passHref tabIndex={-1}>
                   <button
                     className={`${item.path === pathname ? "menu-button-selected" : "menu-button"}`}
@@ -158,8 +163,6 @@ export default function Sidebar() {
                     </span>
                   </button>
                 </Link>
-                {/* Place a divider after the item if required */}
-                {item.gapAfter && <hr className="my-4 border-black-300" />}
               </li>
             ))}
           </ul>
