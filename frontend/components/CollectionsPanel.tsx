@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import CollectionPreview from '@/components/CollectionPreview'
 import { CollectionType } from '@/lib/types'
-import { ToastNotification, useToast } from '@/components/ToastNotification'
+import { useToast } from '@/context/ToastContext'
 
 const CollectionsPanel = ({ initialCollections }: { initialCollections: CollectionType[] }) => {
   // Sort collections by latest on initial load
@@ -13,7 +13,7 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
   )
   const [collections, setCollections] = useState(initialCollections)
   const [sortBy, setSortBy] = useState('latest') // Default sorting
-  const { toast, showToast, hideToast } = useToast()
+  const { showToast } = useToast()
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -82,16 +82,6 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
           <div className="no-results text-center">No collections found</div>
         )}
       </ul>
-
-      {/* Render toast notification if there is one */}
-      {toast && (
-        <ToastNotification
-          key={toast.id} // Ensures new instance
-          message={toast.message}
-          type={toast.type}
-          onFadeOut={hideToast}
-        />
-      )}
     </div>
   )
 }

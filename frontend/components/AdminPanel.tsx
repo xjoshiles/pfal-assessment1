@@ -1,12 +1,12 @@
 'use client'
 import { useState } from 'react'
-import { Toast, useToast } from '@/components/Toast'
 import { UserType, LimitsInfoType } from '@/lib/types'
 import { useUserContext } from '@/context/UserContext'
+import { useToast } from '@/context/ToastContext'
 
 export function LimitSection({ limits }: { limits: LimitsInfoType }) {
   const [currentLimit, setCurrentLimit] = useState(limits.limit)
-  const { toast, showToast, hideToast } = useToast()
+  const { showToast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -51,7 +51,7 @@ export function LimitSection({ limits }: { limits: LimitsInfoType }) {
             />
             <button
               type="submit"
-              className="form-button"
+              className="item_preview_btn text-sm md:text-base"
             >
               Update Limit
             </button>
@@ -61,17 +61,6 @@ export function LimitSection({ limits }: { limits: LimitsInfoType }) {
             Current limit: {currentLimit}, Created today: {limits.today}
           </p>
         </div>
-        {/* Render toast notification if there is one */}
-        {toast && (
-          <div className='flex-grow text-center mt-2 md:mt-0 text-sm md:text-base'>
-            <Toast
-              key={toast.id} // Ensures new instance
-              message={toast.message}
-              type={toast.type}
-              onFadeOut={hideToast}
-            />
-          </div>
-        )}
       </form>
     </div>
   )
@@ -83,7 +72,7 @@ export function UserSection({ users: initialUsers }: { users: UserType[] }) {
     initialUsers.sort((a, b) => a.username.localeCompare(b.username))
   )
   const [sortConfig, setSortConfig] = useState({ key: 'username', direction: 'asc' })
-  const { toast, showToast, hideToast } = useToast()
+  const { showToast } = useToast();
   const currentUser = useUserContext()
 
   const toggleAdmin = async (userId: number, isAdmin: boolean) => {
@@ -176,7 +165,7 @@ export function UserSection({ users: initialUsers }: { users: UserType[] }) {
               <th className="px-4 py-2 text-left">Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className='overflow-y-auto'>
             {users.map((user) => (
               <tr key={user.id}>
                 <td className="px-4 py-2">{user.id}</td>
@@ -199,17 +188,6 @@ export function UserSection({ users: initialUsers }: { users: UserType[] }) {
           </tbody>
         </table>
       </div>
-      {/* Render toast notification if there is one */}
-      {toast && (
-        <div className='text-center mt-2'>
-          <Toast
-            key={toast.id} // Ensures new instance
-            message={toast.message}
-            type={toast.type}
-            onFadeOut={hideToast}
-          />
-        </div>
-      )}
     </div>
   )
 }

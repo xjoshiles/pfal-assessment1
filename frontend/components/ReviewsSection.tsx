@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ReviewType, UserType } from '@/lib/types'
+import { ReviewType } from '@/lib/types'
 import { formatDate } from '@/lib/utils'
 import { useUserContext } from '@/context/UserContext'
+import { useToast } from '@/context/ToastContext'
 
 const ReviewsSection = ({
   setId,
@@ -24,9 +25,9 @@ const ReviewsSection = ({
   const [showReviews, setShowReviews] = useState(false)
   const [newReview, setNewReview] = useState('')
   const [rating, setRating] = useState(0)
-  const [error, setError] = useState('')
   const [userReview, setUserReview] = useState<ReviewType | null>(null)
   const currentUser = useUserContext()
+  const { showToast } = useToast()
 
   // Check if the current user has a review
   useEffect(() => {
@@ -43,14 +44,19 @@ const ReviewsSection = ({
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!newReview || rating === 0) {
-      setError('Please provide a review and a rating')
+    if (!newReview) {
+      showToast('Please provide a review!', 'error')
+      return
+    }
+
+    if (rating === 0) {
+      showToast('Please provide a rating!', 'error')
       return
     }
 
     // Prevent users from submitting more than one review for a set
     if (userReview) {
-      setError('You have already posted a review, please delete it before posting another')
+      showToast('You have already posted a review, please delete it before posting another', 'error')
       return
     }
 
@@ -67,17 +73,17 @@ const ReviewsSection = ({
       setUserReview(newReviewResponse) // Store user's review to prevent further submission
       setNewReview('')
       setRating(0)
-      setError('')
+      showToast('You successfully posted a review, thanks!', 'success')
     } else {
       const errorData = await res.json()
-      setError(errorData.message || "An error occurred")
+      showToast(errorData.message || 'An error occurred', 'error')
     }
   }
 
   const handleDeleteReview = async (reviewId: number, userId: number) => {
     // Only allow deletion if the current user is the review author or admin
     if (userId !== currentUser.id && !currentUser.admin) {
-      setError('You do not have permission to delete this review')
+      showToast('You do not have permission to delete this review', 'error')
       return
     }
 
@@ -89,8 +95,9 @@ const ReviewsSection = ({
     if (res.ok) {
       setReviews((prev) => prev.filter((review) => review.id !== reviewId))
       setUserReview(null) // Clear the user's review state
+      showToast('Review deleted!', 'success')
     } else {
-      setError('Failed to delete review.')
+      showToast('Failed to delete review', 'error')
     }
   }
 
@@ -129,9 +136,6 @@ const ReviewsSection = ({
                 </button>
               ))}
             </div>
-
-            {/* Error message when failing to submit review */}
-            {error && <p className="form-error-text">{error}</p>}
             <button type="submit" className="w-full item_preview_btn text-xl">
               Submit Review
             </button>

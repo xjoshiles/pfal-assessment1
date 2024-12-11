@@ -9,6 +9,9 @@ backend tests and OpenAPI file
 frontend tests
 
 
+logout in sidebar notification???
+
+
 
 node ace make:test posts/create --suite=functional
 

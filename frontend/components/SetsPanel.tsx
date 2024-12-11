@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import SetPreview from '@/components/SetPreview'
 import { FlashcardSetType } from '@/lib/types'
-import { ToastNotification, useToast } from '@/components/ToastNotification'
+import { useToast } from '@/context/ToastContext'
 
 const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
   // Sort sets by latest on initial load
@@ -13,7 +13,7 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
   )
   const [sets, setSets] = useState(initialSets)
   const [sortBy, setSortBy] = useState('latest') // Default sorting
-  const { toast, showToast, hideToast } = useToast()
+  const { showToast } = useToast()
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -81,16 +81,6 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
           <div className="no-results text-center">No flashcard sets found</div>
         )}
       </ul>
-
-      {/* Render toast notification if there is one */}
-      {toast && (
-        <ToastNotification
-          key={toast.id} // Ensures new instance
-          message={toast.message}
-          type={toast.type}
-          onFadeOut={hideToast}
-        />
-      )}
     </div>
   )
 }

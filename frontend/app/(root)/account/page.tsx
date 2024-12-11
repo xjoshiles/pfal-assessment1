@@ -3,14 +3,14 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUserContext } from '@/context/UserContext'
+import { useToast } from '@/context/ToastContext'
 
 export default function UpdateAccountPage() {
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
   const [isDisabled, setIsDisabled] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false) // Modal visibility state
   const [currentPassword, setCurrentPassword] = useState('') // Current password state
   const user = useUserContext()
+  const { showToast } = useToast()
   const modalRef = useRef<HTMLDivElement>(null) // Reference to the modal content
   const router = useRouter()
 
@@ -23,7 +23,6 @@ export default function UpdateAccountPage() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setError(null)
     setIsDisabled(true)
 
     const formData = new FormData(event.currentTarget)
@@ -31,19 +30,19 @@ export default function UpdateAccountPage() {
     const newPassword = formData.get('newPassword')?.toString().trim()
 
     if (!password) {
-      setError("Current password is required")
+      showToast('Please enter your current password', 'error')
       setIsDisabled(false)
       return
     }
 
     if (!newPassword) {
-      setError("New password is required")
+      showToast('Please enter a new password', 'error')
       setIsDisabled(false)
       return
     }
 
     if (newPassword == password) {
-      setError("Your new password must be different than your current password")
+      showToast('Your new password must be different than your current password', 'error')
       setIsDisabled(false)
       return
     }
@@ -59,18 +58,16 @@ export default function UpdateAccountPage() {
     })
 
     if (response.ok) {
-      setSuccess("Password updated successfully!")
+      showToast('Password updated successfully!', 'success')
       setTimeout(() => { router.push(`/users/${user.id}`) }, 1000)
     } else {
       const errorData = await response.json()
-      setError(errorData.message || "An error occurred")
+      showToast(errorData.message || 'An error occurred', 'error')
       setIsDisabled(false)
     }
   }
 
   async function handleDeleteAccount() {
-    setError(null)
-    setSuccess(null)
     setIsDisabled(true)
 
     const response = await fetch(`/api/users/${user.id}`, {
@@ -80,12 +77,13 @@ export default function UpdateAccountPage() {
     })
 
     if (response.status === 204) {
-      setSuccess("Account deleted successfully")
+      showToast('Account deleted successfully', 'success')
       setTimeout(() => { router.push("/") }, 1000)
+
     } else {
       const errorData = await response.json()
       console.log(errorData)
-      setError(errorData.message || "An error occurred")
+      showToast(errorData.message || 'An error occurred', 'error')
       setIsDisabled(false)
     }
   }
@@ -94,9 +92,6 @@ export default function UpdateAccountPage() {
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-lg">
         <h1 className="text-2xl font-bold text-center text-gray-800">Change Your Password</h1>
-
-        {error && (<div className="form-error-text">{error}</div>)}
-        {success && (<div className="form-success-text">{success}</div>)}
 
         {/* Update form */}
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -135,7 +130,7 @@ export default function UpdateAccountPage() {
               type="button"
               onClick={() => {
                 if (!currentPassword) {
-                  setError("Please confirm your current password")
+                  showToast('Please confirm your current password', 'error')
                   return
                 }
                 setShowDeleteModal(true)

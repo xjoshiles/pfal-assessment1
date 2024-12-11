@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Toast, useToast } from '@/components/Toast'
 import { SetFormType } from '@/lib/types'
+import { useToast } from '@/context/ToastContext'
 
 type SetFormProps =
   | { initialSet: SetFormType; setId: string }     // Both must be present
@@ -25,7 +25,7 @@ const SetForm = ({
   const [flashcards, setFlashcards] = useState(
     initialSet.flashcards.map((flashcard) => ({ ...flashcard, isOpen: true }))
   )
-  const { toast, showToast, hideToast } = useToast()
+  const { showToast } = useToast()
   const router = useRouter()
 
   // These variables determine whether to send a create or update request
@@ -60,7 +60,7 @@ const SetForm = ({
   const validateFlashcards = () => {
     // Return false if there are no flashcards in the set
     if (flashcards.length === 0) {
-      showToast('The set must contain at least one flashcard', 'error')
+      showToast('Please add at least one flashcard', 'error')
       return false
     }
 
@@ -84,7 +84,6 @@ const SetForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    hideToast()                       // Clear previous errors
     if (!validateFlashcards()) return // Halt submission if validation fails
 
     const set = {
@@ -100,6 +99,7 @@ const SetForm = ({
     })
 
     if (res.ok) {
+      showToast('Set saved successfully!', 'success')
       router.push('/sets')
     } else {
       const errorData = await res.json()
@@ -205,18 +205,6 @@ const SetForm = ({
           Save Flashcard Set
         </button>
       </div>
-
-      {/* Render toast notification if there is one */}
-      {toast && (
-        <div className='text-center mt-2'>
-          <Toast
-            key={toast.id} // Ensures new instance
-            message={toast.message}
-            type={toast.type}
-            onFadeOut={hideToast}
-          />
-        </div>
-      )}
     </form>
   )
 }

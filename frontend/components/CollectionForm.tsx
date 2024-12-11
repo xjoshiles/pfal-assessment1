@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import SetSelect from './SetSelect'
 import { CollectionFormType, FlashcardSetType } from '@/lib/types'
-import { Toast, useToast } from '@/components/Toast'
+import { useToast } from '@/context/ToastContext'
 
 interface CollectionFormProps {
   initialCollection?: CollectionFormType
@@ -28,7 +28,7 @@ const CollectionForm = ({
   const [description, setDescription] = useState(initialCollection.description)
   const [selectedSetIds, setSelectedSetIds] = useState(initialCollection.flashcardSetIds)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const { toast, showToast, hideToast } = useToast()
+  const { showToast } = useToast()
   const router = useRouter()
 
   const openModal = () => setIsModalOpen(true)
@@ -57,8 +57,18 @@ const CollectionForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!name.trim() || !description.trim() || selectedSetIds.length === 0) {
-      showToast('Please provide a name and description, and select at least one flashcard set', 'error')
+    if (!name.trim()) {
+      showToast('Please provide a name', 'error')
+      return
+    }
+
+    if (!description.trim()) {
+      showToast('Please provide a description', 'error')
+      return
+    }
+
+    if (selectedSetIds.length === 0) {
+      showToast('Please select at least one flashcard set', 'error')
       return
     }
 
@@ -76,6 +86,7 @@ const CollectionForm = ({
       })
 
       if (res.ok) {
+        showToast('Collection saved successfully!', 'success')
         router.push('/collections')
 
       } else {
@@ -178,18 +189,6 @@ const CollectionForm = ({
               </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Render toast notification if there is one */}
-      {toast && (
-        <div className='text-center mt-2'>
-          <Toast
-            key={toast.id} // Ensures new instance
-            message={toast.message}
-            type={toast.type}
-            onFadeOut={hideToast}
-          />
         </div>
       )}
     </div>

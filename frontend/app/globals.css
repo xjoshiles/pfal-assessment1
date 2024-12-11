@@ -99,11 +99,11 @@ body {
   }
 
   .form-button-enable {
-    @apply px-4 py-2 text-white bg-green-500 rounded-md transition duration-100 hover:bg-green-600 focus-visible:ring-2 focus-visible:ring-green-400 focus:outline-none
+    @apply px-4 py-2 text-white bg-green-500 rounded-full transition duration-100 hover:bg-green-600 focus-visible:ring-2 focus-visible:ring-green-400 focus:outline-none
   }
 
   .form-button-disable {
-    @apply px-4 py-2 text-white bg-red-500 rounded-md transition duration-100 hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-red-400 focus:outline-none
+    @apply px-4 py-2 text-white bg-red-500 rounded-full transition duration-100 hover:bg-red-600 focus-visible:ring-2 focus-visible:ring-red-400 focus:outline-none
   }
 
   .form-error-text {
