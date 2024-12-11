@@ -27,6 +27,7 @@ export type FlashcardSetType = {
   description: string,
   flashcards: FlashcardType[],
   averageRating: number,
+  reviews: ReviewType[],
   userId: number,
   creator: UserType,
   createdAt: Date,
@@ -44,6 +45,7 @@ export type CollectionType = {
   name: string,
   description: string,
   averageRating: number,
+  reviews: ReviewType[],
   userId: number,
   creator: UserType,
   flashcardSets: FlashcardSetType[],
@@ -57,16 +59,20 @@ export type CollectionFormType = {
   flashcardSetIds: number[]
 }
 
-export type ReviewType = {
-  id: number,
-  rating: number,
-  review: string,
-  userId: number,
-  author: UserType,
-  flashcardSetId: number,
-  createdAt: Date,
-  updatedAt: Date
+type ReviewBaseType = {
+  id: number;
+  rating: number;
+  review: string;
+  userId: number;
+  author: UserType;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+export type ReviewType = ReviewBaseType & (
+  | { flashcardSetId: number; collectionId?: never }  // `flashcardSetId` is required, `collectionId` must not exist
+  | { flashcardSetId?: never; collectionId: number }  // `collectionId` is required, `flashcardSetId` must not exist
+)
 
 export type LimitsInfoType = {
   limit: number,

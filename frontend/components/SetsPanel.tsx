@@ -5,6 +5,7 @@ import Link from 'next/link'
 import SetPreview from '@/components/SetPreview'
 import { FlashcardSetType } from '@/lib/types'
 import { useToast } from '@/context/ToastContext'
+import { usePathname, useRouter } from 'next/navigation'
 
 const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
   // Sort sets by latest on initial load
@@ -14,6 +15,8 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
   const [sets, setSets] = useState(initialSets)
   const [sortBy, setSortBy] = useState('latest') // Default sorting
   const { showToast } = useToast()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -38,6 +41,7 @@ const SetsPanel = ({ initialSets }: { initialSets: FlashcardSetType[] }) => {
       setSets((prevSets) => prevSets.filter((set) => set.id !== id))
 
       showToast('Set deleted successfully', 'success')
+      router.replace(pathname!)  // soft reload
 
     } else {
       const errorData = await response.json()

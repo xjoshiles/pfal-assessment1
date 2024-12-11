@@ -5,6 +5,7 @@ import Link from 'next/link'
 import CollectionPreview from '@/components/CollectionPreview'
 import { CollectionType } from '@/lib/types'
 import { useToast } from '@/context/ToastContext'
+import { usePathname, useRouter } from 'next/navigation'
 
 const CollectionsPanel = ({ initialCollections }: { initialCollections: CollectionType[] }) => {
   // Sort collections by latest on initial load
@@ -14,6 +15,8 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
   const [collections, setCollections] = useState(initialCollections)
   const [sortBy, setSortBy] = useState('latest') // Default sorting
   const { showToast } = useToast()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
@@ -39,6 +42,7 @@ const CollectionsPanel = ({ initialCollections }: { initialCollections: Collecti
         (collection) => collection.id !== id))
 
       showToast('Collection deleted successfully', 'success')
+      router.replace(pathname!)  // soft reload
 
     } else {
       const errorData = await response.json()

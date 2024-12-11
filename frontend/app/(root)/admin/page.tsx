@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/session'
 import { LimitSection, UserSection } from '@/components/AdminPanel'
-import { cookies } from 'next/headers'
+import { getDailyLimitInfo, getUsers } from '@/lib/api'
 
 export default async function AdminPage() {
   // Redirect to the user's profile if they are not an admin
@@ -10,27 +10,11 @@ export default async function AdminPage() {
     redirect(`/users/${currentUser.id}`)
   }
 
-  const sessionToken = (await cookies()).get('sessionToken')?.value
-
   // Fetch the current limits
-  const limitsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_ADONIS_API}/limits/sets`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken}`
-    }
-  })
-  const limits = await limitsRes.json()
+  const limits = await getDailyLimitInfo()
 
   // Fetch the current users
-  const usersRes = await fetch(
-    `${process.env.NEXT_PUBLIC_ADONIS_API}/users`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken}`
-    }
-  })
-  const users = await usersRes.json()
+  const users = await getUsers()
 
   return (
     <div className="flex justify-center items-center">

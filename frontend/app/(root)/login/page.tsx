@@ -24,12 +24,10 @@ export default function LoginPage() {
       body: JSON.stringify({ username, password }),
     })
 
+    // Redirect to sets page if successfully logged in
     if (response.ok) {
-      showToast(`Login successful!`, 'success')
-      // router.refresh()
-
-      // Redirect to homepage after 1 second
-      setTimeout(() => { router.push("/sets") }, 1000)
+      showToast(`Logged in successfully!`, 'success')
+      router.push("/sets")
 
     } else {
       const errorData = await response.json()

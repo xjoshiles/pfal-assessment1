@@ -1,7 +1,6 @@
 import CollectionForm from "@/components/CollectionForm"
+import { getCollectionById, getFlashcardSets } from "@/lib/api"
 import { getCurrentUser } from "@/lib/session"
-import { CollectionType } from "@/lib/types"
-import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 
 interface EditCollectionProps {
@@ -10,7 +9,7 @@ interface EditCollectionProps {
 
 export default async function EditCollection({ params }: EditCollectionProps) {
   const { id } = await params
-  const collection = await getCollectionById(id) as CollectionType
+  const collection = await getCollectionById(id)
   const user = await getCurrentUser()
 
   // Redirect user to the collection if they do not have permission to edit
@@ -44,36 +43,4 @@ export default async function EditCollection({ params }: EditCollectionProps) {
       </div>
     </section>
   )
-}
-
-async function getCollectionById(id: string) { // : Promise<FlashcardSetType> {
-  const sessionToken = (await cookies()).get('sessionToken')?.value
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_ADONIS_API}/collections/${id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken}`
-    }
-  })
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch collection')
-  }
-
-  return response.json()
-}
-
-async function getFlashcardSets() {
-  const sessionToken = (await cookies()).get('sessionToken')?.value
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_ADONIS_API}/sets/`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken}`
-    }
-  })
-  const data = await response.json()
-  return data
 }

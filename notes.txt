@@ -1,12 +1,15 @@
 to-do:
 
+
 question difficulty when viewing set
 delete users from admin panel
 spacing at bottom of pages
 delete button on reviews
 
+
 backend tests and OpenAPI file
 frontend tests
+readme and setup guides
 
 
 logout in sidebar notification???

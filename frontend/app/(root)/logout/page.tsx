@@ -14,12 +14,10 @@ export default function Logout() {
         headers: { 'Content-Type': 'application/json' }
       })
 
+      // Redirect to login page if successfully logged out
       if (response.ok) {
-        const data = await response.json()
-        showToast(data.message, 'error')
-
-        // Redirect to login page after 1 second
-        setTimeout(() => { router.push("/login") }, 1000)
+        showToast('Logged out successfully!', 'success')
+        router.push('/login')
 
       } else {
         const errorData = await response.json()

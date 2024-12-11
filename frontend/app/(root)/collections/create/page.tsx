@@ -1,6 +1,5 @@
 import CollectionForm from "@/components/CollectionForm"
-import { cookies } from "next/headers"
-
+import { getFlashcardSets } from "@/lib/api"
 
 export default async function CreateCollection() {
   const sets = await getFlashcardSets()
@@ -17,18 +16,4 @@ export default async function CreateCollection() {
       </div>
     </section>
   )
-}
-
-async function getFlashcardSets() {
-  const sessionToken = (await cookies()).get('sessionToken')?.value
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_ADONIS_API}/sets/`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken}`
-    }
-  })
-  const data = await response.json()
-  return data
 }

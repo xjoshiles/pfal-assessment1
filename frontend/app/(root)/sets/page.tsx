@@ -1,5 +1,5 @@
-import { cookies } from 'next/headers'
 import SetsPanel from '@/components/SetsPanel'
+import { getFlashcardSets } from '@/lib/api'
 
 const Sets = async () => {
   const sets = await getFlashcardSets()
@@ -12,20 +12,6 @@ const Sets = async () => {
       </div>
     </div>
   )
-}
-
-async function getFlashcardSets() {
-  const sessionToken = (await cookies()).get('sessionToken')?.value
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_ADONIS_API}/sets/`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken}`
-    }
-  })
-  const data = await response.json()
-  return data
 }
 
 export default Sets

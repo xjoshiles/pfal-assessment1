@@ -1,5 +1,5 @@
-import { cookies } from 'next/headers'
 import CollectionsPanel from '@/components/CollectionsPanel'
+import { getCollections } from '@/lib/api'
 
 const Collections = async () => {
   const collections = await getCollections()
@@ -12,20 +12,6 @@ const Collections = async () => {
       </div>
     </div>
   )
-}
-
-async function getCollections() {
-  const sessionToken = (await cookies()).get('sessionToken')?.value
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_ADONIS_API}/collections`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken}`
-    }
-  })
-  const data = await response.json()
-  return data
 }
 
 export default Collections

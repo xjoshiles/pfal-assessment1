@@ -59,7 +59,7 @@ export default function UpdateAccountPage() {
 
     if (response.ok) {
       showToast('Password updated successfully!', 'success')
-      setTimeout(() => { router.push(`/users/${user.id}`) }, 1000)
+      router.push(`/users/${user.id}`)
     } else {
       const errorData = await response.json()
       showToast(errorData.message || 'An error occurred', 'error')
@@ -73,16 +73,20 @@ export default function UpdateAccountPage() {
     const response = await fetch(`/api/users/${user.id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: currentPassword }), // Send the current password
+      body: JSON.stringify({ password: currentPassword }) // Send the current password
     })
 
+    // Redirect to homepage if successfully deleted account
     if (response.status === 204) {
+
+      // Clear cookies so middleware doesn't attempt to validate sessionToken
+      await fetch("/api/logout", { method: 'POST' })
+
       showToast('Account deleted successfully', 'success')
-      setTimeout(() => { router.push("/") }, 1000)
+      router.push("/")
 
     } else {
       const errorData = await response.json()
-      console.log(errorData)
       showToast(errorData.message || 'An error occurred', 'error')
       setIsDisabled(false)
     }

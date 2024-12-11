@@ -3,10 +3,13 @@ import { useState } from 'react'
 import { UserType, LimitsInfoType } from '@/lib/types'
 import { useUserContext } from '@/context/UserContext'
 import { useToast } from '@/context/ToastContext'
+import { usePathname, useRouter } from 'next/navigation'
 
 export function LimitSection({ limits }: { limits: LimitsInfoType }) {
   const [currentLimit, setCurrentLimit] = useState(limits.limit)
   const { showToast } = useToast()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -26,6 +29,7 @@ export function LimitSection({ limits }: { limits: LimitsInfoType }) {
       // Update the local state to reflect the new daily creation limit
       setCurrentLimit(limit)
       showToast('Limit updated successfully!', 'success')
+      router.replace(pathname!)  // soft reload
 
     } catch (error) {
       showToast((error as Error).message, 'error')
@@ -72,8 +76,10 @@ export function UserSection({ users: initialUsers }: { users: UserType[] }) {
     initialUsers.sort((a, b) => a.username.localeCompare(b.username))
   )
   const [sortConfig, setSortConfig] = useState({ key: 'username', direction: 'asc' })
-  const { showToast } = useToast();
+  const { showToast } = useToast()
   const currentUser = useUserContext()
+  const router = useRouter()
+  const pathname = usePathname()
 
   const toggleAdmin = async (userId: number, isAdmin: boolean) => {
     // Guard clause to prevent admins from removing their own admin status
@@ -100,6 +106,7 @@ export function UserSection({ users: initialUsers }: { users: UserType[] }) {
       )
 
       showToast('User admin status updated successfully!', 'success')
+      router.replace(pathname!)  // soft reload
 
     } catch (error) {
       showToast((error as Error).message, 'error')

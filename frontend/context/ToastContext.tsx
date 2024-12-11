@@ -24,13 +24,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   // Show toast function
   const showToast = (message: string, type: 'success' | 'error') => {
     const id = Date.now()
-    console.log('Show Toast:', message, type)
     setToasts((prevToasts) => [...prevToasts, { id, message, type }])
   }
 
   // Remove toast function
   const removeToast = (id: number) => {
-    console.log('Remove Toast:', id)
     setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id))
   }
 

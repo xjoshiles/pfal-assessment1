@@ -16,16 +16,16 @@ export default function Register() {
     const username = formData.get('username')
     const password = formData.get('password')
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_ADONIS_API}/users`,
+    const response = await fetch('api/users',
       { method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }) })
+        body: JSON.stringify({ username, password })
+      })
 
+    // Redirect to login page if successfully registered
     if (response.ok) {
-      showToast(`Successfully registered!`, 'success')
-
-      // Redirect to login page after 1 second
-      setTimeout(() => { redirect("/login") }, 1000)
+      showToast(`Registered successfully!`, 'success')
+      redirect("/login")
 
     } else {
       const errorData = await response.json()

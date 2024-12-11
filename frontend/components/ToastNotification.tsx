@@ -37,7 +37,6 @@ export function ToastNotification({ id, message, type, removeToast }: ToastNotif
 
 export function ToastContainer() {
   const { toasts, removeToast } = useToast()
-  console.log('Toasts in context:', toasts)
 
   return (
     <div className="fixed top-20 right-2 z-50 flex flex-col-reverse gap-2 sm:right-8 sm:top-8 sm:transform-none sm:-translate-x-0 px-2">

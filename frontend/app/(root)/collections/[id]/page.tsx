@@ -1,6 +1,6 @@
 import ReviewsSection from '@/components/ReviewsSection'
-import { cookies } from 'next/headers'
 import SetsPanel from '@/components/SetsPanel'
+import { getCollectionById } from '@/lib/api'
 
 interface CollectionProps {
   params: { id: string }
@@ -29,21 +29,6 @@ const Collection = async ({ params }: CollectionProps) => {
       </div>
     </div>
   )
-}
-
-async function getCollectionById(id: string) {
-  const sessionToken = (await cookies()).get('sessionToken')?.value
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_ADONIS_API}/collections/${id}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${sessionToken}`
-    },
-  }
-  )
-  const data = await response.json()
-  return data
 }
 
 export default Collection
