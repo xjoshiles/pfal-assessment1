@@ -294,8 +294,7 @@ export default class FlashcardsController {
 
     } catch (error) {
       return response.internalServerError({
-        message: 'Error fetching flashcard sets',
-        errors: error.messages || error.message,
+        message: error.message || 'Error fetching flashcard sets'
       })
     }
   }
@@ -324,8 +323,7 @@ export default class FlashcardsController {
 
     } catch (error) {
       return response.internalServerError({
-        message: 'Error fetching flashcard sets',
-        errors: error.messages || error.message,
+        message: error.message || 'Error fetching flashcards'
       })
     }
   }

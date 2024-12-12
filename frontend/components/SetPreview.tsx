@@ -54,15 +54,15 @@ const SetPreview = ({
         {/* Action Buttons */}
         <div className='flex-between gap-2'>
           <Link href={`/sets/${id}`} passHref tabIndex={-1}>
-            <button type="submit" className="item_preview_btn">View</button>
+            <button type="submit" className="item_preview_btn text-sm">View</button>
           </Link>
 
-          {/* Conditionally render the Edit and Delete
-          buttons if the current user is the creator */}
-          {user.id === creator.id && (
+          {/* Conditionally render the Edit and Delete buttons
+          if the current user is the creator or an admin */}
+          {(user.id === creator.id || user.admin) && (
             <>
               <Link href={`/sets/${id}/edit`} passHref tabIndex={-1}>
-                <button type="submit" className="item_edit_btn">Edit</button>
+                <button type="submit" className="item_edit_btn text-sm">Edit</button>
               </Link>
               <button
                 type="button"
@@ -70,7 +70,7 @@ const SetPreview = ({
                   setShowDeleteModal(true)
                   document.addEventListener('mousedown', handleOutsideClick)
                 }}
-                className="item_delete_btn"
+                className="item_delete_btn text-sm"
               >
                 Delete
               </button>

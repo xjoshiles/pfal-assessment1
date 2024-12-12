@@ -15,24 +15,16 @@ const CollectionReviewsController = () => import('#controllers/collection_review
 const CollectionsController = () => import('#controllers/collections_controller')
 const LimitsController = () => import('#controllers/limits_controller')
 
-
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 
 router.get('/', async () => {
   return {
-    hello: 'world',
+    "version": "1.0.0"
   }
 })
 
-
 // node ace db:seed --files "database/seeders/AdminUser.ts"
-
-//router.resource('/users', UsersController).apiOnly().use(['destroy', 'update', 'index'], middleware.auth())
-//router.resource('/users', UsersController).apiOnly().use(['destroy', 'update'], middleware.auth())
-
-
-//query gives me { oh: '2', adonis: [ 'sets', '3' ] }
 
 
 // Routes for users and managing authentication

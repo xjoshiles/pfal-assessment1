@@ -39,9 +39,15 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/FlashcardSet"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
     post:
       summary: "Create a new flashcard set"
-      description: "There can only be 20 new flashcard sets created per day"
+      description: "There can only be 20 new flashcard sets created per by non-admin users unless changed by an admin"
       tags:
         - "FlashCard Sets"
       requestBody:
@@ -49,7 +55,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/FlashcardSet"
+              $ref: "#/components/schemas/CreateSet"
       responses:
         "201":
           description: "The created flashcard set"
@@ -57,8 +63,20 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FlashcardSet"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: "The server is unable to process the request due to invalid or missing data"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         "429":
-          description: "You have reached the maximum number of flashcard sets allowed today"
+          description: "You (regular user) have reached the maximum number of flashcard sets allowed today"
           content:
             application/json:
               schema:
@@ -81,27 +99,13 @@ paths:
           content:
             application/json:
               schema:
-                type: "object"
-                allOf:
-                  - $ref: "#/components/schemas/FlashcardSet"
-                  - type: "object"
-                    properties:
-                      comments:
-                        type: "array"
-                        description: "Comments on the set"
-                        items:
-                          type: "object"
-                          properties:
-                            comment:
-                              type: "string"
-                              example: "I love this set!"
-                            author:
-                              $ref: "#/components/schemas/User"
-                             
-                      
-                            
-
-                
+                  $ref: "#/components/schemas/FlashcardSet"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"  
         "404":
           description: "The flashcard set was not found"
           content:
@@ -110,6 +114,7 @@ paths:
                 $ref: "#/components/schemas/Error"
     put:
       summary: "Update a flashcard set by ID"
+      description: "Users can only update their own sets unless they are an admin"
       tags:
         - "FlashCard Sets"
       requestBody:
@@ -125,26 +130,63 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FlashcardSet"
+        "400":
+          description: "A flashcard with an invalid ID was given"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Attempted to update another user's flashcard set as a non-admin"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         "404":
           description: "The flashcard set was not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: "The server is unable to process the request due to invalid or missing data"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
     delete:
       summary: "Delete a flashcard set by ID"
+      description: "Users can only delete their own sets unless they are an admin"
       tags:
         - "FlashCard Sets"
       responses:
         "204":
           description: "The flashcard set was deleted"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "403":
+          description: "Attempted to delete another user's flashcard set as non-admin"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         "404":
           description: "The flashcard set was not found"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /set/{setID}/comment:
+  /sets/{setID}/review:
     parameters:
       - name: setID
         in: path
@@ -153,7 +195,7 @@ paths:
         schema:
           type: "string"
     post:
-      summary: "Comment on a flashcard set, by the current user"
+      summary: "Review a flashcard set, by the current user"
       tags:
         - "FlashCard Sets"
       requestBody:
@@ -173,6 +215,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SetReview"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         "404":
           description: "The flashcard set was not found"
           content:
@@ -207,6 +255,12 @@ paths:
                 type: "array"
                 items:
                   $ref: "#/components/schemas/Flashcard"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
         "404":
           description: "The flashcard set was not found"
           content:
@@ -258,7 +312,7 @@ paths:
                 $ref: "#/components/schemas/Error"
         "422":
           description: |
-            The request was well-formed but contains semantic errors. The server is unable to process the request due to invalid or missing data, such as:
+            The server is unable to process the request due to invalid or missing data, such as:
             - Invalid username (too short or too long)
             - Invalid password (too short)
             - Missing required fields
@@ -337,7 +391,7 @@ paths:
                 $ref: "#/components/schemas/Error"
         "422":
           description: |
-            The request was well-formed but contains semantic errors. The server is unable to process the request due to invalid or missing data, such as:
+            The server is unable to process the request due to invalid or missing data, such as:
             - Invalid newPassword (too short)
             - Missing required fields
             - Incorrect data types
@@ -747,6 +801,45 @@ components:
             $ref: "#/components/schemas/SetReview"
         creator:
           $ref: "#/components/schemas/User"
+    CreateSet:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "European Capitals"
+          description: "The name of the flashcard set"
+        description:
+          type: string
+          example: "Do you know the names of these capital cities?"
+          description: "A brief description of the flashcard set"
+        flashcards:
+          type: array
+          description: "A list of flashcards included in the set"
+          minItems: 1
+          items:
+            type: object
+            properties:
+              question:
+                type: string
+                example: "What is the capital of France?"
+                description: "The question for the flashcard"
+              answer:
+                type: string
+                example: "Paris"
+                description: "The answer to the question"
+              difficulty:
+                type: string
+                enum:
+                  - easy
+                  - medium
+                  - hard
+                example: "easy"
+                description: "The difficulty level of the flashcard"
+      required:
+        - name
+        - description
+        - flashcards
+
     Error:
       type: "object"
       properties:

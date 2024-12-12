@@ -108,8 +108,7 @@ export default class UsersController {
       }
       // Else...
       return response.internalServerError({
-        message: 'Unable to update user password',
-        errors: error.messages || error.message,
+        message: error.message || 'Unable to update user password'
       })
     }
   }
@@ -207,8 +206,7 @@ export default class UsersController {
       }
       // Else...
       return response.internalServerError({
-        message: 'Unable to update admin status of user',
-        errors: error.messages || error.message,
+        message: error.message || 'Unable to update admin status of user',
       })
     }
   }

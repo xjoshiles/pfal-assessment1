@@ -124,13 +124,13 @@ const ReviewsSection = ({
               required
             />
             <div className="flex items-center space-x-1 ">
-              <p className="text-gray-700 mr-2 text-2xl">Your Rating:</p>
+              <p className="text-gray-700 mr-2 text-2xl text-lg sm:text-2xl">Your Rating:</p>
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
-                  className={`text-3xl ${star <= rating ? 'text-yellow-500' : 'text-gray-400'}`}
+                  className={`text-2xl sm:text-3xl ${star <= rating ? 'text-yellow-500' : 'text-gray-400'}`}
                 >
                   {star <= rating ? '★' : '☆'}
                 </button>
@@ -164,7 +164,7 @@ const ReviewsSection = ({
                 {review.userId === currentUser.id || currentUser.admin ? (
                   <button
                     onClick={() => handleDeleteReview(review.id, review.userId)}
-                    className="item_delete_btn mt-2 sm:mt-0 text-sm sm:text-base"
+                    className="item_delete_btn mt-2 sm:mt-0 text-sm"
                   >
                     Delete Review
                   </button>
