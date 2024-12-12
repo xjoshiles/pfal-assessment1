@@ -48,8 +48,8 @@ export default class LimitsController {
         })
       }
       // Else...
-      return response.badRequest({
-        message: error.message || 'Error updating limit'
+      return response.internalServerError({
+        message: error.message || 'Error updating limit',
       })
     }
   }

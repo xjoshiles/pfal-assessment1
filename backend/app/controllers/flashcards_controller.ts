@@ -102,8 +102,8 @@ export default class FlashcardsController {
         })
       }
       // Else...
-      return response.badRequest({
-        message: error.message || 'Error creating set'
+      return response.internalServerError({
+        message: error.message || 'Error creating set',
       })
     }
   }
@@ -185,7 +185,7 @@ export default class FlashcardsController {
 
         if (!existingCard || existingCard.flashcardSetId !== set.id) {
           await trx.rollback()
-          return response.badRequest(
+          return response.unprocessableEntity(
             { message: `Flashcard with ID ${flashcard.id} is invalid` })
         }
 
@@ -237,8 +237,8 @@ export default class FlashcardsController {
         })
       }
       // Else...
-      return response.badRequest({
-        message: error.message || 'Error updating set'
+      return response.internalServerError({
+        message: error.message || 'Error updating set',
       })
     }
   }

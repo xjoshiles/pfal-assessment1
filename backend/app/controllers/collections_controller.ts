@@ -111,9 +111,8 @@ export default class CollectionsController {
           message: 'A flashcard set was not found'
         })
       }
-      // Else...
-      return response.badRequest({
-        message: error.message || 'Error creating collection'
+      return response.internalServerError({
+        message: error.message || 'Error creating collection',
       })
     }
   }
@@ -220,8 +219,8 @@ export default class CollectionsController {
         })
       }
       // Else...
-      return response.badRequest({
-        message: error.message || 'Error updating collection'
+      return response.internalServerError({
+        message: error.message || 'Error updating collection',
       })
     }
   }

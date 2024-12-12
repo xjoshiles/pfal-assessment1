@@ -25,6 +25,58 @@ paths:
                   version:
                     type: "string"
                     example: "1.0.0"
+  /login:
+    post:
+      summary: "Login"
+      tags:
+        - "General"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCredentials"
+
+      responses:
+        "200":
+          description: "Logged in successfully"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                allOf:
+                  - $ref: "#/components/schemas/Token"
+                  - $ref: "#/components/schemas/User"
+        "401":
+          description: "Incorrect username or password"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: "The server is unable to process the request due to invalid or missing data"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /logout:
+    post:
+      summary: "Logout"
+      tags:
+        - "General"
+      responses:
+        "200":
+          description: "Successfully logged out (token deleted server side)"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "401":
+          description: "Unauthorised: Missing or invalid authentication credentials"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /sets:
     get:
       summary: "Get all flashcard sets"
@@ -99,13 +151,13 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/FlashcardSet"
+                $ref: "#/components/schemas/FlashcardSet"
         "401":
           description: "Unauthorised: Missing or invalid authentication credentials"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"  
+                $ref: "#/components/schemas/Error"
         "404":
           description: "The flashcard set was not found"
           content:
@@ -130,12 +182,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FlashcardSet"
-        "400":
-          description: "A flashcard with an invalid ID was given"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "401":
           description: "Unauthorised: Missing or invalid authentication credentials"
           content:
@@ -223,6 +269,18 @@ paths:
                 $ref: "#/components/schemas/Error"
         "404":
           description: "The flashcard set was not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: "User has already reviewed the set"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "422":
+          description: "The server is unable to process the request due to invalid or missing data"
           content:
             application/json:
               schema:
@@ -533,7 +591,7 @@ paths:
                     type: "object"
                     properties:
                       comment:
-                        type: "string"  
+                        type: "string"
                         description: "The user's comment on the set"
                       set:
                         $ref: "#/components/schemas/FlashcardSet"
@@ -566,12 +624,12 @@ paths:
                   type: "object"
                   properties:
                     comment:
-                      type: "string"  
+                      type: "string"
                       description: "The user's comment on the set"
                     set:
                       $ref: "#/components/schemas/FlashcardSet"
                     user:
-                      $ref: "#/components/schemas/User"  
+                      $ref: "#/components/schemas/User"
         "404":
           description: "The flashcard set collection was not found"
           content:
@@ -589,7 +647,7 @@ paths:
             schema:
               type: "array"
               items:
-                type: "object"                
+                type: "object"
                 properties:
                   comment:
                     type: "string"
@@ -606,12 +664,12 @@ paths:
                 type: "object"
                 properties:
                   comment:
-                    type: "string"  
+                    type: "string"
                     description: "The user's comment on the set"
                   set:
                     $ref: "#/components/schemas/FlashcardSet"
                   user:
-                    $ref: "#/components/schemas/User"  
+                    $ref: "#/components/schemas/User"
         "404":
           description: "The flashcard set collection was not found"
           content:
@@ -649,7 +707,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-        '403':
+        "403":
           description: "You are not allowed to delete this collection"
           content:
             application/json:
@@ -673,12 +731,12 @@ paths:
                     type: "object"
                     properties:
                       comment:
-                        type: "string"  
+                        type: "string"
                         description: "The user's comment on the set"
                       set:
                         $ref: "#/components/schemas/FlashcardSet"
                       user:
-                        $ref: "#/components/schemas/User"  
+                        $ref: "#/components/schemas/User"
     post:
       summary: "Create a new flashcard set collection"
       tags:
@@ -708,14 +766,14 @@ paths:
                 type: array
                 items:
                   type: "object"
-                  properties:                  
+                  properties:
                     comment:
-                      type: "string"  
+                      type: "string"
                       description: "The user's comment on the set"
                     set:
                       $ref: "#/components/schemas/FlashcardSet"
                     user:
-                      $ref: "#/components/schemas/User"  
+                      $ref: "#/components/schemas/User"
         "404":
           description: "The flashcard set was not found"
           content:
@@ -741,7 +799,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-                  
 
 components:
   schemas:
@@ -991,3 +1048,36 @@ components:
           example: "2024-10-15T12:00:00Z"
         author:
           $ref: "#/components/schemas/User"
+    Token:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "bearer"
+          description: "The type of token issued"
+        name:
+          type: string
+          nullable: true
+          example: null
+          description: "Optional name associated with the token"
+        token:
+          type: string
+          example: "oat_OTY.abcdefghijklmnopqrstuvwxyz0123456789"
+          description: "The actual token string"
+        abilities:
+          type: array
+          items:
+            type: string
+            example: ["*"]
+            description: "Permissions or abilities granted to the token"
+        lastUsedAt:
+          type: string
+          format: date-time
+          nullable: true
+          example: null
+          description: "Timestamp of the last usage of the token, if available"
+        expiresAt:
+          type: string
+          format: date-time
+          example: "2025-01-11T04:07:24.527Z"
+          description: "Timestamp indicating when the token will expire"

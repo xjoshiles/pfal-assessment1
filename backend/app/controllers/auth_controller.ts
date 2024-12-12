@@ -46,7 +46,7 @@ export default class AuthController {
 
     } catch (error) {
       return response.unauthorized({
-        message: error.messages[0].message,
+        message: error.message || 'Invalid token',
       })
     }
   }

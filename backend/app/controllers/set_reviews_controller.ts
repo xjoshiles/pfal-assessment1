@@ -2,6 +2,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 import SetReview from '#models/set_review'
 import FlashcardSet from '#models/flashcard_set'
 import { ReviewValidator } from '#validators/review'
+import { errors } from '@vinejs/vine'
 
 export default class SetReviewsController {
   /**
@@ -26,7 +27,7 @@ export default class SetReviewsController {
         .first()
 
       if (existingReview) {
-        return response.badRequest({
+        return response.conflict({
           message: 'You have already posted a review for this set'
         })
       }
@@ -52,9 +53,16 @@ export default class SetReviewsController {
       return response.created(review)
 
     } catch (error) {
-      return response.badRequest(
-        { message: error.messages[0].message || 'An error occurred while creating the review' }
-      )
+      // Return first error message if it's a validation error
+      if (error instanceof errors.E_VALIDATION_ERROR) {
+        return response.unprocessableEntity({
+          message: error.messages[0].message  // (VineJS SimpleErrorReporter)
+        })
+      }
+      // Else...
+      return response.internalServerError({
+        message: error.message || 'Error saving review',
+      })
     }
   }
 

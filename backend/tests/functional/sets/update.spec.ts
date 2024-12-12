@@ -147,7 +147,7 @@ test.group('Update a Flashcard Set by ID', (group) => {
     assert.equal(response.response.body.message, 'The name field must be defined')
   })
 
-  test('return 400 when trying to update with an invalid flashcard ID', async ({ assert, client }) => {
+  test('return 422 when trying to update with an invalid flashcard ID', async ({ assert, client }) => {
     const invalidData = {
       name: 'Invalid Flashcard Update',
       description: 'Invalid Flashcard Description',
@@ -161,7 +161,7 @@ test.group('Update a Flashcard Set by ID', (group) => {
       .loginAs(user)
       .json(invalidData)
 
-    assert.equal(response.response.statusCode, 400)
+    assert.equal(response.response.statusCode, 422)
     assert.equal(response.response.body.message, 'Flashcard with ID 9999 is invalid')
   })
 
