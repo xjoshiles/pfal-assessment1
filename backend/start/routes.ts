@@ -45,6 +45,10 @@ router.get('/collections/:id/review', [CollectionReviewsController, 'show']).use
 router.delete('/collections/:id/review/:reviewId', [CollectionReviewsController, 'destroy']).use(middleware.auth())
 
 
+// /auth/me
+// limits/sets
+// 
+
 
 
 router.post('/limits/sets', [LimitsController, 'updateDailyLimit']).use(middleware.auth())

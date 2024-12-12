@@ -92,7 +92,7 @@ const ReviewsSection = ({
       method: 'DELETE'
     })
 
-    if (res.ok) {
+    if (res.status == 204) {
       setReviews((prev) => prev.filter((review) => review.id !== reviewId))
       setUserReview(null) // Clear the user's review state
       showToast('Review deleted!', 'success')

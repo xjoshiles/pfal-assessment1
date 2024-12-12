@@ -92,6 +92,9 @@ export default class SetReviewsController {
       const review = await SetReview.findOrFail(params.reviewId)
       // const set = await FlashcardSet.findOrFail(review.flashcardSetId)
 
+      // 
+      // get setId, check if there is a matching entry. If not, unprocessible?
+
       // If the current user is neither the author of the review nor an admin
       if (auth.user?.id !== review.userId && !auth.user?.admin) {
         return response.forbidden('You are not authorised to delete this review')
@@ -108,7 +111,7 @@ export default class SetReviewsController {
       // set.averageRating = reviews.length ? averageRating : 0
       // await set.save()
 
-      return response.ok({ message: 'Successfully deleted comment' })
+      return response.noContent()
     } catch (error) {
       console.log(error)
     }

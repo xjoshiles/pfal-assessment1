@@ -108,7 +108,7 @@ export default class CollectionReviewsController {
       // collection.averageRating = reviews.length ? averageRating : 0
       // await collection.save()
 
-      return response.ok({ message: 'Successfully deleted comment' })
+      return response.noContent()
     } catch (error) {
       console.log(error)
     }
