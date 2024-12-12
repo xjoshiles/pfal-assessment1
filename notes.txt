@@ -14,6 +14,9 @@ Write some more seeds?
 Mention how it uses responsive design (usability)
 
 
+disabling turbopack in package.json is useful for debugging...
+
+
 
 node ace make:test posts/create --suite=functional
 
