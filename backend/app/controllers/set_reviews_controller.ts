@@ -16,8 +16,9 @@ export default class SetReviewsController {
       // Check if the flashcard set exists
       const set = await FlashcardSet.find(params.id)
       if (!set) {
-        return response.notFound(
-          { message: `Flashcard set ${params.id} not found` })
+        return response.notFound({
+          message: `Flashcard set ${params.id} not found`
+        })
       }
 
       // Check if the user has already posted a review for this set
@@ -70,17 +71,14 @@ export default class SetReviewsController {
    * Get all reviews for a flashcard set
    */
   async show({ params, response }: HttpContext) {
-
     const set = await FlashcardSet.find(params.id)
-    if (!set) {
-      return response.notFound(
-        { message: `Flashcard set ${params.id} not found` })
-    }
-    // Else
-    await set.load('reviews', (query) => {
-      query.preload('author')
-    })
 
+    if (!set) {
+      return response.notFound({
+        message: `Flashcard set ${params.id} not found`
+      })
+    }
+    await set.load('reviews', (query) => { query.preload('author') })
     return response.json(set.reviews)
   }
 
@@ -88,32 +86,48 @@ export default class SetReviewsController {
    * Delete review of a flashcard set by id
    */
   async destroy({ params, response, auth }: HttpContext) {
-    try {
-      const review = await SetReview.findOrFail(params.reviewId)
-      // const set = await FlashcardSet.findOrFail(review.flashcardSetId)
+    const { id, reviewId } = params
 
-      // 
-      // get setId, check if there is a matching entry. If not, unprocessible?
-
-      // If the current user is neither the author of the review nor an admin
-      if (auth.user?.id !== review.userId && !auth.user?.admin) {
-        return response.forbidden('You are not authorised to delete this review')
-      }
-      // Else...
-      await review.delete()
-
-      // // Recalculate the average rating
-      // const reviews = await set.related('reviews').query()
-      // const averageRating = reviews.reduce(
-      //   (sum, review) => sum + review.rating, 0) / reviews.length
-
-      // // Update the set with the new average rating
-      // set.averageRating = reviews.length ? averageRating : 0
-      // await set.save()
-
-      return response.noContent()
-    } catch (error) {
-      console.log(error)
+    // Return 404 if the review doesn't exist
+    const review = await SetReview.find(reviewId)
+    if (!review) {
+      return response.notFound({
+        message: `Flashcard set review ${reviewId} not found`
+      })
     }
+
+    // If the current user is neither the author of the review nor an admin
+    if (auth.user?.id !== review.userId && !auth.user?.admin) {
+      return response.forbidden('You are not permitted to delete this review')
+    }
+
+    // Return 404 if the set doesn't exist
+    const set = await FlashcardSet.find(id)
+    if (!set) {
+      return response.notFound({
+        message: `Flashcard set ${params.id} not found`
+      })
+    }
+
+    // Return 404 if review was not found for this set
+    if (set.id != review.flashcardSetId) {
+      return response.notFound({
+        message: `Review ${reviewId} not found for flashcard set ${set.id}`
+      })
+    }
+
+    // Else...
+    await review.delete()
+
+    // // Recalculate the average rating
+    // const reviews = await set.related('reviews').query()
+    // const averageRating = reviews.reduce(
+    //   (sum, review) => sum + review.rating, 0) / reviews.length
+
+    // // Update the set with the new average rating
+    // set.averageRating = reviews.length ? averageRating : 0
+    // await set.save()
+
+    return response.noContent()
   }
 }

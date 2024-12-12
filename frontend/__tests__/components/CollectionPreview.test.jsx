@@ -22,6 +22,7 @@ describe('CollectionPreview', () => {
     name: 'Test Collection',
     description: 'A sample flashcard set collection',
     averageRating: 4,
+    userId: 2,
     creator: { id: 2, username: 'testuser' },
     updatedAt: '2024-12-10T12:34:56Z',
   }

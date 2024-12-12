@@ -16,8 +16,9 @@ export default class CollectionReviewsController {
       // Check if the collection exists
       const collection = await Collection.find(params.id)
       if (!collection) {
-        return response.notFound(
-          { message: `Collection ${params.id} not found` })
+        return response.notFound({
+          message: `Collection ${params.id} not found`
+        })
       }
 
       // Check if the user has already posted a review for this collection
@@ -70,17 +71,14 @@ export default class CollectionReviewsController {
    * Get all reviews for a collection
    */
   async show({ params, response }: HttpContext) {
-
     const collection = await Collection.find(params.id)
-    if (!collection) {
-      return response.notFound(
-        { message: `Collection ${params.id} not found` })
-    }
-    // Else
-    await collection.load('reviews', (query) => {
-      query.preload('author')
-    })
 
+    if (!collection) {
+      return response.notFound({
+        message: `Collection ${params.id} not found`
+      })
+    }
+    await collection.load('reviews', (query) => { query.preload('author') })
     return response.json(collection.reviews)
   }
 
@@ -88,29 +86,48 @@ export default class CollectionReviewsController {
    * Delete review of a collection by id
    */
   async destroy({ params, response, auth }: HttpContext) {
-    try {
-      const review = await CollectionReview.findOrFail(params.reviewId)
-      // const collection = await Collection.findOrFail(review.collectionId)
+    const { id, reviewId } = params
 
-      // If the current user is neither the author of the review nor an admin
-      if (auth.user?.id !== review.userId && !auth.user?.admin) {
-        return response.forbidden('You are not authorised to delete this review')
-      }
-      // Else...
-      await review.delete()
-
-      // // Recalculate the average rating
-      // const reviews = await collection.related('reviews').query()
-      // const averageRating = reviews.reduce(
-      //   (sum, review) => sum + review.rating, 0) / reviews.length
-
-      // // Update the collection with the new average rating
-      // collection.averageRating = reviews.length ? averageRating : 0
-      // await collection.save()
-
-      return response.noContent()
-    } catch (error) {
-      console.log(error)
+    // Return 404 if the review doesn't exist
+    const review = await CollectionReview.find(reviewId)
+    if (!review) {
+      return response.notFound({
+        message: `Collection review ${reviewId} not found`
+      })
     }
+
+    // If the current user is neither the author of the review nor an admin
+    if (auth.user?.id !== review.userId && !auth.user?.admin) {
+      return response.forbidden('You are not permitted to delete this review')
+    }
+
+    // Return 404 if the collection doesn't exist
+    const collection = await Collection.find(id)
+    if (!collection) {
+      return response.notFound({
+        message: `Collection ${params.id} not found`
+      })
+    }
+
+    // Return 404 if review was not found for this collection
+    if (collection.id != review.collectionId) {
+      return response.notFound({
+        message: `Review ${reviewId} not found for collection ${collection.id}`
+      })
+    }
+
+    // Else...
+    await review.delete()
+
+    // // Recalculate the average rating
+    // const reviews = await collection.related('reviews').query()
+    // const averageRating = reviews.reduce(
+    //   (sum, review) => sum + review.rating, 0) / reviews.length
+
+    // // Update the collection with the new average rating
+    // collection.averageRating = reviews.length ? averageRating : 0
+    // await collection.save()
+
+    return response.noContent()
   }
 }

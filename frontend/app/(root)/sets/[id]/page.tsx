@@ -21,7 +21,7 @@ const FlashcardSet = async ({ params }: FlashcardSetProps) => {
             <>
               <FlashcardPanel cards={set.flashcards} />
               <ReviewsSection
-                setId={id}
+                id={id}
                 initialReviews={set.reviews}
                 resourceType={'sets'}
               />

@@ -34,7 +34,6 @@ test.group('Get all flashcard sets', (group) => {
     // Validate that each set contains the required data
     response.response.body.forEach((set: any) => {
       assert.property(set, 'flashcards') // Ensure flashcards are preloaded
-      assert.property(set, 'reviews')    // Ensure reviews are preloaded
       assert.property(set, 'creator')    // Ensure creator is preloaded
     })
   })

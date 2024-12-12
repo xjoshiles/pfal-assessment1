@@ -24,53 +24,45 @@ router.get('/', async () => {
   }
 })
 
-// node ace db:seed --files "database/seeders/AdminUser.ts"
-
-
-// Routes for users and managing authentication
-router.resource('/users', UsersController).use(['index', 'show', 'update', 'destroy'], middleware.auth())
-router.put('/users/:id/admin', [UsersController, 'updateAdmin']).use(middleware.auth())
+// Routes for managing authentication
 router.post('/login', [AuthController, 'login'])
 router.post('/logout', [AuthController, 'logout']).use(middleware.auth())
+router.get('/auth/me', [AuthController, 'authorised']).use(middleware.auth())
 
+
+// Routes for users
+router.resource('/users', UsersController).use(['index', 'show', 'update', 'destroy'], middleware.auth())
+router.put('/users/:id/admin', [UsersController, 'updateAdmin']).use(middleware.auth())
+
+
+// Routes for sets
 router.resource('/sets', FlashcardsController).use(['index', 'show', 'store', 'update', 'destroy'], middleware.auth())
-router.get('/auth/me', [AuthController, 'authorised'])
-
-router.post('/sets/:id/review', [SetReviewsController, 'store']).use(middleware.auth())
-router.get('/sets/:id/review', [SetReviewsController, 'show']).use(middleware.auth())
-router.delete('/sets/:id/review/:reviewId', [SetReviewsController, 'destroy']).use(middleware.auth())
-
-router.post('/collections/:id/review', [CollectionReviewsController, 'store']).use(middleware.auth())
-router.get('/collections/:id/review', [CollectionReviewsController, 'show']).use(middleware.auth())
-router.delete('/collections/:id/review/:reviewId', [CollectionReviewsController, 'destroy']).use(middleware.auth())
-
-
-// /auth/me
-// limits/sets
-// 
-
-
-
-router.post('/limits/sets', [LimitsController, 'updateDailyLimit']).use(middleware.auth())
-router.get('/limits/sets', [LimitsController, 'getDailyLimitInfo']).use(middleware.auth())
-
-
-
-router.resource('/collections', CollectionsController)
-  .only(['index', 'store', 'show', 'update', 'destroy'])
-  .middleware('*', middleware.auth())
-
-// router.delete('/users/:id', UsersController)
-
 
 router.get('/users/:id/sets', [FlashcardsController, 'byUser'])
   .use(middleware.auth())
 
 router.get('/sets/:id/cards', [FlashcardsController, 'inSet'])
 
+router.post('/sets/:id/reviews', [SetReviewsController, 'store']).use(middleware.auth())
+router.get('/sets/:id/reviews', [SetReviewsController, 'show']).use(middleware.auth())
+router.delete('/sets/:id/reviews/:reviewId', [SetReviewsController, 'destroy']).use(middleware.auth())
+
+
+// Set limits
+router.post('/limits/sets', [LimitsController, 'updateDailyLimit']).use(middleware.auth())
+router.get('/limits/sets', [LimitsController, 'getDailyLimitInfo']).use(middleware.auth())
+
+
+// Routes for collections
+router.post('/collections/:id/reviews', [CollectionReviewsController, 'store']).use(middleware.auth())
+router.get('/collections/:id/reviews', [CollectionReviewsController, 'show']).use(middleware.auth())
+router.delete('/collections/:id/reviews/:reviewId', [CollectionReviewsController, 'destroy']).use(middleware.auth())
+
+router.resource('/collections', CollectionsController)
+  .only(['index', 'store', 'show', 'update', 'destroy'])
+  .middleware('*', middleware.auth())
+
+router.get('/collections/random', [CollectionsController, 'random']).use(middleware.auth())
 
 router.get('/users/:id/collections', [CollectionsController, 'byUser'])
   .use(middleware.auth())
-
-
-//router.resource('/users/:id/collections', UserCollectionsController).use('*', middleware.auth())

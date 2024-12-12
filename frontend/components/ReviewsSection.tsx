@@ -7,11 +7,11 @@ import { useUserContext } from '@/context/UserContext'
 import { useToast } from '@/context/ToastContext'
 
 const ReviewsSection = ({
-  setId,
+  id,
   initialReviews,
   resourceType
 }: {
-  setId: string
+  id: string
   initialReviews: ReviewType[],
   resourceType: 'sets' | 'collections' // Determines fetch endpoints
 }) => {
@@ -61,7 +61,7 @@ const ReviewsSection = ({
     }
 
     const reviewData = { rating: rating, review: newReview }
-    const res = await fetch(`/api/${resourceType}/${setId}/review`, {
+    const res = await fetch(`/api/${resourceType}/${id}/reviews`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(reviewData)
@@ -88,7 +88,7 @@ const ReviewsSection = ({
     }
 
     const res = await fetch(
-      `/api/${resourceType}/${setId}/review/${reviewId}`, {
+      `/api/${resourceType}/${id}/reviews/${reviewId}`, {
       method: 'DELETE'
     })
 

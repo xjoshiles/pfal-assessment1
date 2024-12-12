@@ -33,9 +33,6 @@ export default class CollectionsController {
         .preload('flashcardSets', (query) => {
           query.preload('flashcards').preload('creator')
         })
-        .preload('reviews', (query) => {
-          query.preload('author')
-        })
         .preload('creator')
 
       return response.json(collections)
@@ -258,7 +255,7 @@ export default class CollectionsController {
   /**
    * Get all flashcard set collections created by a user
    */
-  async byUser({ params, response, auth }: HttpContext) {
+  async byUser({ params, response }: HttpContext) {
     const id = params.id
 
     try {
@@ -270,7 +267,7 @@ export default class CollectionsController {
 
       const collections = await Collection.query()
         .where('user_id', id)
-        .preload('creator')
+        .preload('flashcardSets')  // No .first() call for all collections
 
       return response.json(collections)
 
@@ -284,6 +281,22 @@ export default class CollectionsController {
   /**
    * Redirect to a random flashcard set collection
    */
-  async random({ params }: HttpContext) { }
+  async random({ response }: HttpContext) {
+    // Fetch all collections
+    const collections = await Collection.all()
 
+    // Generate a random index
+    const index = Math.floor(Math.random() * collections.length)
+
+    // Get the random collection
+    const randomCollection = collections[index]
+
+    // Redirect to the random collection's route
+    if (randomCollection) {
+      response.redirect(`/collections/${randomCollection.id}`)
+    }
+
+    // Fallback if no collections are found
+    response.redirect('/collections')
+  }
 }

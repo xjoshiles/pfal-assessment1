@@ -1,6 +1,8 @@
 'use client'
 
 import { useToast } from '@/context/ToastContext'
+import { NoSymbolIcon } from '@heroicons/react/24/outline'
+import { CheckCircleIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
 
 type ToastNotificationProps = {
@@ -26,11 +28,20 @@ export function ToastNotification({ id, message, type, removeToast }: ToastNotif
 
   return (
     <div
-      className={`text-center ml-auto max-w-max p-4 rounded-md shadow-lg transition-opacity duration-1000 z-50
-        ${type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}
-        ${fadeOut ? 'opacity-0' : 'opacity-100'}`}
+    className={`text-center ml-auto max-w-max p-4 rounded-md transition-opacity duration-1000 z-50
+      ${type === 'success' ? 'text-gray-300 bg-black-200 border-b-4 border-green-600' : 'text-gray-300 bg-black-200 border-b-4 border-red-600'}
+      ${fadeOut ? 'opacity-0' : 'opacity-100'}`}
     >
-      {message}
+      {/* Icon */}
+      <span className="flex flex-row gap-x-2 items-center">
+        {type === 'success' ? (
+          <CheckCircleIcon className="h-6 w-6 text-gray-300" />
+        ) : (
+          <NoSymbolIcon className="h-6 w-6 text-gray-300" />
+        )}
+        {/* Message */}
+        {message}
+      </span>
     </div>
   )
 }
@@ -39,7 +50,7 @@ export function ToastContainer() {
   const { toasts, removeToast } = useToast()
 
   return (
-    <div className="fixed top-20 right-2 z-50 flex flex-col-reverse gap-2 sm:right-8 sm:top-8 sm:transform-none sm:-translate-x-0 px-2">
+    <div className="fixed bottom-2 right-2 z-50 flex flex-col gap-2 sm:right-8 sm:bottom-8 sm:transform-none sm:-translate-x-0 px-2">
       {toasts.map((toast) => (
         <ToastNotification
           key={toast.id}

@@ -20,7 +20,7 @@ const Collection = async ({ params }: CollectionProps) => {
           <>
             <SetsPanel initialSets={collection.flashcardSets} />
             <ReviewsSection
-              setId={id}
+              id={id}
               initialReviews={collection.reviews}
               resourceType={'collections'}
             />

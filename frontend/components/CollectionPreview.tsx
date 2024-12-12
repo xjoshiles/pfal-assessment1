@@ -12,7 +12,7 @@ const CollectionPreview = ({
   collection: CollectionType,
   onDeleteCollection: (id: number) => void  // on prefix convention for props
 }) => {
-  const { id, name, description, averageRating, creator, updatedAt } = collection
+  const { id, name, description, userId, averageRating, creator, updatedAt } = collection
   const user = useUserContext()
 
   // Modal and deletion state
@@ -32,11 +32,13 @@ const CollectionPreview = ({
         <p className="item_preview_date">
           {formatDate(updatedAt)}
         </p>
-        <div className="flex gap-1.5">
-          <Link href={`/users/${creator.id}`} passHref tabIndex={-1}>
-            <p className="text-16-medium line-clamp-1">{creator.username}</p>
-          </Link>
-        </div>
+        {creator && (
+          <div className="flex gap-1.5">
+            <Link href={`/users/${creator.id}`} passHref tabIndex={-1}>
+              <p className="text-16-medium line-clamp-1">{creator.username}</p>
+            </Link>
+          </div>
+        )}
       </div>
 
       <div className="flex-between mt-5 gap-5">
@@ -59,7 +61,7 @@ const CollectionPreview = ({
 
           {/* Conditionally render the Edit and Delete buttons
           if the current user is the creator or an admin */}
-          {(user.id === creator.id || user.admin) && (
+          {(user.id === userId || user.admin) && (
             <>
               <Link href={`/collections/${id}/edit`} passHref tabIndex={-1}>
                 <button type="submit" className="item_edit_btn text-sm">Edit</button>

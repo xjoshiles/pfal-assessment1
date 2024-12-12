@@ -7,8 +7,6 @@ import db from '@adonisjs/lucid/services/db'
 import { shuffle } from 'lodash-es'
 import { errors } from '@vinejs/vine'
 import RateLimiter from '#services/rate_limiter'
-import { DateTime } from 'luxon'
-import { areSetsEqual } from '#utils/array'
 
 async function getFlashcardSetAverageRating(flashcardSetId: number) {
   // Consider caching this result using a caching library when the application
@@ -32,9 +30,6 @@ export default class FlashcardsController {
     try {
       const sets = await FlashcardSet.query()
         .preload('flashcards')
-        .preload('reviews', (query) => {
-          query.preload('author')
-        })
         .preload('creator')
       return response.json(sets)
     } catch (error) {
@@ -280,15 +275,13 @@ export default class FlashcardsController {
 
     try {
       const user = await User.find(id)
-
       if (!user) {
         return response.notFound({ message: `User ${id} not found` })
       }
 
       const sets = await FlashcardSet.query()
         .where('user_id', id)
-        .preload('flashcards')
-        .preload('creator')  // No .first() call here as we want all sets
+        .preload('flashcards')  // No .first() call for all sets
 
       return response.json(sets)
 
